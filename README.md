@@ -10,6 +10,8 @@ Aplicação mobile desenvolvida como projeto acadêmico para a disciplina de **D
 |------|--------|
 | Lucas Nathan | [@LucNath](https://github.com/LucNath) |
 | Maria Clara | [@MClaraLDantas](https://github.com/MClaraLDantas) |
+| Marcos Gomes | [@marcbaraGomes](https://github.com/marcbaraGomes) |
+| Pedro Costa | [@Pedrocosta-7](https://github.com/Pedrocosta-7) |
 
 ---
 
