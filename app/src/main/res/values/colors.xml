@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="bg_dark">#0F1B2D</color>
+    <color name="bg_card">#162032</color>
+    <color name="bg_card_inner">#1E2D42</color>
+    <color name="accent_orange">#F5A623</color>
+    <color name="text_white">#FFFFFF</color>
+    <color name="text_gray">#8A94A6</color>
+    <color name="text_red">#E05252</color>
+    <color name="divider">#253045</color>
+</resources>
+
