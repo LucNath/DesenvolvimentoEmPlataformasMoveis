@@ -22,5 +22,11 @@ dependencyResolutionManagement {
     }
 }
 
+<<<<<<< HEAD
 rootProject.name = "DEVWEB"
 include(":app")
+=======
+rootProject.name = "BibliotecaDigital"
+include(":app")
+ 
+>>>>>>> 8e3639298a7666f553c8314d5611c2dd4df9c1c8

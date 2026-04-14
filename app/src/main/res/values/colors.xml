@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+<<<<<<< HEAD
 
     <color name="bg_dark">#0F1B2D</color>
     <color name="bg_card">#162032</color>
@@ -13,3 +14,12 @@
     <color name="divider">#253045</color>
 </resources>
 
+=======
+    <color name="background_dark">#0D1B2A</color>
+    <color name="surface_dark">#1A2D42</color>
+    <color name="orange_primary">#F47C20</color>
+    <color name="orange_dark">#D96A10</color>
+    <color name="text_hint">#8899AA</color>
+    <color name="text_primary">#FFFFFF</color>
+</resources>
+>>>>>>> 8e3639298a7666f553c8314d5611c2dd4df9c1c8

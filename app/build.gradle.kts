@@ -3,7 +3,11 @@ plugins {
 }
 
 android {
+<<<<<<< HEAD
     namespace = "com.example.devweb"
+=======
+    namespace = "com.bibliotecadigital.app"
+>>>>>>> 8e3639298a7666f553c8314d5611c2dd4df9c1c8
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -11,8 +15,13 @@ android {
     }
 
     defaultConfig {
+<<<<<<< HEAD
         applicationId = "com.example.devweb"
         minSdk = 26
+=======
+        applicationId = "com.bibliotecadigital.app"
+        minSdk = 28
+>>>>>>> 8e3639298a7666f553c8314d5611c2dd4df9c1c8
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
