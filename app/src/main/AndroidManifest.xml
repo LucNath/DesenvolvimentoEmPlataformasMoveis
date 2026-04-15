@@ -10,11 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-<<<<<<< HEAD
         android:theme="@style/Theme.DEVWEB">
-=======
-        android:theme="@style/Theme.BibliotecaDigital">
->>>>>>> 8e3639298a7666f553c8314d5611c2dd4df9c1c8
         <activity
             android:name=".MainActivity"
             android:exported="true">
