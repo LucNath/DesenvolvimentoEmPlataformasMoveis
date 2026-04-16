@@ -22,6 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Biblioteca_Acervo"
+rootProject.name = "DEVWEB"
 include(":app")
- 
