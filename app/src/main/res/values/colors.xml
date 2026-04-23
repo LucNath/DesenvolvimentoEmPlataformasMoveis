@@ -3,6 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+<<<<<<< HEAD
     <color name="bg_dark">#07152E</color>
     <color name="card_blue">#1B2E52</color>
     <color name="text_secondary">#B8C3D9</color>
@@ -26,4 +27,27 @@
 
     <color name="cover_blue">#2D57D3</color>
     <color name="back_button_bg">#17335B</color>
+=======
+    <!-- Colors for com.example.devweb -->
+    <color name="bg_dark">#0F1B2D</color>
+    <color name="bg_card">#162032</color>
+    <color name="bg_card_inner">#1E2D42</color>
+    <color name="accent_orange">#F5A623</color>
+    <color name="text_white">#FFFFFF</color>
+    <color name="text_gray">#8A94A6</color>
+    <color name="text_red">#E05252</color>
+    <color name="divider">#253045</color>
+
+    <!-- Colors from BibliotecaDigital (kept for compatibility if needed) -->
+    <color name="background_dark">#0D1B2A</color>
+    <color name="surface_dark">#1A2D42</color>
+    <color name="orange_primary">#F47C20</color>
+    <color name="orange_dark">#D96A10</color>
+    <color name="text_hint">#8899AA</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#8A94A6</color>
+    <color name="bg_screen">#0F1B2D</color>
+    <color name="brand_orange">#F5A623</color>
+    <color name="bg_input">#1E2D42</color>
+>>>>>>> 563ca31ccf0bbdeaded1b6070ad9dd2ac45e81a9
 </resources>
