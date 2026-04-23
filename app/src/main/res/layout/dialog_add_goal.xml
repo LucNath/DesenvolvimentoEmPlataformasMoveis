@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@color/card_blue">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Adicionar Meta de Leitura"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/etBooksQuantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/button_orange"
+        android:hint="Quantidade de livros"
+        android:inputType="number"
+        android:textColor="@android:color/white"
+        android:textColorHint="@color/text_secondary" />
+
+    <EditText
+        android:id="@+id/etPeriod"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:backgroundTint="@color/button_orange"
+        android:hint="Período (ex: 1 mês, 6 meses)"
+        android:inputType="text"
+        android:textColor="@android:color/white"
+        android:textColorHint="@color/text_secondary" />
+
+</LinearLayout>

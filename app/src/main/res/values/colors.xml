@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="bg_dark">#07152E</color>
+    <color name="card_blue">#1B2E52</color>
+    <color name="text_secondary">#B8C3D9</color>
+    <color name="text_muted">#8FA2C5</color>
+
+    <color name="star_yellow">#FFC83D</color>
+
+    <color name="button_orange">#F78A1D</color>
+    <color name="orange_text">#FFB14A</color>
+
+    <color name="green_text">#21D07A</color>
+    <color name="availability_bg">#0B2A26</color>
+    <color name="availability_stroke">#175A4A</color>
+
+    <color name="waiting_bg">#33250D</color>
+    <color name="waiting_stroke">#6B4B12</color>
+
+    <color name="tag_blue">#2B57C1</color>
+    <color name="tag_gray">#3E4C69</color>
+    <color name="tag_orange">#8C4D10</color>
+
+    <color name="cover_blue">#2D57D3</color>
+    <color name="back_button_bg">#17335B</color>
+</resources>
