@@ -1,4 +1,4 @@
-package com.example.devweb
+package com.bibliotecadigital.app
 
 import android.app.AlertDialog
 import android.os.Bundle

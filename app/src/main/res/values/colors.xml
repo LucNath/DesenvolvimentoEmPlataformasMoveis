@@ -20,4 +20,8 @@
     <color name="orange_dark">#D96A10</color>
     <color name="text_hint">#8899AA</color>
     <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#8A94A6</color>
+    <color name="bg_screen">#0F1B2D</color>
+    <color name="brand_orange">#F5A623</color>
+    <color name="bg_input">#1E2D42</color>
 </resources>

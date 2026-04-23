@@ -1,4 +1,4 @@
-package com.example.devweb
+package com.bibliotecadigital.app
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

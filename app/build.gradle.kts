@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.devweb"
+    namespace = "com.bibliotecadigital.app"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.devweb"
+        applicationId = "com.bibliotecadigital.app"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -32,6 +32,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 }
 

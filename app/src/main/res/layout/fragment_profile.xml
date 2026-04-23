@@ -179,6 +179,27 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- ===== MINHAS RESERVAS (TASK-05) ===== -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            android:text="MINHAS RESERVAS"
+            android:textColor="@color/text_gray"
+            android:textSize="11sp"
+            android:letterSpacing="0.1" />
+
+        <LinearLayout
+            android:id="@+id/containerReservas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/item_reservation" />
+
+        </LinearLayout>
+
         <!-- ===== MINHA CONTA ===== -->
         <TextView
             android:layout_width="wrap_content"
