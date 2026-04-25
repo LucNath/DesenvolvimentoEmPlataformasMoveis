@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bibliotecadigital.app.databinding.ItemBookBinding
 
-class BookAdapter(private val onCategoryClick: ((String) -> Unit)? = null) : 
+class BookAdapter(private val onBookClick: ((Book) -> Unit)? = null) : 
     ListAdapter<Book, BookAdapter.ViewHolder>(BookDiffCallback()) {
 
     class ViewHolder(val binding: ItemBookBinding) : RecyclerView.ViewHolder(binding.root)
@@ -26,19 +26,26 @@ class BookAdapter(private val onCategoryClick: ((String) -> Unit)? = null) :
             tvCategory.text = book.category
             ivCover.setImageResource(book.coverRes)
 
-            if (book.available) {
-                tvStatus.text = root.context.getString(android.R.string.ok) // Placeholder for localized string
-                tvStatus.text = "DISPONÍVEL"
-                tvStatus.setBackgroundResource(R.drawable.bg_status_green)
-                tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.green_text))
-            } else {
-                tvStatus.text = "EMPRESTADO"
-                tvStatus.setBackgroundResource(R.drawable.bg_status_red)
-                tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.text_red))
+            when (book.status) {
+                BookStatus.AVAILABLE -> {
+                    tvStatus.text = "DISPONÍVEL"
+                    tvStatus.setBackgroundResource(R.drawable.bg_status_green)
+                    tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.green_text))
+                }
+                BookStatus.BORROWED -> {
+                    tvStatus.text = "EMPRESTADO"
+                    tvStatus.setBackgroundResource(R.drawable.bg_status_red)
+                    tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.text_red))
+                }
+                BookStatus.RESERVED -> {
+                    tvStatus.text = "RESERVADO"
+                    tvStatus.setBackgroundResource(R.drawable.bg_status_yellow)
+                    tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.star_yellow))
+                }
             }
 
-            tvCategory.setOnClickListener {
-                onCategoryClick?.invoke(book.category)
+            root.setOnClickListener {
+                onBookClick?.invoke(book)
             }
         }
     }

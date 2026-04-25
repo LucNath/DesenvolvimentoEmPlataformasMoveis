@@ -58,22 +58,25 @@ class CategoryFragment : Fragment() {
 
     private fun setupRecyclerView() {
         val allBooks = listOf(
-            Book("1", "O Senhor dos Anéis", "J.R.R. Tolkien", "Fantasia", true, R.drawable.bg_cover_placeholder),
-            Book("2", "1984", "George Orwell", "Ficção Científica", true, R.drawable.bg_cover_placeholder),
-            Book("3", "Dom Casmurro", "Machado de Assis", "Clássico", false, R.drawable.bg_cover_placeholder),
-            Book("4", "O Pequeno Príncipe", "Antoine de Saint-Exupéry", "Infantil", true, R.drawable.bg_cover_placeholder),
-            Book("5", "Harry Potter", "J.K. Rowling", "Fantasia", false, R.drawable.bg_cover_placeholder),
-            Book("6", "A Menina que Roubava Livros", "Markus Zusak", "Drama", true, R.drawable.bg_cover_placeholder),
-            Book("7", "O Hobbit", "J.R.R. Tolkien", "Fantasia", true, R.drawable.bg_cover_placeholder),
-            Book("8", "Fundação", "Isaac Asimov", "Ficção Científica", true, R.drawable.bg_cover_placeholder),
-            Book("9", "Memórias Póstumas", "Machado de Assis", "Clássico", true, R.drawable.bg_cover_placeholder),
-            Book("10", "Alice no País das Maravilhas", "Lewis Carroll", "Infantil", true, R.drawable.bg_cover_placeholder)
+            Book("1", "O Senhor dos Anéis", "J.R.R. Tolkien", "Fantasia", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder),
+            Book("2", "1984", "George Orwell", "Ficção Científica", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder),
+            Book("3", "Dom Casmurro", "Machado de Assis", "Clássico", BookStatus.BORROWED, R.drawable.bg_cover_placeholder),
+            Book("4", "O Pequeno Príncipe", "Antoine de Saint-Exupéry", "Infantil", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder),
+            Book("5", "Harry Potter", "J.K. Rowling", "Fantasia", BookStatus.RESERVED, R.drawable.bg_cover_placeholder),
+            Book("6", "A Menina que Roubava Livros", "Markus Zusak", "Drama", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder),
+            Book("7", "O Hobbit", "J.R.R. Tolkien", "Fantasia", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder),
+            Book("8", "Fundação", "Isaac Asimov", "Ficção Científica", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder),
+            Book("9", "Memórias Póstumas", "Machado de Assis", "Clássico", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder),
+            Book("10", "Alice no País das Maravilhas", "Lewis Carroll", "Infantil", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder)
         )
 
         categoryBooks = allBooks.filter { it.category == category }
         
-        bookAdapter = BookAdapter { selectedCategory ->
-            // Already in category view, could refresh or do nothing
+        bookAdapter = BookAdapter { book ->
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, BookDetailFragment.newInstance(book.id, book.title, book.author))
+                .addToBackStack(null)
+                .commit()
         }
         binding.rvCategoryBooks.layoutManager = LinearLayoutManager(requireContext())
         binding.rvCategoryBooks.adapter = bookAdapter

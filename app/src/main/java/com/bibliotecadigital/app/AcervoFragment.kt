@@ -4,14 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bibliotecadigital.app.databinding.FragmentAcervoBinding
+import com.google.android.material.chip.Chip
 
 class AcervoFragment : Fragment() {
 
     private var _binding: FragmentAcervoBinding? = null
     private val binding get() = _binding!!
+    
+    private lateinit var viewModel: AcervoViewModel
+    
+    private lateinit var bookAdapter: BookAdapter
+    private lateinit var mostBorrowedAdapter: MostBorrowedAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,28 +32,78 @@ class AcervoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
+        viewModel = ViewModelProvider(this)[AcervoViewModel::class.java]
+        
+        setupRecyclerViews()
+        setupSearch()
+        observeViewModel()
     }
 
-    private fun setupRecyclerView() {
-        val books = listOf(
-            Book("1", "O Senhor dos Anéis", "J.R.R. Tolkien", "Fantasia", true, R.drawable.bg_cover_placeholder),
-            Book("2", "1984", "George Orwell", "Ficção Científica", true, R.drawable.bg_cover_placeholder),
-            Book("3", "Dom Casmurro", "Machado de Assis", "Clássico", false, R.drawable.bg_cover_placeholder),
-            Book("4", "O Pequeno Príncipe", "Antoine de Saint-Exupéry", "Infantil", true, R.drawable.bg_cover_placeholder),
-            Book("5", "Harry Potter", "J.K. Rowling", "Fantasia", false, R.drawable.bg_cover_placeholder),
-            Book("6", "A Menina que Roubava Livros", "Markus Zusak", "Drama", true, R.drawable.bg_cover_placeholder)
-        )
-
-        binding.rvBooks.layoutManager = LinearLayoutManager(requireContext())
-        val bookAdapter = BookAdapter { category ->
+    private fun setupRecyclerViews() {
+        bookAdapter = BookAdapter { book ->
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, CategoryFragment.newInstance(category))
+                .replace(R.id.fragmentContainer, BookDetailFragment.newInstance(book.id, book.title, book.author))
                 .addToBackStack(null)
                 .commit()
         }
+        binding.rvBooks.layoutManager = LinearLayoutManager(requireContext())
         binding.rvBooks.adapter = bookAdapter
-        bookAdapter.submitList(books)
+
+        mostBorrowedAdapter = MostBorrowedAdapter { book ->
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, BookDetailFragment.newInstance(book.id, book.title, book.author))
+                .addToBackStack(null)
+                .commit()
+        }
+        binding.rvMostBorrowed.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.rvMostBorrowed.adapter = mostBorrowedAdapter
+    }
+
+    private fun setupSearch() {
+        binding.etSearch.addTextChangedListener { text ->
+            viewModel.setSearchQuery(text?.toString() ?: "")
+        }
+    }
+
+    private fun observeViewModel() {
+        viewModel.filteredBooks.observe(viewLifecycleOwner) { books ->
+            bookAdapter.submitList(books)
+        }
+
+        viewModel.mostBorrowedBooks.observe(viewLifecycleOwner) { books ->
+            mostBorrowedAdapter.submitList(books)
+            val visibility = if (books.isEmpty()) View.GONE else View.VISIBLE
+            binding.tvMostBorrowedHeader.visibility = visibility
+            binding.rvMostBorrowed.visibility = visibility
+        }
+
+        viewModel.categories.observe(viewLifecycleOwner) { categories ->
+            setupCategoryChips(categories)
+        }
+    }
+
+    private fun setupCategoryChips(categories: List<String>) {
+        val currentCheckedId = binding.chipGroupCategories.checkedChipId
+        binding.chipGroupCategories.removeAllViews()
+        
+        categories.forEachIndexed { index, category ->
+            val chip = Chip(requireContext()).apply {
+                id = View.generateViewId()
+                text = category
+                isCheckable = true
+                isChecked = (category == viewModel.selectedCategory.value)
+                
+                setChipBackgroundColorResource(R.color.bg_card_inner)
+                setTextColor(resources.getColor(R.color.text_white, null))
+                
+                setOnCheckedChangeListener { _, isChecked ->
+                    if (isChecked) {
+                        viewModel.setSelectedCategory(category)
+                    }
+                }
+            }
+            binding.chipGroupCategories.addView(chip)
+        }
     }
 
     override fun onDestroyView() {
