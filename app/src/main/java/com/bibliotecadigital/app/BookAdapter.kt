@@ -6,7 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bibliotecadigital.app.databinding.ItemBookBinding
 
-class BookAdapter(private val books: List<Book>) : RecyclerView.Adapter<BookAdapter.ViewHolder>() {
+class BookAdapter(private var books: List<Book>, private val onCategoryClick: ((String) -> Unit)? = null) : RecyclerView.Adapter<BookAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemBookBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -32,8 +32,17 @@ class BookAdapter(private val books: List<Book>) : RecyclerView.Adapter<BookAdap
                 tvStatus.setBackgroundResource(R.drawable.bg_status_red)
                 tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.text_red))
             }
+
+            tvCategory.setOnClickListener {
+                onCategoryClick?.invoke(book.category)
+            }
         }
     }
 
     override fun getItemCount() = books.size
+
+    fun updateList(newList: List<Book>) {
+        books = newList
+        notifyDataSetChanged()
+    }
 }

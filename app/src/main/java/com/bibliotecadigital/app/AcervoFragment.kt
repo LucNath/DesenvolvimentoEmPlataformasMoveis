@@ -38,7 +38,12 @@ class AcervoFragment : Fragment() {
         )
 
         binding.rvBooks.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvBooks.adapter = BookAdapter(books)
+        binding.rvBooks.adapter = BookAdapter(books) { category ->
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, CategoryFragment.newInstance(category))
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     override fun onDestroyView() {
