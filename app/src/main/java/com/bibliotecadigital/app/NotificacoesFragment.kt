@@ -62,9 +62,23 @@ class NotificacoesFragment : Fragment() {
             ),
             Notification(
                 id = "3",
-                message = "A biblioteca fechará mais cedo nesta sexta-feira.",
+                message = "A biblioteca fechará mais cedo nesta sexta-feira devido ao feriado.",
                 type = NotificationType.SYSTEM_ALERT,
                 timestamp = "Ontem",
+                isRead = true
+            ),
+            Notification(
+                id = "4",
+                message = "Sua multa de R$ 5,00 foi processada e está pendente de pagamento.",
+                type = NotificationType.SYSTEM_ALERT,
+                timestamp = "Há 1 dia",
+                isRead = false
+            ),
+            Notification(
+                id = "5",
+                message = "Novo livro adicionado ao acervo: 'Design Patterns' de Erich Gamma.",
+                type = NotificationType.SYSTEM_ALERT,
+                timestamp = "Há 2 dias",
                 isRead = true
             )
         )

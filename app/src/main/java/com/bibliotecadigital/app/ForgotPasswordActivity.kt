@@ -9,12 +9,13 @@ import com.google.android.material.snackbar.Snackbar
 class ForgotPasswordActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityForgotPasswordBinding
-
-    // Lista mockada de e-mails existentes no sistema
+    
+    // Mock de e-mails cadastrados
     private val registeredEmails = listOf(
-        "lucas.mendes@instituicao.edu.br",
-        "aluno@biblioteca.com",
-        "dev@web.com"
+        "aluno@unipar.br",
+        "professor@unipar.br",
+        "admin@biblioteca.com",
+        "usuario@teste.com"
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,52 +31,56 @@ class ForgotPasswordActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.btnResetPassword.setOnClickListener {
-            handleResetPassword()
+        binding.btnReset.setOnClickListener {
+            val email = binding.etEmail.text.toString().trim()
+
+            if (validateEmail(email)) {
+                processPasswordRecovery(email)
+            }
         }
     }
 
-    private fun handleResetPassword() {
-        val email = binding.etEmail.text.toString().trim()
-
-        // Reseta erro anterior
+    private fun validateEmail(email: String): Boolean {
         binding.tilEmail.error = null
 
         if (email.isEmpty()) {
             binding.tilEmail.error = "Por favor, insira seu e-mail"
-            return
+            return false
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.tilEmail.error = "Formato de e-mail inválido"
-            return
+            return false
         }
 
-        // Simulação de verificação e envio
-        if (registeredEmails.contains(email)) {
-            showSuccessFeedback()
+        return true
+    }
+
+    private fun processPasswordRecovery(email: String) {
+        if (registeredEmails.contains(email.lowercase())) {
+            showSuccessMessage()
         } else {
-            showErrorFeedback()
+            showErrorMessage()
         }
     }
 
-    private fun showSuccessFeedback() {
+    private fun showSuccessMessage() {
         Snackbar.make(
             binding.root,
-            "Link de redefinição enviado para seu e-mail!",
+            "Link de recuperação enviado! Verifique sua caixa de entrada.",
             Snackbar.LENGTH_LONG
         ).show()
         
-        // Opcional: fechar a tela após alguns segundos ou deixar o usuário voltar manual
+        // Opcional: Desabilitar o botão após o envio para evitar múltiplos cliques
+        binding.btnReset.isEnabled = false
     }
 
-    private fun showErrorFeedback() {
-        binding.tilEmail.error = "E-mail não encontrado em nossa base"
+    private fun showErrorMessage() {
         Snackbar.make(
             binding.root,
-            "Erro: Verifique os dados inseridos.",
+            "E-mail não encontrado em nossa base de dados.",
             Snackbar.LENGTH_LONG
-        ).setBackgroundTint(resources.getColor(android.R.color.holo_red_dark, null))
+        ).setBackgroundTint(getColor(R.color.text_red))
         .show()
     }
 }

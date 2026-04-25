@@ -1,6 +1,7 @@
 package com.bibliotecadigital.app
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -63,26 +64,14 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun setupMenuRows() {
-        configRow(binding.rowReadingHistory.root, "📖", "Histórico de Leituras")
-        configRow(binding.rowReadingGoals.root, "🎯", "Metas de Leitura")
-        configRow(binding.rowFines.root, "💰", "Multas e Pagamentos")
-        configRow(binding.rowChangePassword.root, "🔒", "Alterar Senha")
-        configRow(
-            binding.rowLogout.root,
-            "📕",
-            "Sair da conta",
-            isDestructive = true
-        )
-    }
-
     private fun configRow(
         rowView: View,
-        icon: String,
+        iconRes: Int,
         title: String,
         isDestructive: Boolean = false
     ) {
-        rowView.findViewById<TextView>(R.id.tvRowIcon).text = icon
+        val ivIcon = rowView.findViewById<android.widget.ImageView>(R.id.ivRowIcon)
+        ivIcon.setImageResource(iconRes)
 
         val tvTitle = rowView.findViewById<TextView>(R.id.tvRowTitle)
         tvTitle.text = title
@@ -91,8 +80,22 @@ class ProfileFragment : Fragment() {
             tvTitle.setTextColor(
                 resources.getColor(R.color.text_red, null)
             )
+            ivIcon.setColorFilter(resources.getColor(R.color.text_red, null))
             rowView.findViewById<TextView>(R.id.tvRowArrow).visibility = View.GONE
         }
+    }
+
+    private fun setupMenuRows() {
+        configRow(binding.rowReadingHistory.root, R.drawable.ic_launcher_foreground, "Histórico de Leituras")
+        configRow(binding.rowReadingGoals.root, R.drawable.ic_launcher_foreground, "Metas de Leitura")
+        configRow(binding.rowFines.root, R.drawable.ic_palette, "Multas e Pagamentos")
+        configRow(binding.rowChangePassword.root, R.drawable.ic_lock, "Alterar Senha")
+        configRow(
+            binding.rowLogout.root,
+            R.drawable.ic_exit_to_app,
+            "Sair da conta",
+            isDestructive = true
+        )
     }
 
     private fun setupClickListeners() {
@@ -121,12 +124,17 @@ class ProfileFragment : Fragment() {
             bottomSheet.show(childFragmentManager, EditProfileBottomSheet.TAG)
         }
 
+        binding.btnSettings.setOnClickListener {
+            openSettings()
+        }
+
         binding.rowReadingHistory.root.setOnClickListener {
             Toast.makeText(requireContext(), "Histórico de Leituras", Toast.LENGTH_SHORT).show()
         }
 
         binding.rowReadingGoals.root.setOnClickListener {
-            Toast.makeText(requireContext(), "Metas de Leitura", Toast.LENGTH_SHORT).show()
+            val intent = android.content.Intent(requireContext(), ReadingGoalsActivity::class.java)
+            startActivity(intent)
         }
 
         binding.rowFines.root.setOnClickListener {
@@ -134,7 +142,8 @@ class ProfileFragment : Fragment() {
         }
 
         binding.rowChangePassword.root.setOnClickListener {
-            Toast.makeText(requireContext(), "Alterar Senha", Toast.LENGTH_SHORT).show()
+            val bottomSheet = ChangePasswordBottomSheet()
+            bottomSheet.show(childFragmentManager, ChangePasswordBottomSheet.TAG)
         }
 
         binding.rowLogout.root.setOnClickListener {
@@ -142,12 +151,22 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    private fun openSettings() {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, SettingsFragment())
+            .addToBackStack(null)
+            .commit()
+    }
+
     private fun showLogoutDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Sair da conta")
             .setMessage("Tem certeza que deseja sair?")
             .setPositiveButton("Sair") { _, _ ->
-                Toast.makeText(requireContext(), "Logout realizado!", Toast.LENGTH_SHORT).show()
+                requireActivity().finishAffinity()
+                val intent = Intent(requireActivity(), LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
             }
             .setNegativeButton("Cancelar", null)
             .show()

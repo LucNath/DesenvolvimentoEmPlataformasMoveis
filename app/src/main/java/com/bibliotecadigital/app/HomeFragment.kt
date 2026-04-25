@@ -76,20 +76,35 @@ class HomeFragment : Fragment() {
                 author = "Cormen, Leiserson, Rivest",
                 coverRes = 0,
                 queuePosition = 3
+            ),
+            Reservation(
+                id = "2",
+                title = "Inteligência Artificial: Uma Abordagem Moderna",
+                author = "Stuart Russell, Peter Norvig",
+                coverRes = 0,
+                queuePosition = 1
+            ),
+            Reservation(
+                id = "3",
+                title = "Design Patterns: Elements of Reusable Object-Oriented Software",
+                author = "Erich Gamma, Richard Helm",
+                coverRes = 0,
+                queuePosition = 5
             )
         )
 
         val adapter = ReservationAdapter(reservations) { reservation ->
-            Toast.makeText(requireContext(), "Reserva: ${reservation.title}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Ver reserva: ${reservation.title}", Toast.LENGTH_SHORT).show()
         }
 
         binding.rvReservations.apply {
             layoutManager = LinearLayoutManager(requireContext())
             this.adapter = adapter
+            isNestedScrollingEnabled = false
         }
 
         binding.tvVerTodasReservas.setOnClickListener {
-            // Ação futura
+            Toast.makeText(requireContext(), "Navegar para todas as reservas", Toast.LENGTH_SHORT).show()
         }
     }
 

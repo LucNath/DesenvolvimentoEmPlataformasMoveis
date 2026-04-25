@@ -1,5 +1,6 @@
 package com.bibliotecadigital.app
 
+import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -7,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bibliotecadigital.app.databinding.DialogChangePasswordBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 
@@ -50,7 +53,11 @@ class ChangePasswordBottomSheet : BottomSheetDialogFragment() {
 
         binding.btnChangePassword.setOnClickListener {
             if (performValidation()) {
-                Snackbar.make(requireActivity().findViewById(android.R.id.content), "Senha alterada com sucesso!", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(
+                    requireActivity().findViewById(android.R.id.content),
+                    "Senha alterada com sucesso!",
+                    Snackbar.LENGTH_SHORT
+                ).show()
                 dismiss()
             }
         }
@@ -61,17 +68,22 @@ class ChangePasswordBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun validateForm() {
-        val current = binding.etCurrentPassword.text.toString()
-        val new = binding.etNewPassword.text.toString()
-        val confirm = binding.etConfirmPassword.text.toString()
+        val current = binding.etCurrentPassword.text.toString().trim()
+        val new = binding.etNewPassword.text.toString().trim()
+        val confirm = binding.etConfirmPassword.text.toString().trim()
 
         binding.btnChangePassword.isEnabled = current.isNotEmpty() && new.isNotEmpty() && confirm.isNotEmpty()
+        
+        // Limpa erros ao digitar
+        binding.tilCurrentPassword.error = null
+        binding.tilNewPassword.error = null
+        binding.tilConfirmPassword.error = null
     }
 
     private fun performValidation(): Boolean {
-        val current = binding.etCurrentPassword.text.toString()
-        val new = binding.etNewPassword.text.toString()
-        val confirm = binding.etConfirmPassword.text.toString()
+        val current = binding.etCurrentPassword.text.toString().trim()
+        val new = binding.etNewPassword.text.toString().trim()
+        val confirm = binding.etConfirmPassword.text.toString().trim()
 
         var isValid = true
 
@@ -79,27 +91,36 @@ class ChangePasswordBottomSheet : BottomSheetDialogFragment() {
         if (current != MOCK_CURRENT_PASSWORD) {
             binding.tilCurrentPassword.error = "Senha atual incorreta"
             isValid = false
-        } else {
-            binding.tilCurrentPassword.error = null
         }
 
         // Validação tamanho nova senha
         if (new.length < 6) {
-            binding.tilNewPassword.error = "Senha muito curta"
+            binding.tilNewPassword.error = "Senha muito curta (mínimo 6)"
             isValid = false
-        } else {
-            binding.tilNewPassword.error = null
         }
 
         // Validação coincidência
         if (new != confirm) {
             binding.tilConfirmPassword.error = "As senhas não coincidem"
             isValid = false
-        } else {
-            binding.tilConfirmPassword.error = null
         }
 
         return isValid
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+        dialog.setOnShowListener {
+            val bottomSheet = dialog.findViewById<View>(
+                com.google.android.material.R.id.design_bottom_sheet
+            )
+            bottomSheet?.let {
+                val behavior = BottomSheetBehavior.from(it)
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                behavior.skipCollapsed = true
+            }
+        }
+        return dialog
     }
 
     override fun onDestroyView() {

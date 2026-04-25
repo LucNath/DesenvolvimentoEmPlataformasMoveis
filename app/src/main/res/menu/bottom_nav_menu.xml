@@ -2,22 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_home"
         android:title="Home" />
     <item
         android:id="@+id/nav_acervo"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_library_books"
         android:title="Acervo" />
     <item
         android:id="@+id/nav_eventos"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_event"
         android:title="Eventos" />
     <item
         android:id="@+id/nav_notificacoes"
-        android:icon="@drawable/ic_launcher_foreground"
-        android:title="Avisos" />
+        android:icon="@drawable/ic_notifications"
+        android:title="Notificações" />
     <item
         android:id="@+id/nav_perfil"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_person"
         android:title="Perfil" />
 </menu>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -34,20 +35,29 @@
         android:layout_marginBottom="6dp" />
 
     <!-- Campo Nome -->
-    <EditText
-        android:id="@+id/etName"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilName"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:paddingStart="14dp"
-        android:paddingEnd="14dp"
-        android:textSize="14sp"
-        android:textColor="@color/text_primary"
-        android:hint="Seu nome completo"
-        android:textColorHint="@color/text_secondary"
-        android:background="@drawable/input_background"
-        android:inputType="textPersonName"
-        android:singleLine="true"
-        android:layout_marginBottom="16dp" />
+        android:layout_height="wrap_content"
+        app:hintEnabled="false"
+        app:errorEnabled="true"
+        app:errorTextColor="@color/text_red"
+        android:layout_marginBottom="8dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:textSize="14sp"
+            android:textColor="@color/text_primary"
+            android:hint="Seu nome completo"
+            android:textColorHint="@color/text_secondary"
+            android:background="@drawable/input_background"
+            android:inputType="textPersonName"
+            android:singleLine="true" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Label Curso -->
     <TextView
@@ -59,20 +69,29 @@
         android:layout_marginBottom="6dp" />
 
     <!-- Campo Curso -->
-    <EditText
-        android:id="@+id/etCourse"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilCourse"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:paddingStart="14dp"
-        android:paddingEnd="14dp"
-        android:textSize="14sp"
-        android:textColor="@color/text_primary"
-        android:hint="Ex: Aluno · Direito"
-        android:textColorHint="@color/text_secondary"
-        android:background="@drawable/input_background"
-        android:inputType="text"
-        android:singleLine="true"
-        android:layout_marginBottom="28dp" />
+        android:layout_height="wrap_content"
+        app:hintEnabled="false"
+        app:errorEnabled="true"
+        app:errorTextColor="@color/text_red"
+        android:layout_marginBottom="12dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etCourse"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:textSize="14sp"
+            android:textColor="@color/text_primary"
+            android:hint="Ex: Aluno · Direito"
+            android:textColorHint="@color/text_secondary"
+            android:background="@drawable/input_background"
+            android:inputType="text"
+            android:singleLine="true" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Botão Salvar -->
     <Button

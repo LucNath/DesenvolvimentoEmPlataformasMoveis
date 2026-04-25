@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
@@ -39,21 +40,22 @@ class SettingsFragment : Fragment() {
 
     private fun setupMenu() {
         // Seção SEGURANÇA
-        binding.itemChangePassword.tvRowIcon.text = "🔒"
+        binding.itemChangePassword.ivRowIcon.setImageResource(R.drawable.ic_lock)
         binding.itemChangePassword.tvRowTitle.text = "Alterar Senha"
 
         // Seção PERSONALIZAÇÃO
-        binding.itemFontSize.tvRowIcon.text = "Aa"
+        binding.itemFontSize.ivRowIcon.setImageResource(R.drawable.ic_text_fields)
         binding.itemFontSize.tvRowTitle.text = "Tamanho da Fonte"
 
-        binding.itemTheme.tvRowIcon.text = "🎨"
+        binding.itemTheme.ivRowIcon.setImageResource(R.drawable.ic_palette)
         binding.itemTheme.tvRowTitle.text = "Tema do Aplicativo"
 
-        binding.itemRotation.tvRowIcon.text = "🔄"
+        binding.itemRotation.ivRowIcon.setImageResource(R.drawable.ic_screen_rotation)
         binding.itemRotation.tvRowTitle.text = "Rotação Automática"
 
         // Seção SESSÃO
-        binding.itemLogout.tvRowIcon.text = "🚪"
+        binding.itemLogout.ivRowIcon.setImageResource(R.drawable.ic_exit_to_app)
+        binding.itemLogout.ivRowIcon.setColorFilter(resources.getColor(R.color.text_red, null))
         binding.itemLogout.tvRowTitle.text = "Sair"
         binding.itemLogout.tvRowTitle.setTextColor(resources.getColor(R.color.text_red, null))
         binding.itemLogout.tvRowArrow.visibility = View.GONE
@@ -101,19 +103,20 @@ class SettingsFragment : Fragment() {
     }
 
     private fun applyFontSize(sizeIndex: Int) {
-        // Simulação de aplicação (requer reinicialização da activity ou ajuste dinâmico de escala)
-        AlertDialog.Builder(requireContext(), R.style.Theme_DEVWEB_Dialog)
-            .setMessage("Alteração salva. Reinicie o app para aplicar totalmente.")
-            .setPositiveButton("OK", null)
-            .show()
+        // Para aplicar a escala da fonte globalmente, precisamos recriar a Activity
+        requireActivity().recreate()
     }
 
     private fun toggleTheme() {
-        val isDarkMode = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
-        val newMode = if (isDarkMode) AppCompatDelegate.MODE_NIGHT_NO else AppCompatDelegate.MODE_NIGHT_YES
+        val isDarkMode = prefs.getBoolean("pref_dark_mode", true)
+        val newMode = !isDarkMode
         
-        AppCompatDelegate.setDefaultNightMode(newMode)
-        prefs.edit().putBoolean("pref_dark_mode", !isDarkMode).apply()
+        prefs.edit().putBoolean("pref_dark_mode", newMode).apply()
+        
+        AppCompatDelegate.setDefaultNightMode(
+            if (newMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
+        // O setDefaultNightMode geralmente recria a activity automaticamente
     }
 
     private fun toggleRotation() {
@@ -130,10 +133,7 @@ class SettingsFragment : Fragment() {
         requireActivity().requestedOrientation = orientation
         
         val status = if (newValue) "Ativada" else "Desativada (Apenas Retrato)"
-        AlertDialog.Builder(requireContext(), R.style.Theme_DEVWEB_Dialog)
-            .setMessage("Rotação $status")
-            .setPositiveButton("OK", null)
-            .show()
+        Toast.makeText(requireContext(), "Rotação $status", Toast.LENGTH_SHORT).show()
     }
 
     private fun showLogoutConfirmation() {

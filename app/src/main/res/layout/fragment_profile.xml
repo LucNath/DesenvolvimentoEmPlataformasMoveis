@@ -13,18 +13,33 @@
         android:padding="20dp">
 
         <!-- ===== AVATAR + NOME ===== -->
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:paddingTop="24dp"
-            android:paddingBottom="16dp">
+            android:paddingTop="8dp">
 
-            <!-- Avatar circular com iniciais -->
-            <FrameLayout
-                android:layout_width="80dp"
-                android:layout_height="80dp">
+            <ImageButton
+                android:id="@+id/btnSettings"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/bg_btn_outline"
+                android:src="@android:drawable/ic_menu_preferences"
+                app:tint="@color/text_white"
+                android:contentDescription="Configurações" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp">
+
+                <!-- Avatar circular com iniciais -->
+                <FrameLayout
+                    android:layout_width="80dp"
+                    android:layout_height="80dp">
 
                 <TextView
                     android:id="@+id/tvAvatar"
@@ -59,20 +74,21 @@
                 android:textColor="@color/text_gray"
                 android:textSize="14sp" />
 
-            <!-- Botão Editar Perfil -->
-            <Button
-                android:id="@+id/btnEditProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_marginTop="14dp"
-                android:background="@drawable/bg_btn_outline"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:text="✏ Editar Perfil"
-                android:textColor="@color/accent_orange"
-                android:textSize="13sp"
-                android:textAllCaps="false" />
-        </LinearLayout>
+                <!-- Botão Editar Perfil -->
+                <Button
+                    android:id="@+id/btnEditProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/bg_btn_outline"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:text="✏ Editar Perfil"
+                    android:textColor="@color/accent_orange"
+                    android:textSize="13sp"
+                    android:textAllCaps="false" />
+            </LinearLayout>
+        </RelativeLayout>
 
         <!-- ===== ESTATÍSTICAS ===== -->
         <androidx.cardview.widget.CardView

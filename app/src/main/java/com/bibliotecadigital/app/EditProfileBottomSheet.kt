@@ -53,22 +53,26 @@ class EditProfileBottomSheet(
     }
 
     private fun validateFields(name: String, course: String): Boolean {
+        var isValid = true
+        
         if (name.isEmpty()) {
-            binding.etName.error = "Preencha o nome"
-            binding.etName.requestFocus()
-            return false
+            binding.tilName.error = "O nome não pode estar vazio"
+            isValid = false
+        } else if (name.length < 3) {
+            binding.tilName.error = "O nome deve ter pelo menos 3 caracteres"
+            isValid = false
+        } else {
+            binding.tilName.error = null
         }
-        if (name.length < 3) {
-            binding.etName.error = "Nome muito curto"
-            binding.etName.requestFocus()
-            return false
-        }
+
         if (course.isEmpty()) {
-            binding.etCourse.error = "Preencha o curso"
-            binding.etCourse.requestFocus()
-            return false
+            binding.tilCourse.error = "O curso não pode estar vazio"
+            isValid = false
+        } else {
+            binding.tilCourse.error = null
         }
-        return true
+
+        return isValid
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
