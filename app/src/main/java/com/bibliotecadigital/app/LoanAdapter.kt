@@ -42,7 +42,7 @@ class LoanAdapter(
             if (item.coverRes != 0) {
                 ivCover.setImageResource(item.coverRes)
             } else {
-                ivCover.setImageResource(android.R.drawable.ic_menu_book)
+                ivCover.setImageResource(android.R.drawable.ic_dialog_info)
             }
 
             btnVer.setOnClickListener {

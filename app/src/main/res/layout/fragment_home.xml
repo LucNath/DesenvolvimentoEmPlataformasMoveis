@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="46dp"
             android:hint="Buscar livros, autores, ISBN..."
-            android:hintTextColor="@color/text_secondary"
+            android:textColorHint="@color/text_secondary"
             android:textColor="@color/text_primary"
             android:textSize="14sp"
             android:paddingStart="16dp"
