@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bibliotecadigital.app.databinding.FragmentHomeBinding
@@ -51,9 +52,15 @@ class HomeFragment : Fragment() {
             )
         )
 
-        val adapter = LoanAdapter(loans) { loan ->
-            // TASK-08: navegar para detalhes
-        }
+        val adapter = LoanAdapter(
+            loans,
+            onVerClick = { loan ->
+                Toast.makeText(requireContext(), "Ver detalhes: ${loan.title}", Toast.LENGTH_SHORT).show()
+            },
+            onRenovarClick = { loan ->
+                Toast.makeText(requireContext(), "Renovação solicitada: ${loan.title}", Toast.LENGTH_SHORT).show()
+            }
+        )
 
         binding.rvLoans.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -73,7 +80,7 @@ class HomeFragment : Fragment() {
         )
 
         val adapter = ReservationAdapter(reservations) { reservation ->
-            // TASK-08: navegar para detalhes
+            Toast.makeText(requireContext(), "Reserva: ${reservation.title}", Toast.LENGTH_SHORT).show()
         }
 
         binding.rvReservations.apply {
@@ -82,7 +89,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.tvVerTodasReservas.setOnClickListener {
-            // navegar para acervo
+            // Ação futura
         }
     }
 

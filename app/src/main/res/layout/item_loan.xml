@@ -52,18 +52,36 @@
 
     </LinearLayout>
 
-    <!-- Botão Ver -->
-    <Button
-        android:id="@+id/btnVer"
+    <!-- Botões de Ação -->
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="36dp"
-        android:text="Ver"
-        android:textSize="12sp"
-        android:textColor="@color/text_primary"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:background="@drawable/bg_button_outline_white"
-        android:stateListAnimator="@null"
-        android:layout_marginStart="8dp" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="8dp">
+
+        <Button
+            android:id="@+id/btnRenovar"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Renovar"
+            android:textSize="11sp"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_button_orange"
+            android:stateListAnimator="@null"
+            android:visibility="gone"
+            android:layout_marginEnd="6dp" />
+
+        <Button
+            android:id="@+id/btnVer"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Ver"
+            android:textSize="11sp"
+            android:textColor="@color/text_primary"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:background="@drawable/bg_button_outline_white"
+            android:stateListAnimator="@null" />
+    </LinearLayout>
 
 </LinearLayout>

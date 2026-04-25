@@ -1,4 +1,3 @@
-// Apague o que tiver e coloque:
 package com.bibliotecadigital.app
 
 data class Reservation(

@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.biblioteca_historico"
+    namespace = "com.bibliotecadigital.app"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.biblioteca_historico"
+        applicationId = "com.bibliotecadigital.app"
         minSdk = 28
         targetSdk = 34
         versionCode = 1

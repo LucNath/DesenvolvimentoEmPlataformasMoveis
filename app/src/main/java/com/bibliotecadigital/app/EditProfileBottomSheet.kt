@@ -19,6 +19,8 @@ class EditProfileBottomSheet(
     private var _binding: DialogEditProfileBinding? = null
     private val binding get() = _binding!!
 
+    override fun getTheme(): Int = R.style.AppBottomSheetDialogTheme
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

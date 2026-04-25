@@ -1,4 +1,4 @@
-package com.example.biblioteca_historico
+package com.bibliotecadigital.app
 
 import android.os.Bundle
 import android.view.LayoutInflater

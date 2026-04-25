@@ -10,7 +10,7 @@ class ReservationAdapter(
     private val onVerClick: (Reservation) -> Unit
 ) : RecyclerView.Adapter<ReservationAdapter.ViewHolder>() {
 
-    inner class ViewHolder(val binding: ItemReservationBinding) :
+    class ViewHolder(val binding: ItemReservationBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

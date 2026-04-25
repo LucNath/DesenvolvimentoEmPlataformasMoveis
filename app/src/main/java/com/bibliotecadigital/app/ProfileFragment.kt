@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bibliotecadigital.app.databinding.FragmentProfileBinding
 import com.google.android.material.snackbar.Snackbar
+import java.util.Locale
 
 class ProfileFragment : Fragment() {
 
@@ -29,6 +31,7 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupUserData()
         setupMenuRows()
+        setupFines()
         setupClickListeners()
     }
 
@@ -39,6 +42,25 @@ class ProfileFragment : Fragment() {
         binding.tvBorrowed.text = "2"
         binding.tvReturned.text = "14"
         binding.tvReserved.text = "1"
+    }
+
+    private fun setupFines() {
+        val fines = listOf(
+            Fine("1", "Engenharia de Software", 5, 10.0, FineStatus.PENDENTE),
+            Fine("2", "Código Limpo", 3, 6.0, FineStatus.PENDENTE),
+            Fine("3", "Estruturas de Dados", 2, 4.0, FineStatus.PAGO)
+        )
+
+        // Calcula total pendente
+        val totalPending = fines.filter { it.status == FineStatus.PENDENTE }.sumOf { it.amount }
+        binding.tvTotalFine.text = String.format(Locale("pt", "BR"), "R$ %.2f", totalPending)
+
+        // Configura lista
+        val adapter = FineAdapter(fines)
+        binding.rvFines.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            this.adapter = adapter
+        }
     }
 
     private fun setupMenuRows() {
