@@ -29,6 +29,7 @@
     <color name="text_gray">#8A94A6</color>
     <color name="text_red">#E05252</color>
     <color name="divider">#253045</color>
+    <color name="divider_color">#1FFFFFFF</color>
 
     <!-- Colors from BibliotecaDigital -->
     <color name="background_dark">#0D1B2A</color>

@@ -57,7 +57,6 @@ class CategoryFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        // Mock data filtered by category
         val allBooks = listOf(
             Book("1", "O Senhor dos Anéis", "J.R.R. Tolkien", "Fantasia", true, R.drawable.bg_cover_placeholder),
             Book("2", "1984", "George Orwell", "Ficção Científica", true, R.drawable.bg_cover_placeholder),
@@ -73,9 +72,12 @@ class CategoryFragment : Fragment() {
 
         categoryBooks = allBooks.filter { it.category == category }
         
-        bookAdapter = BookAdapter(categoryBooks)
+        bookAdapter = BookAdapter { selectedCategory ->
+            // Already in category view, could refresh or do nothing
+        }
         binding.rvCategoryBooks.layoutManager = LinearLayoutManager(requireContext())
         binding.rvCategoryBooks.adapter = bookAdapter
+        bookAdapter.submitList(categoryBooks)
         
         updateEmptyState(categoryBooks.isEmpty())
     }
@@ -84,11 +86,15 @@ class CategoryFragment : Fragment() {
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val query = s.toString().lowercase()
-                val filteredList = categoryBooks.filter { 
-                    it.title.lowercase().contains(query) || it.author.lowercase().contains(query)
+                val query = s?.toString()?.lowercase() ?: ""
+                val filteredList = if (query.isEmpty()) {
+                    categoryBooks
+                } else {
+                    categoryBooks.filter { 
+                        it.title.lowercase().contains(query) || it.author.lowercase().contains(query)
+                    }
                 }
-                bookAdapter.updateList(filteredList)
+                bookAdapter.submitList(filteredList)
                 updateEmptyState(filteredList.isEmpty())
             }
             override fun afterTextChanged(s: Editable?) {}

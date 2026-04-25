@@ -89,15 +89,16 @@ class EventosFragment : Fragment() {
 
     private fun filterEvents(date: String) {
         val filtered = allEvents.filter { it.date == date }
-        eventAdapter.updateEvents(filtered)
+        eventAdapter.submitList(filtered)
     }
 
     private fun setupRecyclerView() {
-        eventAdapter = EventAdapter(allEvents.filter { it.date == "15 Out" }) { event ->
+        eventAdapter = EventAdapter { event ->
             // Lógica adicional se necessário (ex: analytics)
         }
         binding.rvEvents.layoutManager = LinearLayoutManager(requireContext())
         binding.rvEvents.adapter = eventAdapter
+        eventAdapter.submitList(allEvents.filter { it.date == "15 Out" })
     }
 
     private fun Int.spToPx(): Float {

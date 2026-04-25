@@ -1,3 +1,35 @@
 <resources>
-    <string name="app_name">DEVWEB</string>
+    <string name="app_name">Biblioteca Digital</string>
+    <string name="login_title">Bem-vindo</string>
+    <string name="login_subtitle">Faça login para continuar</string>
+    <string name="email_hint">E-mail</string>
+    <string name="password_hint">Senha</string>
+    <string name="btn_login">Entrar</string>
+    <string name="btn_forgot_password">Esqueceu a senha?</string>
+    <string name="btn_register">Não tem uma conta? Cadastre-se</string>
+    <string name="home_welcome">Olá, %1$s</string>
+    <string name="user_name_placeholder">Lucas Mendes</string>
+    <string name="total_books">Total de Obras</string>
+    <string name="active_loans">Empréstimos Ativos</string>
+    <string name="reservations">Reservas</string>
+    <string name="pending_fines">Multas Pendentes</string>
+    <string name="access_denied">Acesso Negado</string>
+    <string name="total_books_count">1.240</string>
+    <string name="active_loans_count">85</string>
+    <string name="reservations_count">42</string>
+    <string name="pending_fines_amount">R$ 156,00</string>
+    <string name="nav_acervo">Acervo</string>
+    <string name="nav_eventos">Eventos</string>
+    <string name="nav_notificacoes">Notificações</string>
+    <string name="nav_perfil">Perfil</string>
+    <string name="recent_loans">Últimos Empréstimos</string>
+    <string name="most_borrowed">Obras Mais Procuradas</string>
+    <string name="btn_new_book">Nova Obra</string>
+    <string name="btn_users">Usuários</string>
+    <string name="btn_fines">Multas</string>
+    <string name="switch_to_user_view">Alternar para Visão de Usuário</string>
+    <string name="confirm_logout">Sair da conta</string>
+    <string name="confirm_logout_msg">Tem certeza que deseja sair?</string>
+    <string name="btn_logout">Sair</string>
+    <string name="btn_cancel">Cancelar</string>
 </resources>

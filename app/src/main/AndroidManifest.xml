@@ -12,6 +12,11 @@
         android:theme="@style/Theme.DEVWEB">
 
         <activity
+            android:name=".AdminDashboardActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <activity
             android:name=".ReadingActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />

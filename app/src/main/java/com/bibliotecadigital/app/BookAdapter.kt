@@ -3,10 +3,13 @@ package com.bibliotecadigital.app
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bibliotecadigital.app.databinding.ItemBookBinding
 
-class BookAdapter(private var books: List<Book>, private val onCategoryClick: ((String) -> Unit)? = null) : RecyclerView.Adapter<BookAdapter.ViewHolder>() {
+class BookAdapter(private val onCategoryClick: ((String) -> Unit)? = null) : 
+    ListAdapter<Book, BookAdapter.ViewHolder>(BookDiffCallback()) {
 
     class ViewHolder(val binding: ItemBookBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -16,7 +19,7 @@ class BookAdapter(private var books: List<Book>, private val onCategoryClick: ((
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val book = books[position]
+        val book = getItem(position)
         with(holder.binding) {
             tvTitle.text = book.title
             tvAuthor.text = book.author
@@ -24,6 +27,7 @@ class BookAdapter(private var books: List<Book>, private val onCategoryClick: ((
             ivCover.setImageResource(book.coverRes)
 
             if (book.available) {
+                tvStatus.text = root.context.getString(android.R.string.ok) // Placeholder for localized string
                 tvStatus.text = "DISPONÍVEL"
                 tvStatus.setBackgroundResource(R.drawable.bg_status_green)
                 tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.green_text))
@@ -39,10 +43,8 @@ class BookAdapter(private var books: List<Book>, private val onCategoryClick: ((
         }
     }
 
-    override fun getItemCount() = books.size
-
-    fun updateList(newList: List<Book>) {
-        books = newList
-        notifyDataSetChanged()
+    class BookDiffCallback : DiffUtil.ItemCallback<Book>() {
+        override fun areItemsTheSame(oldItem: Book, newItem: Book): Boolean = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: Book, newItem: Book): Boolean = oldItem == newItem
     }
 }

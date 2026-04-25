@@ -57,11 +57,12 @@ class ProfileFragment : Fragment() {
         binding.tvTotalFine.text = String.format(Locale("pt", "BR"), "R$ %.2f", totalPending)
 
         // Configura lista
-        val adapter = FineAdapter(fines)
+        val adapter = FineAdapter()
         binding.rvFines.apply {
             layoutManager = LinearLayoutManager(requireContext())
             this.adapter = adapter
         }
+        adapter.submitList(fines)
     }
 
     private fun configRow(

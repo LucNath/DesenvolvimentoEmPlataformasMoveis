@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bibliotecadigital.app.databinding.FragmentHomeBinding
+import com.google.android.material.snackbar.Snackbar
 
 class HomeFragment : Fragment() {
 
@@ -26,7 +26,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.tvUserName.text = "Lucas Mendes"
+        binding.tvUserName.text = getString(R.string.user_name_placeholder)
 
         setupLoans()
         setupReservations()
@@ -53,12 +53,15 @@ class HomeFragment : Fragment() {
         )
 
         val adapter = LoanAdapter(
-            loans,
             onVerClick = { loan ->
-                Toast.makeText(requireContext(), "Ver detalhes: ${loan.title}", Toast.LENGTH_SHORT).show()
+                // Navegar para detalhes do livro
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, BookDetailFragment.newInstance(loan.id, loan.title, loan.author))
+                    .addToBackStack(null)
+                    .commit()
             },
             onRenovarClick = { loan ->
-                Toast.makeText(requireContext(), "Renovação solicitada: ${loan.title}", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Renovação solicitada para: ${loan.title}", Snackbar.LENGTH_SHORT).show()
             }
         )
 
@@ -66,6 +69,7 @@ class HomeFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             this.adapter = adapter
         }
+        adapter.submitList(loans)
     }
 
     private fun setupReservations() {
@@ -93,8 +97,12 @@ class HomeFragment : Fragment() {
             )
         )
 
-        val adapter = ReservationAdapter(reservations) { reservation ->
-            Toast.makeText(requireContext(), "Ver reserva: ${reservation.title}", Toast.LENGTH_SHORT).show()
+        // Assuming ReservationAdapter is also updated to ListAdapter or kept as simple for now
+        val adapter = ReservationAdapter { reservation ->
+             parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, BookDetailFragment.newInstance(reservation.id, reservation.title, reservation.author))
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.rvReservations.apply {
@@ -102,9 +110,11 @@ class HomeFragment : Fragment() {
             this.adapter = adapter
             isNestedScrollingEnabled = false
         }
+        adapter.submitList(reservations)
 
         binding.tvVerTodasReservas.setOnClickListener {
-            Toast.makeText(requireContext(), "Navegar para todas as reservas", Toast.LENGTH_SHORT).show()
+            // Navegar para aba de Acervo ou filtro de reservas
+            (activity as? MainActivity)?.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavigation)?.selectedItemId = R.id.nav_acervo
         }
     }
 

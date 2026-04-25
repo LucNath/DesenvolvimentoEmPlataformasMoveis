@@ -4,13 +4,14 @@ import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bibliotecadigital.app.databinding.ItemEventBinding
 
 class EventAdapter(
-    private var events: List<Event>,
     private val onRegistrationChanged: (Event) -> Unit
-) : RecyclerView.Adapter<EventAdapter.ViewHolder>() {
+) : ListAdapter<Event, EventAdapter.ViewHolder>(EventDiffCallback()) {
 
     class ViewHolder(val binding: ItemEventBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -20,7 +21,7 @@ class EventAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val event = events[position]
+        val event = getItem(position)
         with(holder.binding) {
             tvEventName.text = event.name
             tvEventDateTime.text = "${event.date} · ${event.time}"
@@ -67,6 +68,7 @@ class EventAdapter(
             .setTitle(title)
             .setMessage(message)
             .setPositiveButton("Confirmar") { _, _ ->
+                // Note: In a real app, this should be handled by a ViewModel and the list updated
                 if (event.isRegistered) {
                     event.isRegistered = false
                     event.availableSpots++
@@ -81,10 +83,8 @@ class EventAdapter(
             .show()
     }
 
-    override fun getItemCount() = events.size
-
-    fun updateEvents(newEvents: List<Event>) {
-        events = newEvents
-        notifyDataSetChanged()
+    class EventDiffCallback : DiffUtil.ItemCallback<Event>() {
+        override fun areItemsTheSame(oldItem: Event, newItem: Event): Boolean = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: Event, newItem: Event): Boolean = oldItem == newItem
     }
 }
