@@ -22,11 +22,6 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
-            android:name=".AdminBooksActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-
-        <activity
             android:name=".ReadingActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
