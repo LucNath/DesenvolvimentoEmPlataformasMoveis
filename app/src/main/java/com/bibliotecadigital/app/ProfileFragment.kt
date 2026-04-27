@@ -139,7 +139,8 @@ class ProfileFragment : Fragment() {
         }
 
         binding.rowFines.root.setOnClickListener {
-            Toast.makeText(requireContext(), "Multas e Pagamentos", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), FinesActivity::class.java)
+            startActivity(intent)
         }
 
         binding.rowChangePassword.root.setOnClickListener {

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bibliotecadigital.app.databinding.ItemFineBinding
 import java.util.Locale
 
-class FineAdapter : ListAdapter<Fine, FineAdapter.ViewHolder>(FineDiffCallback()) {
+class FineAdapter(private val onPayClick: ((Fine) -> Unit)? = null) : ListAdapter<Fine, FineAdapter.ViewHolder>(FineDiffCallback()) {
 
     class ViewHolder(val binding: ItemFineBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -22,19 +22,22 @@ class FineAdapter : ListAdapter<Fine, FineAdapter.ViewHolder>(FineDiffCallback()
         val item = getItem(position)
         with(holder.binding) {
             tvBookTitle.text = item.bookTitle
-            tvDetails.text = root.context.getString(android.R.string.unknownName) // Placeholder
             tvDetails.text = "${item.daysLate} dias de atraso"
             tvAmount.text = String.format(Locale("pt", "BR"), "R$ %.2f", item.amount)
-            tvStatus.text = item.status.name
+            tvStatus.text = if (item.status == FineStatus.PENDENTE) "Pendente" else "Pago"
 
             val context = root.context
             if (item.status == FineStatus.PENDENTE) {
-                tvStatus.setTextColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
+                tvStatus.setTextColor(ContextCompat.getColor(context, android.R.color.white))
                 tvStatus.setBackgroundResource(R.drawable.bg_status_red)
+                btnPay.visibility = if (onPayClick != null) ViewGroup.VISIBLE else ViewGroup.GONE
             } else {
-                tvStatus.setTextColor(ContextCompat.getColor(context, R.color.green_text))
+                tvStatus.setTextColor(ContextCompat.getColor(context, android.R.color.white))
                 tvStatus.setBackgroundResource(R.drawable.bg_status_green)
+                btnPay.visibility = ViewGroup.GONE
             }
+
+            btnPay.setOnClickListener { onPayClick?.invoke(item) }
         }
     }
 

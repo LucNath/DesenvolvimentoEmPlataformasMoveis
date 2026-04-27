@@ -33,4 +33,19 @@
     <string name="btn_logout">Sair</string>
     <string name="btn_cancel">Cancelar</string>
     <string name="admin_panel">Painel Administrativo</string>
+    <string name="manage_loans">Gestão de Empréstimos</string>
+    <string name="search_hint_loans">Buscar por usuário ou obra...</string>
+    <string name="tab_loans">Empréstimos</string>
+    <string name="tab_fines">Multas</string>
+    <string name="chip_all">Todos</string>
+    <string name="chip_active">Ativos</string>
+    <string name="chip_overdue">Atrasados</string>
+    <string name="chip_returned">Devolvidos</string>
+    <string name="due_date_label">Prazo: %1$s</string>
+    <string name="fine_amount_label">Multa: R$ %1$.2f</string>
+    <string name="btn_return">Devolver</string>
+    <string name="btn_pay">Pagar</string>
+    <string name="fines_title">Multas e Pagamentos</string>
+    <string name="total_pending_label">Saldo Devedor</string>
+    <string name="empty_fines_msg">Nenhuma multa registrada</string>
 </resources>

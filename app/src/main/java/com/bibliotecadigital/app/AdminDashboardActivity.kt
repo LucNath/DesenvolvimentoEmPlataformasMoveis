@@ -65,7 +65,8 @@ class AdminDashboardActivity : AppCompatActivity() {
             Toast.makeText(this, "Funcionalidade: Ver Usuários", Toast.LENGTH_SHORT).show()
         }
         binding.btnViewFines.setOnClickListener { 
-            Toast.makeText(this, "Funcionalidade: Ver Multas", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, AdminLoansActivity::class.java)
+            startActivity(intent)
         }
     }
 
