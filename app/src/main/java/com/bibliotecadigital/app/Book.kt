@@ -12,5 +12,8 @@ data class Book(
     val status: BookStatus,
     val coverRes: Int,
     val isbn: String = "",
+    val publisher: String = "",
+    val year: String = "",
+    val quantity: Int = 1,
     val isMostBorrowed: Boolean = false
 )

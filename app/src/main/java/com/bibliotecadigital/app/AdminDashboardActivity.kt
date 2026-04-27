@@ -58,7 +58,8 @@ class AdminDashboardActivity : AppCompatActivity() {
         }
 
         binding.btnAddBook.setOnClickListener { 
-            Toast.makeText(this, "Funcionalidade: Cadastrar Obra", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, AdminBooksActivity::class.java)
+            startActivity(intent)
         }
         binding.btnViewUsers.setOnClickListener { 
             Toast.makeText(this, "Funcionalidade: Ver Usuários", Toast.LENGTH_SHORT).show()
