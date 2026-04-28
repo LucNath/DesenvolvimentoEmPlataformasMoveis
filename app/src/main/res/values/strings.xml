@@ -102,6 +102,14 @@
     <string name="reading_goal_invalid">Quantidade inválida</string>
     <string name="reading_goal_fill_fields">Preencha todos os campos</string>
 
+    <!-- Loan Success -->
+    <string name="loan_success_title">Empréstimo Realizado!</string>
+    <string name="loan_success_msg">Sua solicitação foi processada com sucesso.</string>
+    <string name="loan_success_due_label">Devolução até</string>
+    <string name="loan_success_btn_details">VER DETALHES DO EMPRÉSTIMO</string>
+    <string name="loan_success_btn_my_loans">VER MEUS EMPRÉSTIMOS</string>
+    <string name="loan_success_btn_back">VOLTAR AO ACERVO</string>
+
     <!-- Settings -->
     <string name="settings_title">Configurações</string>
     <string name="settings_security">SEGURANÇA</string>

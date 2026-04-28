@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bibliotecadigital.app.databinding.FragmentBookDetailBinding
 import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -103,13 +104,25 @@ class BookDetailFragment : Fragment() {
             }
             
             btnLoan.setOnClickListener {
-                Snackbar.make(root, "Solicitação de empréstimo enviada!", Snackbar.LENGTH_LONG).show()
+                navigateToLoanSuccess(book.title)
             }
             
             btnReserve.setOnClickListener {
                 Snackbar.make(root, "Reserva realizada com sucesso!", Snackbar.LENGTH_LONG).show()
             }
         }
+    }
+
+    private fun navigateToLoanSuccess(title: String) {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR, 15)
+        val dueDate = sdf.format(calendar.time)
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, LoanSuccessFragment.newInstance(title, dueDate))
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun setupReviews() {
@@ -152,12 +165,12 @@ class BookDetailFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val sdf = SimpleDateFormat("dd/10/yyyy", Locale.getDefault())
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             val currentDate = sdf.format(Date())
 
             val newReview = Review(
                 id = System.currentTimeMillis().toString(),
-                userName = "Você", // Simulando usuário logado
+                userName = "Você",
                 bookId = bookId,
                 rating = rating,
                 comment = if (comment.isBlank()) "Sem comentário" else comment,
