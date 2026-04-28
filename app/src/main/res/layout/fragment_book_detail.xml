@@ -37,22 +37,23 @@
                 android:layout_height="wrap_content"
                 android:padding="20dp">
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/ivCover"
                     android:layout_width="120dp"
                     android:layout_height="180dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/bg_cover_placeholder"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium" />
 
                 <TextView
                     android:id="@+id/tvTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:textColor="@color/text_white"
-                    android:textSize="22sp"
+                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                    android:textColor="?attr/colorOnBackground"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/ivCover"
@@ -64,8 +65,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:textColor="@color/text_gray"
-                    android:textSize="16sp"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/tvTitle"
                     app:layout_constraintTop_toBottomOf="@id/tvTitle"
@@ -76,10 +77,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="4dp"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
                     app:layout_constraintStart_toStartOf="@id/tvTitle"
                     app:layout_constraintTop_toBottomOf="@id/tvAuthor"
                     tools:background="@drawable/bg_status_green"
@@ -227,9 +227,10 @@
                     tools:text="4.8" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <RatingBar
@@ -249,6 +250,14 @@
                         android:textSize="12sp"
                         tools:text="(124 avaliações)" />
                 </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAddReview"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Avaliar"
+                    app:icon="@drawable/ic_add" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -261,41 +270,45 @@
     </androidx.core.widget.NestedScrollView>
 
     <!-- Bottom Action Bar -->
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:cardBackgroundColor="@color/bg_card"
+        app:cardBackgroundColor="?attr/colorSurfaceContainer"
         app:cardCornerRadius="0dp"
-        app:cardElevation="16dp">
+        app:cardElevation="8dp"
+        app:strokeWidth="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:padding="16dp">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLoan"
+                style="@style/Widget.Material3.Button"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:backgroundTint="@color/brand_orange"
                 android:text="EMPRESTAR"
-                android:textColor="@color/text_white"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:visibility="gone"
+                app:cornerRadius="12dp"
                 tools:visibility="visible" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnReserve"
+                style="@style/Widget.Material3.Button.Tonal"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:backgroundTint="@color/tag_blue"
                 android:text="RESERVAR"
-                android:textColor="@color/text_white"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:visibility="gone"
+                app:cornerRadius="12dp"
                 tools:visibility="visible" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

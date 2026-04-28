@@ -130,8 +130,49 @@ class BookDetailFragment : Fragment() {
     }
 
     private fun setupSubmitAction() {
-        // IDs fixed in layout, so keeping compatibility or fixing if needed
-        // For this task, we focus on the core requirements
+        binding.btnAddReview.setOnClickListener {
+            showReviewDialog()
+        }
+    }
+
+    private fun showReviewDialog() {
+        val dialogBinding = com.bibliotecadigital.app.databinding.DialogReviewBinding.inflate(layoutInflater)
+        val builder = com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+        builder.setView(dialogBinding.root)
+        val dialog = builder.create()
+
+        dialogBinding.btnCancel.setOnClickListener { dialog.dismiss() }
+
+        dialogBinding.btnSubmit.setOnClickListener {
+            val rating = dialogBinding.ratingBarInput.rating
+            val comment = dialogBinding.etComment.text.toString()
+
+            if (rating == 0f) {
+                Snackbar.make(binding.root, "Por favor, selecione uma nota", Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val sdf = SimpleDateFormat("dd/10/yyyy", Locale.getDefault())
+            val currentDate = sdf.format(Date())
+
+            val newReview = Review(
+                id = System.currentTimeMillis().toString(),
+                userName = "Você", // Simulando usuário logado
+                bookId = bookId,
+                rating = rating,
+                comment = if (comment.isBlank()) "Sem comentário" else comment,
+                date = currentDate
+            )
+
+            reviewsList.add(0, newReview)
+            reviewAdapter.submitList(reviewsList.toList())
+            updateRatingSummary()
+            
+            dialog.dismiss()
+            Snackbar.make(binding.root, "Avaliação enviada com sucesso!", Snackbar.LENGTH_SHORT).show()
+        }
+
+        dialog.show()
     }
 
     private fun updateRatingSummary() {
