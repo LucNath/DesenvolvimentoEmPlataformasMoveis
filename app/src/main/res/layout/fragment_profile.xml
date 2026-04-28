@@ -83,7 +83,7 @@
                     android:background="@drawable/bg_btn_outline"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:text="✏ Editar Perfil"
+                    android:text="@string/profile_edit_btn"
                     android:textColor="@color/accent_orange"
                     android:textSize="13sp"
                     android:textAllCaps="false" />
@@ -125,7 +125,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Emprestados"
+                        android:text="@string/profile_borrowed"
                         android:textColor="@color/text_gray"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -156,7 +156,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Devolvidos"
+                        android:text="@string/profile_returned"
                         android:textColor="@color/text_gray"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -187,7 +187,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Reservas"
+                        android:text="@string/profile_reservations"
                         android:textColor="@color/text_gray"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -201,7 +201,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="8dp"
-            android:text="MINHAS RESERVAS"
+            android:text="@string/profile_section_reservations"
             android:textColor="@color/text_gray"
             android:textSize="11sp"
             android:letterSpacing="0.1" />
@@ -222,7 +222,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="8dp"
-            android:text="MULTAS E PAGAMENTOS"
+            android:text="@string/profile_section_fines"
             android:textColor="@color/text_gray"
             android:textSize="11sp"
             android:letterSpacing="0.1" />
@@ -244,7 +244,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Saldo Devedor"
+                    android:text="@string/total_pending_label"
                     android:textColor="@color/text_gray"
                     android:textSize="12sp" />
 
@@ -253,7 +253,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="R$ 0,00"
-                    android:textColor="@android:color/holo_red_dark"
+                    android:textColor="@color/text_red"
                     android:textSize="24sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -271,7 +271,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="8dp"
-            android:text="MINHA CONTA"
+            android:text="@string/profile_section_account"
             android:textColor="@color/text_gray"
             android:textSize="11sp"
             android:letterSpacing="0.1" />
@@ -321,7 +321,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="8dp"
-            android:text="CONFIGURAÇÕES"
+            android:text="@string/profile_section_settings"
             android:textColor="@color/text_gray"
             android:textSize="11sp"
             android:letterSpacing="0.1" />

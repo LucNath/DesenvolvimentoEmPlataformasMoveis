@@ -1,6 +1,5 @@
 package com.bibliotecadigital.app
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bibliotecadigital.app.databinding.FragmentProfileBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import java.util.Locale
 
@@ -87,14 +87,30 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupMenuRows() {
-        configRow(binding.rowReadingHistory.root, R.drawable.ic_launcher_foreground, "Histórico de Leituras")
-        configRow(binding.rowReadingGoals.root, R.drawable.ic_launcher_foreground, "Metas de Leitura")
-        configRow(binding.rowFines.root, R.drawable.ic_palette, "Multas e Pagamentos")
-        configRow(binding.rowChangePassword.root, R.drawable.ic_lock, "Alterar Senha")
+        configRow(
+            binding.rowReadingHistory.root,
+            R.drawable.ic_library_books,
+            getString(R.string.profile_menu_history)
+        )
+        configRow(
+            binding.rowReadingGoals.root,
+            R.drawable.ic_event,
+            getString(R.string.profile_menu_goals)
+        )
+        configRow(
+            binding.rowFines.root,
+            R.drawable.ic_palette,
+            getString(R.string.profile_menu_fines)
+        )
+        configRow(
+            binding.rowChangePassword.root,
+            R.drawable.ic_lock,
+            getString(R.string.profile_menu_password)
+        )
         configRow(
             binding.rowLogout.root,
             R.drawable.ic_exit_to_app,
-            "Sair da conta",
+            getString(R.string.profile_menu_logout),
             isDestructive = true
         )
     }
@@ -161,19 +177,23 @@ class ProfileFragment : Fragment() {
     }
 
     private fun showLogoutDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Sair da conta")
-            .setMessage("Tem certeza que deseja sair?")
-            .setPositiveButton("Sair") { _, _ ->
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.profile_logout_confirm_title))
+            .setMessage(getString(R.string.profile_logout_confirm_msg))
+            .setPositiveButton(getString(R.string.btn_logout)) { _, _ ->
                 val prefs = requireContext().getSharedPreferences("app_prefs", android.content.Context.MODE_PRIVATE)
-                prefs.edit().putBoolean("is_logged_in", false).apply()
+                prefs.edit().apply {
+                    putBoolean("is_logged_in", false)
+                    remove("user_role")
+                    remove("user_email")
+                }.apply()
 
-                requireActivity().finishAffinity()
                 val intent = Intent(requireActivity(), LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
+                requireActivity().finish()
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(getString(R.string.btn_cancel), null)
             .show()
     }
 

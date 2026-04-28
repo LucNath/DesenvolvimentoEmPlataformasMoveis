@@ -50,4 +50,21 @@
     <string name="fines_title">Multas e Pagamentos</string>
     <string name="total_pending_label">Saldo Devedor</string>
     <string name="empty_fines_msg">Nenhuma multa registrada</string>
+
+    <!-- Profile Strings -->
+    <string name="profile_edit_btn">Editar Perfil</string>
+    <string name="profile_borrowed">Emprestados</string>
+    <string name="profile_returned">Devolvidos</string>
+    <string name="profile_reservations">Reservas</string>
+    <string name="profile_section_reservations">MINHAS RESERVAS</string>
+    <string name="profile_section_fines">MULTAS E PAGAMENTOS</string>
+    <string name="profile_section_account">MINHA CONTA</string>
+    <string name="profile_section_settings">CONFIGURAÇÕES</string>
+    <string name="profile_menu_history">Histórico de Leituras</string>
+    <string name="profile_menu_goals">Metas de Leitura</string>
+    <string name="profile_menu_fines">Multas e Pagamentos</string>
+    <string name="profile_menu_password">Alterar Senha</string>
+    <string name="profile_menu_logout">Sair da conta</string>
+    <string name="profile_logout_confirm_title">Sair da conta</string>
+    <string name="profile_logout_confirm_msg">Tem certeza que deseja sair?</string>
 </resources>
