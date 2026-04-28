@@ -39,11 +39,11 @@ class AdminBooksActivity : AppCompatActivity() {
 
     private fun setupMockData() {
         allBooks = mutableListOf(
-            Book("1", "O Senhor dos Anéis", "J.R.R. Tolkien", "Fantasia", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9780007525546", "HarperCollins", "1954", 5),
-            Book("2", "1984", "George Orwell", "Ficção Científica", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9780451524935", "Signet Classic", "1949", 3),
-            Book("3", "Dom Casmurro", "Machado de Assis", "Clássico", BookStatus.BORROWED, R.drawable.bg_cover_placeholder, "9788520921029", "Editora Nova Fronteira", "1899", 2),
-            Book("4", "O Pequeno Príncipe", "Antoine de Saint-Exupéry", "Infantil", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9780156012195", "Harcourt", "1943", 10),
-            Book("5", "Harry Potter", "J.K. Rowling", "Fantasia", BookStatus.BORROWED, R.drawable.bg_cover_placeholder, "9780439708180", "Scholastic", "1997", 4)
+            Book("1", "O Senhor dos Anéis", "J.R.R. Tolkien", "Fantasia", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9780007525546", "HarperCollins", "1954", availableQuantity = 5),
+            Book("2", "1984", "George Orwell", "Ficção Científica", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9780451524935", "Signet Classic", "1949", availableQuantity = 3),
+            Book("3", "Dom Casmurro", "Machado de Assis", "Clássico", BookStatus.BORROWED, R.drawable.bg_cover_placeholder, "9788520921029", "Editora Nova Fronteira", "1899", availableQuantity = 2),
+            Book("4", "O Pequeno Príncipe", "Antoine de Saint-Exupéry", "Infantil", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9780156012195", "Harcourt", "1943", availableQuantity = 10),
+            Book("5", "Harry Potter", "J.K. Rowling", "Fantasia", BookStatus.BORROWED, R.drawable.bg_cover_placeholder, "9780439708180", "Scholastic", "1997", availableQuantity = 4)
         )
         filteredBooks.addAll(allBooks)
     }
@@ -97,7 +97,7 @@ class AdminBooksActivity : AppCompatActivity() {
             dialogBinding.etIsbn.setText(book.isbn)
             dialogBinding.etPublisher.setText(book.publisher)
             dialogBinding.etYear.setText(book.year)
-            dialogBinding.etQuantity.setText(book.quantity.toString())
+            dialogBinding.etQuantity.setText(book.availableQuantity.toString())
             dialogBinding.etCategory.setText(book.category)
         }
 
@@ -124,7 +124,7 @@ class AdminBooksActivity : AppCompatActivity() {
                 isbn = isbn,
                 publisher = dialogBinding.etPublisher.text.toString(),
                 year = dialogBinding.etYear.text.toString(),
-                quantity = dialogBinding.etQuantity.text.toString().toIntOrNull() ?: 1,
+                availableQuantity = dialogBinding.etQuantity.text.toString().toIntOrNull() ?: 1,
                 category = dialogBinding.etCategory.text.toString(),
                 status = book?.status ?: BookStatus.AVAILABLE,
                 coverRes = book?.coverRes ?: R.drawable.bg_cover_placeholder
