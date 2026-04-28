@@ -198,7 +198,7 @@
                 android:layout_weight="1"
                 android:text="@string/btn_new_book"
                 android:textSize="10sp"
-                app:icon="@android:drawable/ic_menu_add" />
+                app:icon="@drawable/ic_add" />
 
             <Button
                 android:id="@+id/btnViewUsers"
@@ -209,7 +209,7 @@
                 android:layout_weight="1"
                 android:text="@string/btn_users"
                 android:textSize="10sp"
-                app:icon="@drawable/ic_person" />
+                app:icon="@drawable/ic_people" />
 
             <Button
                 android:id="@+id/btnViewFines"
@@ -220,7 +220,7 @@
                 android:layout_weight="1"
                 android:text="@string/btn_fines"
                 android:textSize="10sp"
-                app:icon="@android:drawable/ic_menu_recent_history" />
+                app:icon="@drawable/ic_payments" />
         </LinearLayout>
 
         <!-- Recent Loans -->

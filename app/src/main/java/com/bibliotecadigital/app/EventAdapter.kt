@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bibliotecadigital.app.databinding.ItemEventBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class EventAdapter(
     private val onRegistrationChanged: (Event) -> Unit
@@ -26,7 +27,7 @@ class EventAdapter(
             tvEventName.text = event.name
             tvEventDateTime.text = "${event.date} · ${event.time}"
             tvFacilitator.text = event.facilitator
-            tvSpots.text = "${event.availableSpots} vagas disponíveis"
+            tvSpots.text = root.context.getString(R.string.spots_available, event.availableSpots)
 
             updateButtonStyle(this, event)
 
@@ -40,17 +41,17 @@ class EventAdapter(
         val context = binding.root.context
         when {
             event.isRegistered -> {
-                binding.btnRegister.text = "Inscrito"
+                binding.btnRegister.text = context.getString(R.string.event_registered)
                 binding.btnRegister.isEnabled = true
                 binding.btnRegister.setBackgroundColor(ContextCompat.getColor(context, R.color.green_text))
             }
             event.availableSpots <= 0 -> {
-                binding.btnRegister.text = "Esgotado"
+                binding.btnRegister.text = context.getString(R.string.event_sold_out)
                 binding.btnRegister.isEnabled = false
                 binding.btnRegister.setBackgroundColor(ContextCompat.getColor(context, R.color.text_gray))
             }
             else -> {
-                binding.btnRegister.text = "Inscrever-se"
+                binding.btnRegister.text = context.getString(R.string.btn_register_event)
                 binding.btnRegister.isEnabled = true
                 binding.btnRegister.setBackgroundColor(ContextCompat.getColor(context, R.color.brand_orange))
             }
@@ -59,15 +60,18 @@ class EventAdapter(
 
     private fun showConfirmationDialog(holder: ViewHolder, event: Event) {
         val context = holder.binding.root.context
-        val title = if (event.isRegistered) "Cancelar Inscrição" else "Confirmar Inscrição"
+        val title = if (event.isRegistered) 
+            context.getString(R.string.cancel_registration) 
+            else context.getString(R.string.confirm_registration)
+        
         val message = if (event.isRegistered) 
-            "Deseja cancelar sua inscrição no evento ${event.name}?" 
-            else "Deseja se inscrever no evento ${event.name}?"
+            context.getString(R.string.cancel_registration_msg, event.name) 
+            else context.getString(R.string.confirm_registration_msg, event.name)
 
-        AlertDialog.Builder(context)
+        MaterialAlertDialogBuilder(context)
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton("Confirmar") { _, _ ->
+            .setPositiveButton(R.string.btn_confirm) { _, _ ->
                 // Note: In a real app, this should be handled by a ViewModel and the list updated
                 if (event.isRegistered) {
                     event.isRegistered = false
@@ -79,7 +83,7 @@ class EventAdapter(
                 notifyItemChanged(holder.adapterPosition)
                 onRegistrationChanged(event)
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(R.string.btn_cancel, null)
             .show()
     }
 

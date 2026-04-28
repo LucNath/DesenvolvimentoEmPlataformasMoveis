@@ -33,7 +33,7 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/bg_search"
-                android:drawableStart="@android:drawable/ic_menu_search"
+                android:drawableStart="@drawable/ic_search"
                 android:drawablePadding="12dp"
                 android:hint="Título, autor ou ISBN"
                 android:inputType="text"

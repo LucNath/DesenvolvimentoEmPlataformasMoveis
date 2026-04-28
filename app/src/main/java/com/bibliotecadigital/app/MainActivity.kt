@@ -16,9 +16,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        prefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val isDarkMode = prefs.getBoolean("pref_dark_mode", true)
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
+        
         super.onCreate(savedInstanceState)
         
-        prefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
         applyPreferences()
         
         binding = ActivityMainBinding.inflate(layoutInflater)

@@ -9,10 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.bibliotecadigital.app.databinding.FragmentSettingsBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class SettingsFragment : Fragment() {
 
@@ -41,22 +41,25 @@ class SettingsFragment : Fragment() {
     private fun setupMenu() {
         // Seção SEGURANÇA
         binding.itemChangePassword.ivRowIcon.setImageResource(R.drawable.ic_lock)
-        binding.itemChangePassword.tvRowTitle.text = "Alterar Senha"
+        binding.itemChangePassword.tvRowTitle.text = getString(R.string.settings_change_password)
 
         // Seção PERSONALIZAÇÃO
         binding.itemFontSize.ivRowIcon.setImageResource(R.drawable.ic_text_fields)
-        binding.itemFontSize.tvRowTitle.text = "Tamanho da Fonte"
+        binding.itemFontSize.tvRowTitle.text = getString(R.string.settings_font_size)
 
         binding.itemTheme.ivRowIcon.setImageResource(R.drawable.ic_palette)
-        binding.itemTheme.tvRowTitle.text = "Tema do Aplicativo"
+        binding.itemTheme.tvRowTitle.text = getString(R.string.settings_theme)
 
         binding.itemRotation.ivRowIcon.setImageResource(R.drawable.ic_screen_rotation)
-        binding.itemRotation.tvRowTitle.text = "Rotação Automática"
+        binding.itemRotation.tvRowTitle.text = getString(R.string.settings_rotation)
+
+        binding.itemNotifications.ivRowIcon.setImageResource(R.drawable.ic_notifications)
+        binding.itemNotifications.tvRowTitle.text = getString(R.string.settings_notifications)
 
         // Seção SESSÃO
         binding.itemLogout.ivRowIcon.setImageResource(R.drawable.ic_exit_to_app)
         binding.itemLogout.ivRowIcon.setColorFilter(resources.getColor(R.color.text_red, null))
-        binding.itemLogout.tvRowTitle.text = "Sair"
+        binding.itemLogout.tvRowTitle.text = getString(R.string.settings_logout)
         binding.itemLogout.tvRowTitle.setTextColor(resources.getColor(R.color.text_red, null))
         binding.itemLogout.tvRowArrow.visibility = View.GONE
     }
@@ -83,28 +86,33 @@ class SettingsFragment : Fragment() {
             toggleRotation()
         }
 
+        binding.itemNotifications.root.setOnClickListener {
+            val intent = Intent(requireContext(), NotificationPrefsActivity::class.java)
+            startActivity(intent)
+        }
+
         binding.itemLogout.root.setOnClickListener {
             showLogoutConfirmation()
         }
     }
 
     private fun showFontSizeDialog() {
-        val options = arrayOf("Pequeno", "Médio", "Grande")
+        val options = arrayOf(
+            getString(R.string.settings_font_small),
+            getString(R.string.settings_font_medium),
+            getString(R.string.settings_font_large)
+        )
         val current = prefs.getInt("pref_font_size", 1)
 
-        AlertDialog.Builder(requireContext(), R.style.Theme_DEVWEB_Dialog)
-            .setTitle("Tamanho da Fonte")
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.settings_font_size))
             .setSingleChoiceItems(options, current) { dialog, which ->
                 prefs.edit().putInt("pref_font_size", which).apply()
-                applyFontSize(which)
                 dialog.dismiss()
+                requireActivity().recreate()
             }
+            .setNegativeButton(getString(R.string.btn_cancel), null)
             .show()
-    }
-
-    private fun applyFontSize(sizeIndex: Int) {
-        // Para aplicar a escala da fonte globalmente, precisamos recriar a Activity
-        requireActivity().recreate()
     }
 
     private fun toggleTheme() {
@@ -116,7 +124,7 @@ class SettingsFragment : Fragment() {
         AppCompatDelegate.setDefaultNightMode(
             if (newMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
         )
-        // O setDefaultNightMode geralmente recria a activity automaticamente
+        requireActivity().recreate()
     }
 
     private fun toggleRotation() {
@@ -132,22 +140,29 @@ class SettingsFragment : Fragment() {
             
         requireActivity().requestedOrientation = orientation
         
-        val status = if (newValue) "Ativada" else "Desativada (Apenas Retrato)"
-        Toast.makeText(requireContext(), "Rotação $status", Toast.LENGTH_SHORT).show()
+        val status = if (newValue) getString(R.string.settings_rotation_on) else getString(R.string.settings_rotation_off)
+        Toast.makeText(requireContext(), status, Toast.LENGTH_SHORT).show()
     }
 
     private fun showLogoutConfirmation() {
-        AlertDialog.Builder(requireContext(), R.style.Theme_DEVWEB_Dialog)
-            .setTitle("Encerrar Sessão")
-            .setMessage("Tem certeza que deseja sair da sua conta?")
-            .setPositiveButton("Sair") { _, _ ->
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.profile_logout_confirm_title))
+            .setMessage(getString(R.string.settings_logout_confirm))
+            .setPositiveButton(getString(R.string.btn_logout)) { _, _ ->
                 logout()
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(getString(R.string.btn_cancel), null)
             .show()
     }
 
     private fun logout() {
+        prefs.edit().apply {
+            putBoolean("is_logged_in", false)
+            remove("user_role")
+            remove("user_email")
+            apply()
+        }
+
         val intent = Intent(requireContext(), LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)

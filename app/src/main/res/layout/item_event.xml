@@ -55,7 +55,7 @@
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/ic_person"
+                android:src="@drawable/ic_people"
                 app:tint="@color/text_gray" />
 
             <TextView
@@ -97,8 +97,10 @@
                 android:minHeight="0dp"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="8dp"
-                android:text="Inscrever-se"
-                android:textSize="12sp" />
+                android:text="@string/btn_register_event"
+                android:textSize="12sp"
+                app:icon="@drawable/ic_check_circle"
+                app:iconSize="16dp" />
         </LinearLayout>
 
     </LinearLayout>

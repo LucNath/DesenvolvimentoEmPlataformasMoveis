@@ -17,8 +17,8 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_centerVertical="true"
-            android:background="@drawable/bg_btn_outline"
-            android:src="@android:drawable/ic_media_previous"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back"
             app:tint="@color/text_white"
             android:contentDescription="Voltar" />
 
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Configurações"
+            android:text="@string/settings_title"
             android:textColor="@color/text_white"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -34,7 +34,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -46,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="SEGURANÇA"
+                android:text="@string/settings_security"
                 android:textColor="@color/text_gray"
                 android:textSize="11sp"
                 android:letterSpacing="0.1" />
@@ -74,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"
-                android:text="PERSONALIZAÇÃO"
+                android:text="@string/settings_personalization"
                 android:textColor="@color/text_gray"
                 android:textSize="11sp"
                 android:letterSpacing="0.1" />
@@ -112,6 +113,15 @@
                     <include layout="@layout/item_menu_row"
                         android:id="@+id/itemRotation" />
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="56dp"
+                        android:background="@color/divider" />
+
+                    <include layout="@layout/item_menu_row"
+                        android:id="@+id/itemNotifications" />
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -120,7 +130,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"
-                android:text="SESSÃO"
+                android:text="@string/settings_session"
                 android:textColor="@color/text_gray"
                 android:textSize="11sp"
                 android:letterSpacing="0.1" />

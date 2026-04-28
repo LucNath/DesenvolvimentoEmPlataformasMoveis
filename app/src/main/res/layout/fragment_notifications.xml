@@ -19,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Notificações"
+            android:text="@string/notifications_title"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -28,7 +28,7 @@
             android:id="@+id/tvMarkAllRead"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Marcar todas como lidas"
+            android:text="@string/mark_all_read"
             android:textColor="@color/brand_orange"
             android:textSize="12sp"
             android:padding="8dp" />
@@ -40,7 +40,7 @@
         android:id="@+id/tvEmptyState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nenhuma notificação por enquanto"
+        android:text="@string/empty_notifications"
         android:textColor="@color/text_secondary"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

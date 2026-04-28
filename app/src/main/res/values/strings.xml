@@ -51,6 +51,23 @@
     <string name="total_pending_label">Saldo Devedor</string>
     <string name="empty_fines_msg">Nenhuma multa registrada</string>
 
+    <!-- Notifications -->
+    <string name="notifications_title">Notificações</string>
+    <string name="mark_all_read">Marcar todas como lidas</string>
+    <string name="empty_notifications">Nenhuma notificação por enquanto</string>
+
+    <!-- Events -->
+    <string name="events_title">Eventos Culturais</string>
+    <string name="spots_available">%1$d vagas disponíveis</string>
+    <string name="btn_register_event">Inscrever-se</string>
+    <string name="event_registered">Inscrito</string>
+    <string name="event_sold_out">Esgotado</string>
+    <string name="cancel_registration">Cancelar Inscrição</string>
+    <string name="confirm_registration">Confirmar Inscrição</string>
+    <string name="cancel_registration_msg">Deseja cancelar sua inscrição no evento %1$s?</string>
+    <string name="confirm_registration_msg">Deseja se inscrever no evento %1$s?</string>
+    <string name="btn_confirm">Confirmar</string>
+
     <!-- Profile Strings -->
     <string name="profile_edit_btn">Editar Perfil</string>
     <string name="profile_borrowed">Emprestados</string>
@@ -67,4 +84,40 @@
     <string name="profile_menu_logout">Sair da conta</string>
     <string name="profile_logout_confirm_title">Sair da conta</string>
     <string name="profile_logout_confirm_msg">Tem certeza que deseja sair?</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Configurações</string>
+    <string name="settings_security">SEGURANÇA</string>
+    <string name="settings_personalization">PERSONALIZAÇÃO</string>
+    <string name="settings_session">SESSÃO</string>
+    <string name="settings_change_password">Alterar Senha</string>
+    <string name="settings_font_size">Tamanho da Fonte</string>
+    <string name="settings_theme">Tema do Aplicativo</string>
+    <string name="settings_rotation">Rotação Automática</string>
+    <string name="settings_logout">Sair da Conta</string>
+    <string name="settings_logout_confirm">Tem certeza que deseja sair da sua conta?</string>
+    <string name="settings_font_small">Pequeno</string>
+    <string name="settings_font_medium">Médio</string>
+    <string name="settings_font_large">Grande</string>
+    <string name="settings_rotation_on">Rotação Ativada</string>
+    <string name="settings_rotation_off">Rotação Desativada (Apenas Retrato)</string>
+
+    <!-- Notification Prefs -->
+    <string name="notif_prefs_title">Notificações Push</string>
+    <string name="notif_loans_title">Vencimento de Empréstimo</string>
+    <string name="notif_loans_desc">Lembrar quando o prazo de devolução estiver acabando.</string>
+    <string name="notif_reservations_title">Disponibilidade de Reserva</string>
+    <string name="notif_reservations_desc">Avisar quando um livro reservado estiver disponível.</string>
+    <string name="notif_events_title">Eventos Culturais</string>
+    <string name="notif_events_desc">Novas palestras, oficinas e clubes de leitura.</string>
+    <string name="notif_permission_denied">Permissão de notificação negada. Você não receberá alertas push.</string>
+    <string name="settings_notifications">Notificações</string>
+
+    <!-- Previews -->
+    <string name="preview_loan_msg">Seu livro \'O Alquimista\' vence em 2 dias. Renove agora!</string>
+    <string name="preview_res_msg">O livro \'1984\' já está disponível para retirada!</string>
+    <string name="preview_event_msg">Novo evento: Clube do Livro - \'Dom Casmurro\'. Inscreva-se!</string>
+    <string name="preview_time_5m">há 5 min</string>
+    <string name="preview_time_1h">há 1 hora</string>
+    <string name="preview_time_2h">há 2 horas</string>
 </resources>

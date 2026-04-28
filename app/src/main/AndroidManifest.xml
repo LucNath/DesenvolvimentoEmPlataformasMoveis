@@ -71,6 +71,11 @@
         <activity
             android:name=".ReadingGoalsActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".NotificationPrefsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
 
 </manifest>
