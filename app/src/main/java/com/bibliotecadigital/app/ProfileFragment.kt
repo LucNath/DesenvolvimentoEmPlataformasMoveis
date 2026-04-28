@@ -47,6 +47,11 @@ class ProfileFragment : Fragment() {
         observeViewModel()
     }
 
+    override fun onResume() {
+        super.onResume()
+        goalsViewModel.refresh()
+    }
+
     private fun setupUserData() {
         binding.tvAvatar.text = "LM"
         binding.tvUserName.text = "Lucas Mendes"
@@ -75,7 +80,10 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupGoalsRecyclerView() {
-        goalsAdapter = ReadingGoalAdapter()
+        goalsAdapter = ReadingGoalAdapter(
+            onIncrement = { id -> goalsViewModel.incrementProgress(id) },
+            onDelete = { id -> goalsViewModel.deleteGoal(id) }
+        )
         binding.rvGoals.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = goalsAdapter
@@ -84,9 +92,9 @@ class ProfileFragment : Fragment() {
 
     private fun observeViewModel() {
         goalsViewModel.goals.observe(viewLifecycleOwner) { goals ->
-            // In Profile, we might only want to show the most recent or all. 
-            // The requirement says "Exibir progresso das metas ativas".
-            goalsAdapter.submitList(goals)
+            // No perfil mostramos apenas metas em andamento para não poluir
+            val activeGoals = goals.filter { it.status == GoalStatus.EM_ANDAMENTO }
+            goalsAdapter.submitList(activeGoals)
         }
     }
 
@@ -177,10 +185,11 @@ class ProfileFragment : Fragment() {
             .create()
 
         dialogBinding.btnSave.setOnClickListener {
+            val title = dialogBinding.etGoalTitle.text.toString().trim()
             val quantityStr = dialogBinding.etBooksQuantity.text.toString().trim()
-            val period = dialogBinding.etPeriod.text.toString().trim()
+            val deadline = dialogBinding.etDeadline.text.toString().trim()
 
-            if (quantityStr.isEmpty() || period.isEmpty()) {
+            if (title.isEmpty() || quantityStr.isEmpty() || deadline.isEmpty()) {
                 Toast.makeText(requireContext(), "Preencha todos os campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -191,7 +200,7 @@ class ProfileFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            goalsViewModel.addGoal(quantity, period)
+            goalsViewModel.addGoal(title, quantity, deadline)
             dialog.dismiss()
             Toast.makeText(requireContext(), "Meta adicionada!", Toast.LENGTH_SHORT).show()
         }

@@ -2,6 +2,7 @@ package com.bibliotecadigital.app
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -39,7 +40,10 @@ class ReadingGoalsActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        adapter = ReadingGoalAdapter()
+        adapter = ReadingGoalAdapter(
+            onIncrement = { id -> viewModel.incrementProgress(id) },
+            onDelete = { id -> viewModel.deleteGoal(id) }
+        )
         binding.rvGoals.apply {
             layoutManager = LinearLayoutManager(this@ReadingGoalsActivity)
             this.adapter = this@ReadingGoalsActivity.adapter
@@ -50,13 +54,21 @@ class ReadingGoalsActivity : AppCompatActivity() {
         viewModel.goals.observe(this) { goals ->
             adapter.submitList(goals)
             updateSummary(goals)
+            
+            if (goals.isEmpty()) {
+                binding.tvSummary.text = "Nenhuma meta cadastrada"
+            }
         }
     }
 
     private fun updateSummary(goals: List<ReadingGoal>) {
-        if (goals.isNotEmpty()) {
-            val firstGoal = goals[0]
-            binding.tvSummary.text = "Você concluiu ${firstGoal.progress} de ${firstGoal.quantity} livros da meta."
+        val activeGoals = goals.filter { it.status != GoalStatus.CONCLUIDA }
+        if (activeGoals.isNotEmpty()) {
+            val totalProgress = activeGoals.sumOf { it.progress }
+            val totalTarget = activeGoals.sumOf { it.quantity }
+            binding.tvSummary.text = "Você leu $totalProgress de $totalTarget livros das suas metas ativas."
+        } else if (goals.isNotEmpty()) {
+            binding.tvSummary.text = "Todas as suas metas foram concluídas! Parabéns!"
         } else {
             binding.tvSummary.text = "Crie uma meta para acompanhar seu progresso."
         }
@@ -67,14 +79,14 @@ class ReadingGoalsActivity : AppCompatActivity() {
         
         val dialog = MaterialAlertDialogBuilder(this)
             .setView(dialogBinding.root)
-            .setCancelable(true)
             .create()
 
         dialogBinding.btnSave.setOnClickListener {
+            val title = dialogBinding.etGoalTitle.text.toString().trim()
             val quantityStr = dialogBinding.etBooksQuantity.text.toString().trim()
-            val period = dialogBinding.etPeriod.text.toString().trim()
+            val deadline = dialogBinding.etDeadline.text.toString().trim()
 
-            if (quantityStr.isEmpty() || period.isEmpty()) {
+            if (title.isEmpty() || quantityStr.isEmpty() || deadline.isEmpty()) {
                 Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -85,7 +97,7 @@ class ReadingGoalsActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            viewModel.addGoal(quantity, period)
+            viewModel.addGoal(title, quantity, deadline)
             dialog.dismiss()
             Toast.makeText(this, "Meta adicionada!", Toast.LENGTH_SHORT).show()
         }

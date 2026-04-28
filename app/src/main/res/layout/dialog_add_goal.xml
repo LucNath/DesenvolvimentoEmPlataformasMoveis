@@ -20,6 +20,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:hint="Título da Meta"
+        android:textColorHint="@color/text_gray">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etGoalTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapSentences"
+            android:textColor="@color/text_white" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:hint="Quantidade de livros"
         android:textColorHint="@color/text_gray">
 
@@ -36,11 +52,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="Período (ex: 1 mês)"
+        android:hint="Prazo (ex: 31/12/2024)"
         android:textColorHint="@color/text_gray">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etPeriod"
+            android:id="@+id/etDeadline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"

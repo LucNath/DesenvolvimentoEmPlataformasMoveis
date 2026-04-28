@@ -15,20 +15,52 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvGoalTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/tvGoalStatus"
+                android:textColor="@color/text_white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Ler 5 livros em 1 mês" />
+
+            <TextView
+                android:id="@+id/tvGoalStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                tools:text="Em andamento"
+                tools:background="@drawable/bg_status_progress"
+                tools:textColor="@color/brand_orange" />
+        </RelativeLayout>
+
         <TextView
-            android:id="@+id/tvGoalTitle"
+            android:id="@+id/tvGoalDeadline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            tools:text="Ler 5 livros em 1 mês" />
+            android:layout_marginTop="2dp"
+            android:textColor="@color/text_gray"
+            android:textSize="12sp"
+            tools:text="Prazo: 31/12/2024" />
 
         <TextView
             android:id="@+id/tvGoalProgress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:textColor="@color/text_gray"
             android:textSize="14sp"
             tools:text="3 de 5 livros lidos" />
@@ -38,10 +70,35 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="8dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="8dp"
             android:progressTint="@color/brand_orange"
             android:progressBackgroundTint="@color/divider"
             tools:progress="60" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnDelete"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_delete"
+                app:tint="@color/text_red" />
+
+            <Button
+                android:id="@+id/btnRegisterReading"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Registrar Leitura"
+                android:textSize="12sp"
+                android:textColor="@color/brand_orange" />
+        </LinearLayout>
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
