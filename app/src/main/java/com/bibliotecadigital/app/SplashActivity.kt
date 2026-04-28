@@ -32,13 +32,17 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun checkNavigation() {
-        val prefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        val onboardingFinished = prefs.getBoolean("onboarding_finished", false)
-        val isUserLoggedIn = prefs.getBoolean("is_logged_in", false)
-
+        val appPrefs = AppPrefs(this)
+        
         val intent = when {
-            !onboardingFinished -> Intent(this, OnboardingActivity::class.java)
-            isUserLoggedIn -> Intent(this, MainActivity::class.java)
+            !appPrefs.onboardingFinished -> Intent(this, OnboardingActivity::class.java)
+            appPrefs.isLoggedIn -> {
+                if (appPrefs.userRole == "admin") {
+                    Intent(this, AdminDashboardActivity::class.java)
+                } else {
+                    Intent(this, MainActivity::class.java)
+                }
+            }
             else -> Intent(this, LoginActivity::class.java)
         }
 

@@ -13,13 +13,12 @@ import com.bibliotecadigital.app.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var prefs: SharedPreferences
+    private lateinit var appPrefs: AppPrefs
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        prefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        val isDarkMode = prefs.getBoolean("pref_dark_mode", true)
+        appPrefs = AppPrefs(this)
         AppCompatDelegate.setDefaultNightMode(
-            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            if (appPrefs.isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
         )
         
         super.onCreate(savedInstanceState)
@@ -59,14 +58,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun applyPreferences() {
         // 1. Tema
-        val isDarkMode = prefs.getBoolean("pref_dark_mode", true)
         AppCompatDelegate.setDefaultNightMode(
-            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            if (appPrefs.isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
         )
 
         // 2. Rotação
-        val autoRotation = prefs.getBoolean("pref_rotation", true)
-        requestedOrientation = if (autoRotation) {
+        requestedOrientation = if (appPrefs.autoRotation) {
             ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         } else {
             ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -74,8 +71,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun attachBaseContext(newBase: Context) {
-        val prefs = newBase.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        val fontSizeIndex = prefs.getInt("pref_font_size", 1) // 0: Pequeno, 1: Médio, 2: Grande
+        val prefs = AppPrefs(newBase)
+        val fontSizeIndex = prefs.fontSize // 0: Pequeno, 1: Médio, 2: Grande
         
         val scale = when (fontSizeIndex) {
             0 -> 0.85f

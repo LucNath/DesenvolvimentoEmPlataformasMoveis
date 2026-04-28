@@ -36,7 +36,7 @@ class LoanAdapter(
                 btnRenovar.visibility = View.GONE
             }
 
-            ivCover.setImageResource(if (item.coverRes != 0) item.coverRes else android.R.drawable.ic_dialog_info)
+            ivCover.setImageResource(if (item.coverRes != 0) item.coverRes else R.drawable.bg_cover_placeholder)
 
             btnVer.setOnClickListener { onVerClick(item) }
             btnRenovar.setOnClickListener { onRenovarClick(item) }

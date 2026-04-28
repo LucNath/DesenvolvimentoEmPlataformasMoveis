@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 class ReadingGoalRepository(context: Context) {
-    private val prefs = context.getSharedPreferences("reading_prefs", Context.MODE_PRIVATE)
+    private val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     private val gson = Gson()
     private val key = "reading_goals"
 

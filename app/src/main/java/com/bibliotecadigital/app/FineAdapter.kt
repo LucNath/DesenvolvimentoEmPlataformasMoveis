@@ -1,6 +1,7 @@
 package com.bibliotecadigital.app
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -30,11 +31,11 @@ class FineAdapter(private val onPayClick: ((Fine) -> Unit)? = null) : ListAdapte
             if (item.status == FineStatus.PENDENTE) {
                 tvStatus.setTextColor(ContextCompat.getColor(context, android.R.color.white))
                 tvStatus.setBackgroundResource(R.drawable.bg_status_red)
-                btnPay.visibility = if (onPayClick != null) ViewGroup.VISIBLE else ViewGroup.GONE
+                btnPay.visibility = if (onPayClick != null) View.VISIBLE else View.GONE
             } else {
                 tvStatus.setTextColor(ContextCompat.getColor(context, android.R.color.white))
                 tvStatus.setBackgroundResource(R.drawable.bg_status_green)
-                btnPay.visibility = ViewGroup.GONE
+                btnPay.visibility = View.GONE
             }
 
             btnPay.setOnClickListener { onPayClick?.invoke(item) }

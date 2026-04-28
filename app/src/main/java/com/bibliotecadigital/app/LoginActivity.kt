@@ -29,19 +29,18 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.etPassword.text.toString()
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
-                val editor = prefs.edit()
-                editor.putBoolean("is_logged_in", true)
+                val appPrefs = AppPrefs(this)
+                appPrefs.isLoggedIn = true
+                appPrefs.userEmail = email
                 
                 // Simulação simples: se o email contém "admin", loga como admin
                 if (email.contains("admin")) {
-                    editor.putString("user_role", "admin")
+                    appPrefs.userRole = "admin"
                 } else {
-                    editor.putString("user_role", "user")
+                    appPrefs.userRole = "user"
                 }
-                editor.apply()
 
-                val intent = if (email.contains("admin")) {
+                val intent = if (appPrefs.userRole == "admin") {
                     Intent(this, AdminDashboardActivity::class.java)
                 } else {
                     Intent(this, MainActivity::class.java)

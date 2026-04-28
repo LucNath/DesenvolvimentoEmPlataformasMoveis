@@ -46,8 +46,7 @@ class AdminDashboardActivity : AppCompatActivity() {
 
     private fun setupButtons() {
         binding.btnLogout.setOnClickListener {
-            val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
-            prefs.edit().putBoolean("is_logged_in", false).apply()
+            AppPrefs(this).logout()
 
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

@@ -19,7 +19,7 @@ class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var prefs: SharedPreferences
+    private lateinit var appPrefs: AppPrefs
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,7 +32,7 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        prefs = requireContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        appPrefs = AppPrefs(requireContext())
 
         setupMenu()
         setupListeners()
@@ -102,12 +102,12 @@ class SettingsFragment : Fragment() {
             getString(R.string.settings_font_medium),
             getString(R.string.settings_font_large)
         )
-        val current = prefs.getInt("pref_font_size", 1)
+        val current = appPrefs.fontSize
 
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.settings_font_size))
             .setSingleChoiceItems(options, current) { dialog, which ->
-                prefs.edit().putInt("pref_font_size", which).apply()
+                appPrefs.fontSize = which
                 dialog.dismiss()
                 requireActivity().recreate()
             }
@@ -116,10 +116,8 @@ class SettingsFragment : Fragment() {
     }
 
     private fun toggleTheme() {
-        val isDarkMode = prefs.getBoolean("pref_dark_mode", true)
-        val newMode = !isDarkMode
-        
-        prefs.edit().putBoolean("pref_dark_mode", newMode).apply()
+        val newMode = !appPrefs.isDarkMode
+        appPrefs.isDarkMode = newMode
         
         AppCompatDelegate.setDefaultNightMode(
             if (newMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
@@ -128,10 +126,8 @@ class SettingsFragment : Fragment() {
     }
 
     private fun toggleRotation() {
-        val currentRotation = prefs.getBoolean("pref_rotation", true)
-        val newValue = !currentRotation
-        
-        prefs.edit().putBoolean("pref_rotation", newValue).apply()
+        val newValue = !appPrefs.autoRotation
+        appPrefs.autoRotation = newValue
         
         val orientation = if (newValue) 
             ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED 
@@ -156,12 +152,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun logout() {
-        prefs.edit().apply {
-            putBoolean("is_logged_in", false)
-            remove("user_role")
-            remove("user_email")
-            apply()
-        }
+        appPrefs.logout()
 
         val intent = Intent(requireContext(), LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

@@ -217,6 +217,7 @@ class ProfileFragment : Fragment() {
             .setTitle(getString(R.string.profile_logout_confirm_title))
             .setMessage(getString(R.string.profile_logout_confirm_msg))
             .setPositiveButton(getString(R.string.btn_logout)) { _, _ ->
+                AppPrefs(requireContext()).logout()
                 val intent = Intent(requireActivity(), LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)

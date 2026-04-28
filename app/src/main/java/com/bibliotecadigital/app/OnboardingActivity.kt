@@ -99,8 +99,7 @@ class OnboardingActivity : AppCompatActivity() {
     }
 
     private fun finishOnboarding() {
-        val prefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        prefs.edit().putBoolean("onboarding_finished", true).apply()
+        AppPrefs(this).onboardingFinished = true
         
         startActivity(Intent(this, LoginActivity::class.java))
         finish()
