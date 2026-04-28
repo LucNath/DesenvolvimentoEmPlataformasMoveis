@@ -6,11 +6,11 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bibliotecadigital.app.databinding.ActivityAdminBooksBinding
 import com.bibliotecadigital.app.databinding.DialogAdminBookBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class AdminBooksActivity : AppCompatActivity() {
 
@@ -86,7 +86,7 @@ class AdminBooksActivity : AppCompatActivity() {
 
     private fun showBookDialog(book: Book?) {
         val dialogBinding = DialogAdminBookBinding.inflate(LayoutInflater.from(this))
-        val builder = AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
+        val builder = com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
         builder.setView(dialogBinding.root)
         val dialog = builder.create()
 
@@ -149,7 +149,7 @@ class AdminBooksActivity : AppCompatActivity() {
     }
 
     private fun showDeleteConfirmation(book: Book) {
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
             .setTitle("Excluir Obra")
             .setMessage("Deseja realmente excluir '${book.title}'?")
             .setPositiveButton("Excluir") { _, _ ->

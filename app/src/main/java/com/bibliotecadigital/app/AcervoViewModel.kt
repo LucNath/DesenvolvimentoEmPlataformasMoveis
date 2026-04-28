@@ -53,13 +53,13 @@ class AcervoViewModel : ViewModel() {
 
     private fun loadMockData() {
         val mockBooks = listOf(
-            Book("1", "O Senhor dos Anéis", "J.R.R. Tolkien", "Literatura", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9780007136582", true),
+            Book("1", "O Senhor dos Anéis", "J.R.R. Tolkien", "Literatura", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9780007136582", isMostBorrowed = true),
             Book("2", "Direito Civil Contemporâneo", "Tartuce", "Direito", BookStatus.BORROWED, R.drawable.bg_cover_placeholder, "9788530983635"),
             Book("3", "Cálculo A", "Diva Flemming", "Engenharia", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9788576051152"),
-            Book("4", "1984", "George Orwell", "Literatura", BookStatus.RESERVED, R.drawable.bg_cover_placeholder, "9780451524935", true),
+            Book("4", "1984", "George Orwell", "Literatura", BookStatus.RESERVED, R.drawable.bg_cover_placeholder, "9780451524935", isMostBorrowed = true),
             Book("5", "Princípios de Engenharia", "Holtzapple", "Engenharia", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9788521615439"),
             Book("6", "Dom Casmurro", "Machado de Assis", "Literatura", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9788508044304"),
-            Book("7", "Código Penal Comentado", "Nucci", "Direito", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9788530983635", true)
+            Book("7", "Código Penal Comentado", "Nucci", "Direito", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9788530983635", isMostBorrowed = true)
         )
         _allBooks.value = mockBooks
     }

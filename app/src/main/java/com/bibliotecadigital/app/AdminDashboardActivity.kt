@@ -46,6 +46,9 @@ class AdminDashboardActivity : AppCompatActivity() {
 
     private fun setupButtons() {
         binding.btnLogout.setOnClickListener {
+            val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
+            prefs.edit().putBoolean("is_logged_in", false).apply()
+
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
@@ -62,7 +65,8 @@ class AdminDashboardActivity : AppCompatActivity() {
             startActivity(intent)
         }
         binding.btnViewUsers.setOnClickListener { 
-            Toast.makeText(this, "Funcionalidade: Ver Usuários", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, AdminUsersActivity::class.java)
+            startActivity(intent)
         }
         binding.btnViewFines.setOnClickListener { 
             val intent = Intent(this, AdminLoansActivity::class.java)

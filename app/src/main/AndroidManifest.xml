@@ -56,6 +56,11 @@
             android:exported="false" />
 
         <activity
+            android:name=".AdminUsersActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
 

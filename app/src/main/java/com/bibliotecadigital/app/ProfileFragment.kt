@@ -165,6 +165,9 @@ class ProfileFragment : Fragment() {
             .setTitle("Sair da conta")
             .setMessage("Tem certeza que deseja sair?")
             .setPositiveButton("Sair") { _, _ ->
+                val prefs = requireContext().getSharedPreferences("app_prefs", android.content.Context.MODE_PRIVATE)
+                prefs.edit().putBoolean("is_logged_in", false).apply()
+
                 requireActivity().finishAffinity()
                 val intent = Intent(requireActivity(), LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

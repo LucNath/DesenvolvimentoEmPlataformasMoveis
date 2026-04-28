@@ -103,7 +103,7 @@ class AdminLoansActivity : AppCompatActivity() {
     }
 
     private fun setupFilters() {
-        binding.chipGroupFilters.setOnCheckedStateChangeListener { _, _ ->
+        binding.chipGroupFilters.setOnCheckedChangeListener { _, _ ->
             filterData()
         }
     }

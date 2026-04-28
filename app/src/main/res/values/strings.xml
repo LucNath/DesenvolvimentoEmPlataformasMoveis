@@ -45,6 +45,8 @@
     <string name="fine_amount_label">Multa: R$ %1$.2f</string>
     <string name="btn_return">Devolver</string>
     <string name="btn_pay">Pagar</string>
+    <string name="btn_paid">Pago</string>
+    <string name="btn_pay_fine">Pagar Multa</string>
     <string name="fines_title">Multas e Pagamentos</string>
     <string name="total_pending_label">Saldo Devedor</string>
     <string name="empty_fines_msg">Nenhuma multa registrada</string>
