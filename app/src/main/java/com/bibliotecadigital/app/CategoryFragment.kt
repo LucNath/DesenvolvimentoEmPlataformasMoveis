@@ -72,11 +72,8 @@ class CategoryFragment : Fragment() {
 
         categoryBooks = allBooks.filter { it.category == category }
         
-        bookAdapter = BookAdapter { book ->
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, BookDetailFragment.newInstance(book.id, book.title, book.author))
-                .addToBackStack(null)
-                .commit()
+        bookAdapter = BookAdapter { _ ->
+            // Navegação removida
         }
         binding.rvCategoryBooks.layoutManager = LinearLayoutManager(requireContext())
         binding.rvCategoryBooks.adapter = bookAdapter

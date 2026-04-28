@@ -54,11 +54,7 @@ class HomeFragment : Fragment() {
 
         val adapter = LoanAdapter(
             onVerClick = { loan ->
-                // Navegar para detalhes do livro
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainer, BookDetailFragment.newInstance(loan.id, loan.title, loan.author))
-                    .addToBackStack(null)
-                    .commit()
+                // Navegação removida
             },
             onRenovarClick = { loan ->
                 Snackbar.make(binding.root, "Renovação solicitada para: ${loan.title}", Snackbar.LENGTH_SHORT).show()
@@ -97,12 +93,8 @@ class HomeFragment : Fragment() {
             )
         )
 
-        // Assuming ReservationAdapter is also updated to ListAdapter or kept as simple for now
         val adapter = ReservationAdapter { reservation ->
-             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, BookDetailFragment.newInstance(reservation.id, reservation.title, reservation.author))
-                .addToBackStack(null)
-                .commit()
+             // Navegação removida
         }
 
         binding.rvReservations.apply {

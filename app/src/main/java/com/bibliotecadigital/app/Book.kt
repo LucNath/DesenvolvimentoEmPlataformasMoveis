@@ -14,6 +14,9 @@ data class Book(
     val isbn: String = "",
     val publisher: String = "",
     val year: String = "",
-    val quantity: Int = 1,
+    val synopsis: String = "",
+    val loanPeriod: String = "15 dias",
+    val availableQuantity: Int = 0,
+    val waitingListCount: Int = 0,
     val isMostBorrowed: Boolean = false
 )

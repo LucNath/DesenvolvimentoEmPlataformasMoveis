@@ -83,10 +83,9 @@ class AcervoFragment : Fragment() {
     }
 
     private fun setupCategoryChips(categories: List<String>) {
-        val currentCheckedId = binding.chipGroupCategories.checkedChipId
         binding.chipGroupCategories.removeAllViews()
         
-        categories.forEachIndexed { index, category ->
+        categories.forEach { category ->
             val chip = Chip(requireContext()).apply {
                 id = View.generateViewId()
                 text = category
