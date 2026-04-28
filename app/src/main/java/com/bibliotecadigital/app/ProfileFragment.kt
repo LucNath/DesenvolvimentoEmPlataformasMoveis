@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bibliotecadigital.app.databinding.FragmentProfileBinding
@@ -146,7 +145,10 @@ class ProfileFragment : Fragment() {
         }
 
         binding.rowReadingHistory.root.setOnClickListener {
-            Toast.makeText(requireContext(), "Histórico de Leituras", Toast.LENGTH_SHORT).show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, HistoricoFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.rowReadingGoals.root.setOnClickListener {

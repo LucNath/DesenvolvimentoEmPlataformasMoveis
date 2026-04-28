@@ -84,6 +84,8 @@
     <string name="profile_menu_logout">Sair da conta</string>
     <string name="profile_logout_confirm_title">Sair da conta</string>
     <string name="profile_logout_confirm_msg">Tem certeza que deseja sair?</string>
+    <string name="reading_history_returned_at">Devolvido em %1$s</string>
+    <string name="reading_history_title">Histórico de Leituras</string>
 
     <!-- Settings -->
     <string name="settings_title">Configurações</string>
