@@ -145,4 +145,9 @@
     <string name="preview_time_5m">há 5 min</string>
     <string name="preview_time_1h">há 1 hora</string>
     <string name="preview_time_2h">há 2 horas</string>
+    <string name="notif_preview_label">Visualização:</string>
+    <string name="content_desc_back">Voltar</string>
+    <string name="onboarding_skip">Pular</string>
+    <string name="onboarding_next">Próximo</string>
+    <string name="onboarding_finish">Começar</string>
 </resources>
