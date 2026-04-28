@@ -24,7 +24,8 @@
             android:padding="8dp"
             android:src="@drawable/ic_person"
             app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-            app:tint="@color/text_gray" />
+            app:tint="@color/text_gray"
+            android:importantForAccessibility="no" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -37,7 +38,6 @@
                 android:id="@+id/tvUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lucas Mendes"
                 android:textColor="@color/text_white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -46,7 +46,6 @@
                 android:id="@+id/tvUserEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="lucas@email.com"
                 android:textColor="@color/text_gray"
                 android:textSize="14sp" />
 
@@ -58,7 +57,6 @@
                 android:background="@drawable/bg_status_gray"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="2dp"
-                android:text="USUÁRIO"
                 android:textColor="@color/text_white"
                 android:textSize="10sp"
                 android:textStyle="bold" />
@@ -66,19 +64,21 @@
 
         <ImageButton
             android:id="@+id/btnEditUser"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@android:drawable/ic_menu_edit"
-            app:tint="@color/brand_orange" />
+            app:tint="@color/brand_orange"
+            android:contentDescription="@string/btn_edit" />
 
         <ImageButton
             android:id="@+id/btnDeleteUser"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@android:drawable/ic_menu_delete"
-            app:tint="@color/text_red" />
+            app:tint="@color/text_red"
+            android:contentDescription="@string/btn_delete" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -20,7 +20,8 @@
             android:layout_width="60dp"
             android:layout_height="80dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/bg_cover_placeholder" />
+            android:src="@drawable/bg_cover_placeholder"
+            android:contentDescription="@string/book_cover_desc" />
 
         <LinearLayout
             android:layout_width="0dp"

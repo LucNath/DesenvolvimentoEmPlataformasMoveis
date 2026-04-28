@@ -19,7 +19,8 @@
             android:layout_width="60dp"
             android:layout_height="80dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/bg_cover_placeholder" />
+            android:src="@drawable/bg_cover_placeholder"
+            android:contentDescription="@string/book_cover_desc" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -58,19 +59,21 @@
 
             <ImageButton
                 android:id="@+id/btnEdit"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@android:drawable/ic_menu_edit"
-                app:tint="@color/white" />
+                app:tint="@color/white"
+                android:contentDescription="@string/btn_edit" />
 
             <ImageButton
                 android:id="@+id/btnDelete"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@android:drawable/ic_menu_delete"
-                app:tint="@color/text_red" />
+                app:tint="@color/text_red"
+                android:contentDescription="@string/btn_delete" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

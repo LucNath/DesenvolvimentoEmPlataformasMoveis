@@ -9,37 +9,46 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_dark"
+        android:background="@drawable/bg_home_header"
         app:elevation="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingHorizontal="24dp"
+            android:paddingTop="48dp"
+            android:paddingBottom="32dp">
 
             <TextView
                 android:id="@+id/tvHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Acervo Digital"
-                android:textColor="@color/text_white"
-                android:textSize="24sp"
+                android:textColor="@color/white"
+                android:textSize="26sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/etSearch"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/bg_search"
-                android:drawableStart="@drawable/ic_search"
-                android:drawablePadding="12dp"
-                android:hint="Título, autor ou ISBN"
-                android:inputType="text"
-                android:paddingHorizontal="16dp"
-                android:textColor="@color/text_white"
-                android:textColorHint="@color/text_gray" />
+                android:layout_height="54dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_search_white_tint">
+
+                <EditText
+                    android:id="@+id/etSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:drawableStart="@drawable/ic_search"
+                    android:drawablePadding="12dp"
+                    android:drawableTint="@color/white"
+                    android:hint="Título, autor ou ISBN"
+                    android:textColorHint="#CCFFFFFF"
+                    android:inputType="text"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="@color/white" />
+            </FrameLayout>
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -62,12 +71,14 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background_light"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="16dp">
 
             <TextView
                 android:id="@+id/tvMostBorrowedHeader"
@@ -76,7 +87,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="Mais Emprestados"
-                android:textColor="@color/text_white"
+                android:textColor="@color/text_primary_light"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -98,7 +109,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
                 android:text="Todos os Livros"
-                android:textColor="@color/text_white"
+                android:textColor="@color/text_primary_light"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 

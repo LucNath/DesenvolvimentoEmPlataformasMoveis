@@ -1,45 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Azul Royal - Primária -->
+    <color name="blue_royal">#1A56DB</color>
+    <color name="blue_deep">#1E429F</color>
+    <color name="blue_soft">#76A9FA</color>
+    <color name="blue_ice">#EBF5FF</color>
+    <color name="blue_dark_chip">#1E3A8A</color>
+    <color name="blue_dark_chip_text">#93C5FD</color>
 
-    <!-- Colors from Biblioteca_Historico -->
-    <color name="card_blue">#1B2E52</color>
-    <color name="text_muted">#8FA2C5</color>
-    <color name="star_yellow">#FFC83D</color>
-    <color name="button_orange">#F78A1D</color>
-    <color name="orange_text">#FFB14A</color>
-    <color name="green_text">#21D07A</color>
-    <color name="availability_bg">#0B2A26</color>
-    <color name="availability_stroke">#175A4A</color>
-    <color name="waiting_bg">#33250D</color>
-    <color name="waiting_stroke">#6B4B12</color>
-    <color name="tag_blue">#2B57C1</color>
-    <color name="tag_gray">#3E4C69</color>
-    <color name="tag_orange">#8C4D10</color>
-    <color name="cover_blue">#2D57D3</color>
-    <color name="back_button_bg">#17335B</color>
+    <!-- Neutros -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="background_light">#F3F4F6</color>
+    <color name="background_dark">#111827</color>
+    <color name="surface_dark">#1F2937</color>
+    <color name="border_dark">#374151</color>
+    <color name="text_primary_light">#111827</color>
+    <color name="text_secondary_light">#6B7280</color>
+    <color name="text_primary_dark">#F9FAFB</color>
+    <color name="text_secondary_dark">#9CA3AF</color>
 
-    <!-- Colors for com.example.devweb -->
-    <color name="bg_dark">#0F1B2D</color>
-    <color name="bg_card">#162032</color>
-    <color name="bg_card_inner">#1E2D42</color>
-    <color name="accent_orange">#F5A623</color>
+    <!-- Semânticas -->
+    <color name="status_available_bg">#DCFCE7</color>
+    <color name="status_available_text">#16A34A</color>
+    <color name="status_available_bg_dark">#14532D</color>
+    <color name="status_available_text_dark">#86EFAC</color>
+    <color name="status_unavailable">#EF4444</color>
+    <color name="rating_star">#F59E0B</color>
+    <color name="status_warning_bg">#FFF4D6</color>
+    <color name="status_warning_text">#D97706</color>
+    <color name="status_info_bg">#E0F2FE</color>
+    <color name="status_info_text">#0369A1</color>
+
+    <!-- Aliases para compatibilidade e facilidade -->
+    <color name="bg_screen">@color/background_light</color>
+    <color name="bg_card">@color/white</color>
+    <color name="text_primary">@color/text_primary_light</color>
+    <color name="text_secondary">@color/text_secondary_light</color>
+
+    <!-- Aliases de compatibilidade com a paleta antiga -->
     <color name="text_white">#FFFFFF</color>
-    <color name="text_gray">#8A94A6</color>
-    <color name="text_red">#E05252</color>
-    <color name="divider">#253045</color>
-    <color name="divider_color">#1FFFFFFF</color>
+    <color name="bg_dark">#111827</color>
+    <color name="brand_orange">#1A56DB</color>
+    <color name="accent_orange">@color/blue_royal</color>
+    <color name="back_button_bg">@color/blue_deep</color>
+    <color name="cover_blue">@color/blue_royal</color>
+    <color name="bg_input">@color/blue_ice</color>
+    <color name="tag_gray">@color/text_secondary_light</color>
+    <color name="tag_blue">@color/blue_royal</color>
+    <color name="tag_orange">@color/blue_royal</color>
+    <color name="text_red">@color/status_unavailable</color>
+    <color name="text_gray">@color/text_secondary_light</color>
+    <color name="green_text">@color/status_available_text</color>
 
-    <!-- Colors from BibliotecaDigital -->
-    <color name="background_dark">#0D1B2A</color>
-    <color name="surface_dark">#1A2D42</color>
-    <color name="orange_primary">#F47C20</color>
-    <color name="orange_dark">#D96A10</color>
-    <color name="text_hint">#8899AA</color>
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#8A94A6</color>
-    <color name="bg_screen">#0F1B2D</color>
-    <color name="brand_orange">#F5A623</color>
-    <color name="bg_input">#1E2D42</color>
+    <!-- Aliases de compatibilidade continuação -->
+    <color name="divider">#E5E7EB</color>
+    <color name="card_blue">#EBF5FF</color>
+    <color name="button_orange">#1A56DB</color>
+    <color name="orange_primary">#1A56DB</color>
+    <color name="text_hint">@color/text_secondary_light</color>
+    <color name="star_yellow">@color/rating_star</color>
+    <color name="divider_color">@color/divider</color>
+    <color name="bg_card_inner">@color/blue_ice</color>
 </resources>

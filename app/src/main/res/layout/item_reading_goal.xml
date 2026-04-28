@@ -4,16 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardBackgroundColor="@color/bg_card"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="0dp">
+    android:layout_marginBottom="16dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#F3F4F6">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -25,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_toStartOf="@id/tvGoalStatus"
-                android:textColor="@color/text_white"
+                android:textColor="@color/text_primary_light"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 tools:text="Ler 5 livros em 1 mês" />
@@ -35,24 +37,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
                 android:textSize="10sp"
                 android:textStyle="bold"
-                android:textAllCaps="true"
-                tools:text="Em andamento"
-                tools:background="@drawable/bg_status_progress"
-                tools:textColor="@color/brand_orange" />
+                android:background="@drawable/bg_status_info_pill"
+                android:textColor="@color/status_info_text"
+                tools:text="Em andamento" />
         </RelativeLayout>
 
         <TextView
             android:id="@+id/tvGoalDeadline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/text_gray"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/text_secondary_light"
             android:textSize="12sp"
             tools:text="Prazo: 31/12/2024" />
 
@@ -60,8 +59,8 @@
             android:id="@+id/tvGoalProgress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/text_gray"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/text_secondary_light"
             android:textSize="14sp"
             tools:text="3 de 5 livros lidos" />
 
@@ -71,33 +70,41 @@
             android:layout_width="match_parent"
             android:layout_height="8dp"
             android:layout_marginTop="8dp"
-            android:progressTint="@color/brand_orange"
-            android:progressBackgroundTint="@color/divider"
+            android:progressTint="@color/blue_royal"
+            android:progressBackgroundTint="#F3F4F6"
             tools:progress="60" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:gravity="end"
+            android:layout_marginTop="20dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/btnDelete"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@android:drawable/ic_menu_delete"
-                app:tint="@color/text_red" />
+                app:tint="@color/status_unavailable"
+                android:contentDescription="@string/btn_delete" />
 
-            <Button
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnRegisterReading"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:text="Registrar Leitura"
                 android:textSize="12sp"
-                android:textColor="@color/brand_orange" />
+                android:textColor="@color/blue_royal"
+                android:backgroundTint="@color/blue_ice"
+                app:cornerRadius="12dp" />
         </LinearLayout>
 
     </LinearLayout>

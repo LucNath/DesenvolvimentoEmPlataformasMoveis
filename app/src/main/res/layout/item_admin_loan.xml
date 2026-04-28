@@ -72,8 +72,8 @@
                 android:id="@+id/btnAction"
                 style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Devolver"
+                android:layout_height="48dp"
+                android:text="@string/btn_return"
                 android:textSize="12sp" />
         </LinearLayout>
 

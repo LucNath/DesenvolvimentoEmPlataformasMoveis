@@ -29,10 +29,14 @@ class LoanAdapter(
             tvDueDate.text = item.dueDate
 
             if (item.isUrgent) {
-                tvDueDate.setTextColor(ContextCompat.getColor(root.context, android.R.color.holo_red_dark))
+                tvDueDate.text = "⚠ ${item.dueDate}"
+                tvDueDate.setBackgroundResource(R.drawable.bg_status_warning_pill)
+                tvDueDate.setTextColor(ContextCompat.getColor(root.context, R.color.status_warning_text))
                 btnRenovar.visibility = View.VISIBLE
             } else {
-                tvDueDate.setTextColor(ContextCompat.getColor(root.context, R.color.brand_orange))
+                tvDueDate.text = "✓ ${item.dueDate}"
+                tvDueDate.setBackgroundResource(R.drawable.bg_status_available_pill)
+                tvDueDate.setTextColor(ContextCompat.getColor(root.context, R.color.status_available_text))
                 btnRenovar.visibility = View.GONE
             }
 

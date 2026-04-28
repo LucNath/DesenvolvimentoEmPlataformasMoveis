@@ -58,16 +58,16 @@
             android:id="@+id/btnCancel"
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CANCELAR" />
+            android:layout_height="48dp"
+            android:text="@string/btn_cancel" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubmit"
             style="@style/Widget.Material3.Button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginStart="8dp"
-            android:text="ENVIAR" />
+            android:text="@string/btn_confirm" />
     </LinearLayout>
 
 </LinearLayout>

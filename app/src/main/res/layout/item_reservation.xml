@@ -1,82 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:padding="12dp"
-    android:background="@color/bg_card">
+    android:layout_marginBottom="16dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#F3F4F6">
 
-    <!-- Capa do livro -->
-    <ImageView
-        android:id="@+id/ivCover"
-        android:layout_width="48dp"
-        android:layout_height="64dp"
-        android:scaleType="centerCrop"
-        android:background="@drawable/bg_cover_placeholder"
-        android:layout_marginEnd="12dp" />
-
-    <!-- Título + Autor + Fila -->
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:maxLines="2"
-            android:ellipsize="end" />
+        <!-- Capa do livro -->
+        <ImageView
+            android:id="@+id/ivCover"
+            android:layout_width="64dp"
+            android:layout_height="84dp"
+            android:background="@drawable/bg_cover_pill"
+            android:layout_marginEnd="16dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/book_cover_desc" />
 
-        <TextView
-            android:id="@+id/tvAuthor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/text_secondary"
-            android:layout_marginTop="2dp" />
-
-        <!-- Badge: posição na fila -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/bg_badge_queue"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:layout_marginTop="6dp">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary_light" />
+
+            <TextView
+                android:id="@+id/tvAuthor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary_light"
+                android:layout_marginTop="2dp" />
+
+            <!-- Badge: posição na fila (Pill style) -->
             <TextView
                 android:id="@+id/tvQueue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="11sp"
-                android:textColor="@color/text_secondary" />
+                android:layout_marginTop="10dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:background="@drawable/bg_status_info_pill"
+                android:textColor="@color/status_info_text"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
+        <!-- Botão Ver -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnVer"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="@string/btn_view"
+            android:textSize="12sp"
+            android:textColor="@color/blue_royal"
+            android:paddingHorizontal="16dp"
+            app:strokeColor="#F3F4F6" />
+
     </LinearLayout>
-
-    <!-- Botão Ver -->
-    <Button
-        android:id="@+id/btnVer"
-        android:layout_width="wrap_content"
-        android:layout_height="36dp"
-        android:text="Ver"
-        android:textSize="12sp"
-        android:textColor="@color/text_primary"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:background="@drawable/bg_button_outline_white"
-        android:stateListAnimator="@null"
-        android:layout_marginStart="8dp" />
-
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

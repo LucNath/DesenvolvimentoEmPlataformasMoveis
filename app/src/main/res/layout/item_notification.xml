@@ -29,7 +29,8 @@
         android:src="@android:drawable/ic_dialog_info"
         app:layout_constraintStart_toEndOf="@id/viewUnreadIndicator"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/white" />
+        app:tint="@color/white"
+        android:importantForAccessibility="no" />
 
     <!-- Mensagem -->
     <TextView

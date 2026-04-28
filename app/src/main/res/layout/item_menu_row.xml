@@ -18,7 +18,7 @@
         android:layout_height="24dp"
         android:layout_gravity="center_vertical"
         android:src="@drawable/ic_launcher_foreground"
-        app:tint="@color/text_white" />
+        app:tint="@color/blue_royal" />
 
     <!-- Título -->
     <TextView
@@ -28,7 +28,7 @@
         android:layout_weight="1"
         android:layout_marginStart="16dp"
         android:text="Histórico de Leituras"
-        android:textColor="@color/text_white"
+        android:textColor="@color/text_primary_light"
         android:textSize="15sp" />
 
     <!-- Seta -->
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="›"
-        android:textColor="@color/text_gray"
+        android:textColor="@color/text_secondary_light"
         android:textSize="22sp" />
 
 </LinearLayout>

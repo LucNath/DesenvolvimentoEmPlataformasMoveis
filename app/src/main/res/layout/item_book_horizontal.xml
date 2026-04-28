@@ -19,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="160dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/bg_cover_placeholder" />
+            android:src="@drawable/bg_cover_placeholder"
+            android:contentDescription="@string/book_cover_desc" />
 
         <TextView
             android:id="@+id/tvTitle"
