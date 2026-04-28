@@ -89,17 +89,17 @@ class ProfileFragment : Fragment() {
     private fun setupMenuRows() {
         configRow(
             binding.rowReadingHistory.root,
-            R.drawable.ic_library_books,
+            R.drawable.ic_history,
             getString(R.string.profile_menu_history)
         )
         configRow(
             binding.rowReadingGoals.root,
-            R.drawable.ic_event,
+            R.drawable.ic_flag,
             getString(R.string.profile_menu_goals)
         )
         configRow(
             binding.rowFines.root,
-            R.drawable.ic_palette,
+            R.drawable.ic_payments,
             getString(R.string.profile_menu_fines)
         )
         configRow(
