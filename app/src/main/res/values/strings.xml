@@ -32,6 +32,7 @@
     <string name="confirm_logout_msg">Tem certeza que deseja sair?</string>
     <string name="btn_logout">Sair</string>
     <string name="btn_cancel">Cancelar</string>
+    <string name="btn_save">Salvar</string>
     <string name="admin_panel">Painel Administrativo</string>
     <string name="manage_loans">Gestão de Empréstimos</string>
     <string name="search_hint_loans">Buscar por usuário ou obra...</string>
@@ -86,6 +87,20 @@
     <string name="profile_logout_confirm_msg">Tem certeza que deseja sair?</string>
     <string name="reading_history_returned_at">Devolvido em %1$s</string>
     <string name="reading_history_title">Histórico de Leituras</string>
+
+    <!-- Reading Goals -->
+    <string name="reading_goals_title">Metas de Leitura</string>
+    <string name="reading_goals_active">METAS ATIVAS</string>
+    <string name="reading_goal_label">Ler %1$d livros em %2$s</string>
+    <string name="reading_goal_progress">%1$d de %2$d livros lidos</string>
+    <string name="reading_goal_summary">Você concluiu %1$d de %2$d livros da meta.</string>
+    <string name="reading_goal_empty">Crie uma meta para acompanhar seu progresso.</string>
+    <string name="reading_goal_add_title">Adicionar Meta de Leitura</string>
+    <string name="reading_goal_quantity_hint">Quantidade de livros</string>
+    <string name="reading_goal_period_hint">Período (ex: 1 mês)</string>
+    <string name="reading_goal_added">Meta adicionada!</string>
+    <string name="reading_goal_invalid">Quantidade inválida</string>
+    <string name="reading_goal_fill_fields">Preencha todos os campos</string>
 
     <!-- Settings -->
     <string name="settings_title">Configurações</string>

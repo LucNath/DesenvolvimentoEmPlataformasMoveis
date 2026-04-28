@@ -3,37 +3,73 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="20dp"
-    android:background="@color/card_blue">
+    android:padding="24dp"
+    android:background="@color/bg_dark">
 
     <TextView
+        android:id="@+id/tvDialogTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Adicionar Meta de Leitura"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:textColor="@color/text_white"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/etBooksQuantity"
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:hint="Quantidade de livros"
+        android:textColorHint="@color/text_gray">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etBooksQuantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textColor="@color/text_white" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:backgroundTint="@color/button_orange"
-        android:hint="Quantidade de livros"
-        android:inputType="number"
-        android:textColor="@android:color/white"
-        android:textColorHint="@color/text_secondary" />
+        android:hint="Período (ex: 1 mês)"
+        android:textColorHint="@color/text_gray">
 
-    <EditText
-        android:id="@+id/etPeriod"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPeriod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:textColor="@color/text_white" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:backgroundTint="@color/button_orange"
-        android:hint="Período (ex: 1 mês, 6 meses)"
-        android:inputType="text"
-        android:textColor="@android:color/white"
-        android:textColorHint="@color/text_secondary" />
+        android:layout_marginTop="24dp"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCancel"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancelar"
+            android:textColor="@color/text_gray" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="@color/brand_orange"
+            android:text="Salvar"
+            android:textColor="@color/text_white" />
+    </LinearLayout>
 
 </LinearLayout>

@@ -2,54 +2,98 @@ package com.bibliotecadigital.app
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bibliotecadigital.app.databinding.ActivityReadingGoalsBinding
+import com.bibliotecadigital.app.databinding.DialogAddGoalBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ReadingGoalsActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityReadingGoalsBinding
+    private lateinit var viewModel: ReadingGoalsViewModel
+    private lateinit var adapter: ReadingGoalAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_reading_goals)
+        binding = ActivityReadingGoalsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val btnBack = findViewById<ImageButton>(R.id.btnBack)
-        val fabAddGoal = findViewById<FloatingActionButton>(R.id.fabAddGoal)
+        viewModel = ViewModelProvider(this)[ReadingGoalsViewModel::class.java]
 
-        btnBack.setOnClickListener {
+        setupUI()
+        setupRecyclerView()
+        observeViewModel()
+    }
+
+    private fun setupUI() {
+        binding.btnBack.setOnClickListener {
             finish()
         }
 
-        fabAddGoal.setOnClickListener {
+        binding.fabAddGoal.setOnClickListener {
             showAddGoalDialog()
         }
     }
 
+    private fun setupRecyclerView() {
+        adapter = ReadingGoalAdapter()
+        binding.rvGoals.apply {
+            layoutManager = LinearLayoutManager(this@ReadingGoalsActivity)
+            this.adapter = this@ReadingGoalsActivity.adapter
+        }
+    }
+
+    private fun observeViewModel() {
+        viewModel.goals.observe(this) { goals ->
+            adapter.submitList(goals)
+            updateSummary(goals)
+        }
+    }
+
+    private fun updateSummary(goals: List<ReadingGoal>) {
+        if (goals.isNotEmpty()) {
+            val firstGoal = goals[0]
+            binding.tvSummary.text = "Você concluiu ${firstGoal.progress} de ${firstGoal.quantity} livros da meta."
+        } else {
+            binding.tvSummary.text = "Crie uma meta para acompanhar seu progresso."
+        }
+    }
+
     private fun showAddGoalDialog() {
-        val view = LayoutInflater.from(this).inflate(R.layout.dialog_add_goal, null)
+        val dialogBinding = DialogAddGoalBinding.inflate(LayoutInflater.from(this))
+        
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setView(dialogBinding.root)
+            .setCancelable(true)
+            .create()
 
-        val etBooksQuantity = view.findViewById<EditText>(R.id.etBooksQuantity)
-        val etPeriod = view.findViewById<EditText>(R.id.etPeriod)
+        dialogBinding.btnSave.setOnClickListener {
+            val quantityStr = dialogBinding.etBooksQuantity.text.toString().trim()
+            val period = dialogBinding.etPeriod.text.toString().trim()
 
-        AlertDialog.Builder(this)
-            .setView(view)
-            .setPositiveButton("Salvar") { _, _ ->
-                val quantity = etBooksQuantity.text.toString().trim()
-                val period = etPeriod.text.toString().trim()
-
-                if (quantity.isEmpty() || period.isEmpty()) {
-                    Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(
-                        this,
-                        "Meta criada: $quantity livros em $period",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+            if (quantityStr.isEmpty() || period.isEmpty()) {
+                Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
-            .setNegativeButton("Cancelar", null)
-            .show()
+
+            val quantity = quantityStr.toIntOrNull() ?: 0
+            if (quantity <= 0) {
+                Toast.makeText(this, "Quantidade inválida", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            viewModel.addGoal(quantity, period)
+            dialog.dismiss()
+            Toast.makeText(this, "Meta adicionada!", Toast.LENGTH_SHORT).show()
+        }
+
+        dialogBinding.btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }

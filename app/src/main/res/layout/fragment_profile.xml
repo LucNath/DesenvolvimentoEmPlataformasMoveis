@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_dark"
@@ -36,11 +37,6 @@
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp">
 
-                <!-- Avatar circular com iniciais -->
-                <FrameLayout
-                    android:layout_width="80dp"
-                    android:layout_height="80dp">
-
                 <TextView
                     android:id="@+id/tvAvatar"
                     android:layout_width="80dp"
@@ -51,30 +47,26 @@
                     android:textColor="@color/text_white"
                     android:textSize="28sp"
                     android:textStyle="bold" />
-            </FrameLayout>
 
-            <!-- Nome -->
-            <TextView
-                android:id="@+id/tvUserName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="Lucas Mendes"
-                android:textColor="@color/text_white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tvUserName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="Lucas Mendes"
+                    android:textColor="@color/text_white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-            <!-- Curso -->
-            <TextView
-                android:id="@+id/tvUserCourse"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Aluno · Direito"
-                android:textColor="@color/text_gray"
-                android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/tvUserCourse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Aluno · Direito"
+                    android:textColor="@color/text_gray"
+                    android:textSize="14sp" />
 
-                <!-- Botão Editar Perfil -->
                 <Button
                     android:id="@+id/btnEditProfile"
                     android:layout_width="wrap_content"
@@ -130,7 +122,6 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
-                <!-- Divider -->
                 <View
                     android:layout_width="1dp"
                     android:layout_height="40dp"
@@ -161,7 +152,6 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
-                <!-- Divider -->
                 <View
                     android:layout_width="1dp"
                     android:layout_height="40dp"
@@ -191,32 +181,44 @@
                         android:textColor="@color/text_gray"
                         android:textSize="12sp" />
                 </LinearLayout>
-
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- ===== MINHAS RESERVAS (TASK-05) ===== -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/profile_section_reservations"
-            android:textColor="@color/text_gray"
-            android:textSize="11sp"
-            android:letterSpacing="0.1" />
-
-        <LinearLayout
-            android:id="@+id/containerReservas"
+        <!-- ===== METAS DE LEITURA ===== -->
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp">
 
-            <include layout="@layout/item_reservation" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="METAS DE LEITURA"
+                android:textColor="@color/text_gray"
+                android:textSize="11sp"
+                android:letterSpacing="0.1" />
 
-        </LinearLayout>
+            <ImageButton
+                android:id="@+id/btnAddGoal"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_input_add"
+                app:tint="@color/brand_orange"
+                android:contentDescription="Adicionar Meta" />
+        </RelativeLayout>
 
-        <!-- ===== MULTAS E PAGAMENTOS (TASK-17) ===== -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvGoals"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            tools:listitem="@layout/item_reading_goal" />
+
+        <!-- ===== MULTAS E PAGAMENTOS ===== -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -265,56 +267,6 @@
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false" />
 
-        <!-- ===== MINHA CONTA ===== -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/profile_section_account"
-            android:textColor="@color/text_gray"
-            android:textSize="11sp"
-            android:letterSpacing="0.1" />
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/bg_card"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <!-- Histórico de Leituras -->
-                <include layout="@layout/item_menu_row"
-                    android:id="@+id/rowReadingHistory" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="56dp"
-                    android:background="@color/divider" />
-
-                <!-- Metas de Leitura -->
-                <include layout="@layout/item_menu_row"
-                    android:id="@+id/rowReadingGoals" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="56dp"
-                    android:background="@color/divider" />
-
-                <!-- Multas e Pagamentos -->
-                <include layout="@layout/item_menu_row"
-                    android:id="@+id/rowFines" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
         <!-- ===== CONFIGURAÇÕES ===== -->
         <TextView
             android:layout_width="wrap_content"
@@ -338,27 +290,20 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Alterar Senha -->
-                <include layout="@layout/item_menu_row"
-                    android:id="@+id/rowChangePassword" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="56dp"
-                    android:background="@color/divider" />
-
-                <!-- Sair da conta -->
-                <include layout="@layout/item_menu_row"
-                    android:id="@+id/rowLogout" />
+                <include layout="@layout/item_menu_row" android:id="@+id/rowReadingHistory" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:background="@color/divider" />
+                <include layout="@layout/item_menu_row" android:id="@+id/rowReadingGoals" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:background="@color/divider" />
+                <include layout="@layout/item_menu_row" android:id="@+id/rowFines" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:background="@color/divider" />
+                <include layout="@layout/item_menu_row" android:id="@+id/rowChangePassword" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:background="@color/divider" />
+                <include layout="@layout/item_menu_row" android:id="@+id/rowLogout" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Espaço bottom nav -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="80dp" />
+        <View android:layout_width="match_parent" android:layout_height="80dp" />
 
     </LinearLayout>
 </ScrollView>

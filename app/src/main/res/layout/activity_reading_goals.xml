@@ -108,115 +108,13 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardGoal1"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvGoals"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                app:cardBackgroundColor="@color/card_blue"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:id="@+id/tvGoalTitle1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Ler 5 livros em 1 mês"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvGoalProgress1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="Progresso: 3/5 livros"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="14sp" />
-
-                    <ProgressBar
-                        android:id="@+id/progressGoal1"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="10dp"
-                        android:layout_marginTop="12dp"
-                        android:max="5"
-                        android:progress="3"
-                        android:progressTint="@color/button_orange"
-                        android:thumbTint="@color/button_orange" />
-
-                    <TextView
-                        android:id="@+id/tvGoalPeriod1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="Período: Abril de 2026"
-                        android:textColor="@color/text_muted"
-                        android:textSize="13sp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardGoal2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                app:cardBackgroundColor="@color/card_blue"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:id="@+id/tvGoalTitle2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Ler 12 livros em 6 meses"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvGoalProgress2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="Progresso: 7/12 livros"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="14sp" />
-
-                    <ProgressBar
-                        android:id="@+id/progressGoal2"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="10dp"
-                        android:layout_marginTop="12dp"
-                        android:max="12"
-                        android:progress="7"
-                        android:progressTint="@color/button_orange"
-                        android:thumbTint="@color/button_orange" />
-
-                    <TextView
-                        android:id="@+id/tvGoalPeriod2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="Período: Jan–Jun de 2026"
-                        android:textColor="@color/text_muted"
-                        android:textSize="13sp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                android:layout_marginTop="12dp"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_reading_goal" />
 
         </LinearLayout>
     </ScrollView>

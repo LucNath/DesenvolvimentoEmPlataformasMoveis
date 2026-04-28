@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bibliotecadigital.app.databinding.DialogAddGoalBinding
 import com.bibliotecadigital.app.databinding.FragmentProfileBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -17,6 +20,9 @@ class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
+    
+    private lateinit var goalsViewModel: ReadingGoalsViewModel
+    private lateinit var goalsAdapter: ReadingGoalAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,10 +35,16 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        // Initialize ViewModel (Shared or activity scoped if needed, but here fragment scoped is fine for mock)
+        goalsViewModel = ViewModelProvider(this)[ReadingGoalsViewModel::class.java]
+        
         setupUserData()
         setupMenuRows()
         setupFines()
+        setupGoalsRecyclerView()
         setupClickListeners()
+        observeViewModel()
     }
 
     private fun setupUserData() {
@@ -51,17 +63,31 @@ class ProfileFragment : Fragment() {
             Fine("3", "Estruturas de Dados", 2, 4.0, FineStatus.PAGO)
         )
 
-        // Calcula total pendente
         val totalPending = fines.filter { it.status == FineStatus.PENDENTE }.sumOf { it.amount }
         binding.tvTotalFine.text = String.format(Locale("pt", "BR"), "R$ %.2f", totalPending)
 
-        // Configura lista
         val adapter = FineAdapter()
         binding.rvFines.apply {
             layoutManager = LinearLayoutManager(requireContext())
             this.adapter = adapter
         }
         adapter.submitList(fines)
+    }
+
+    private fun setupGoalsRecyclerView() {
+        goalsAdapter = ReadingGoalAdapter()
+        binding.rvGoals.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = goalsAdapter
+        }
+    }
+
+    private fun observeViewModel() {
+        goalsViewModel.goals.observe(viewLifecycleOwner) { goals ->
+            // In Profile, we might only want to show the most recent or all. 
+            // The requirement says "Exibir progresso das metas ativas".
+            goalsAdapter.submitList(goals)
+        }
     }
 
     private fun configRow(
@@ -77,41 +103,18 @@ class ProfileFragment : Fragment() {
         tvTitle.text = title
 
         if (isDestructive) {
-            tvTitle.setTextColor(
-                resources.getColor(R.color.text_red, null)
-            )
+            tvTitle.setTextColor(resources.getColor(R.color.text_red, null))
             ivIcon.setColorFilter(resources.getColor(R.color.text_red, null))
             rowView.findViewById<TextView>(R.id.tvRowArrow).visibility = View.GONE
         }
     }
 
     private fun setupMenuRows() {
-        configRow(
-            binding.rowReadingHistory.root,
-            R.drawable.ic_history,
-            getString(R.string.profile_menu_history)
-        )
-        configRow(
-            binding.rowReadingGoals.root,
-            R.drawable.ic_flag,
-            getString(R.string.profile_menu_goals)
-        )
-        configRow(
-            binding.rowFines.root,
-            R.drawable.ic_payments,
-            getString(R.string.profile_menu_fines)
-        )
-        configRow(
-            binding.rowChangePassword.root,
-            R.drawable.ic_lock,
-            getString(R.string.profile_menu_password)
-        )
-        configRow(
-            binding.rowLogout.root,
-            R.drawable.ic_exit_to_app,
-            getString(R.string.profile_menu_logout),
-            isDestructive = true
-        )
+        configRow(binding.rowReadingHistory.root, R.drawable.ic_history, getString(R.string.profile_menu_history))
+        configRow(binding.rowReadingGoals.root, R.drawable.ic_flag, getString(R.string.profile_menu_goals))
+        configRow(binding.rowFines.root, R.drawable.ic_payments, getString(R.string.profile_menu_fines))
+        configRow(binding.rowChangePassword.root, R.drawable.ic_lock, getString(R.string.profile_menu_password))
+        configRow(binding.rowLogout.root, R.drawable.ic_exit_to_app, getString(R.string.profile_menu_logout), isDestructive = true)
     }
 
     private fun setupClickListeners() {
@@ -122,26 +125,21 @@ class ProfileFragment : Fragment() {
                 onSave = { name, course ->
                     binding.tvUserName.text = name
                     binding.tvUserCourse.text = course
-
-                    val initials = name
-                        .split(" ")
-                        .filter { it.isNotBlank() }
-                        .take(2)
-                        .joinToString("") { it.first().uppercase() }
-                    binding.tvAvatar.text = initials
-
-                    Snackbar.make(
-                        binding.root,
-                        "Perfil atualizado com sucesso!",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    Snackbar.make(binding.root, "Perfil atualizado com sucesso!", Snackbar.LENGTH_SHORT).show()
                 }
             )
             bottomSheet.show(childFragmentManager, EditProfileBottomSheet.TAG)
         }
 
         binding.btnSettings.setOnClickListener {
-            openSettings()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, SettingsFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        binding.btnAddGoal.setOnClickListener {
+            showAddGoalDialog()
         }
 
         binding.rowReadingHistory.root.setOnClickListener {
@@ -152,7 +150,7 @@ class ProfileFragment : Fragment() {
         }
 
         binding.rowReadingGoals.root.setOnClickListener {
-            val intent = android.content.Intent(requireContext(), ReadingGoalsActivity::class.java)
+            val intent = Intent(requireContext(), ReadingGoalsActivity::class.java)
             startActivity(intent)
         }
 
@@ -171,11 +169,38 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun openSettings() {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, SettingsFragment())
-            .addToBackStack(null)
-            .commit()
+    private fun showAddGoalDialog() {
+        val dialogBinding = DialogAddGoalBinding.inflate(LayoutInflater.from(requireContext()))
+        
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setView(dialogBinding.root)
+            .create()
+
+        dialogBinding.btnSave.setOnClickListener {
+            val quantityStr = dialogBinding.etBooksQuantity.text.toString().trim()
+            val period = dialogBinding.etPeriod.text.toString().trim()
+
+            if (quantityStr.isEmpty() || period.isEmpty()) {
+                Toast.makeText(requireContext(), "Preencha todos os campos", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val quantity = quantityStr.toIntOrNull() ?: 0
+            if (quantity <= 0) {
+                Toast.makeText(requireContext(), "Quantidade inválida", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            goalsViewModel.addGoal(quantity, period)
+            dialog.dismiss()
+            Toast.makeText(requireContext(), "Meta adicionada!", Toast.LENGTH_SHORT).show()
+        }
+
+        dialogBinding.btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun showLogoutDialog() {
@@ -183,13 +208,6 @@ class ProfileFragment : Fragment() {
             .setTitle(getString(R.string.profile_logout_confirm_title))
             .setMessage(getString(R.string.profile_logout_confirm_msg))
             .setPositiveButton(getString(R.string.btn_logout)) { _, _ ->
-                val prefs = requireContext().getSharedPreferences("app_prefs", android.content.Context.MODE_PRIVATE)
-                prefs.edit().apply {
-                    putBoolean("is_logged_in", false)
-                    remove("user_role")
-                    remove("user_email")
-                }.apply()
-
                 val intent = Intent(requireActivity(), LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
