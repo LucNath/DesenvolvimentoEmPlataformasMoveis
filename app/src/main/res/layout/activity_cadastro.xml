@@ -77,29 +77,51 @@
             android:background="@drawable/input_background"
             android:paddingHorizontal="16dp" />
 
-        <EditText
-            android:id="@+id/etSenha"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSenha"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="@string/password_rules_hint"
-            android:textColorHint="@color/text_hint"
-            android:textColor="@color/text_primary"
-            android:inputType="textPassword"
-            android:background="@drawable/input_background"
-            android:paddingHorizontal="16dp" />
+            app:errorEnabled="true"
+            app:hintEnabled="false"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/text_hint">
 
-        <EditText
-            android:id="@+id/etConfirmarSenha"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSenha"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="@string/password_rules_hint"
+                android:inputType="textPassword"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_hint"
+                android:background="@drawable/input_background"
+                android:paddingHorizontal="16dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilConfirmarSenha"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="12dp"
-            android:hint="@string/confirm_password_hint"
-            android:textColorHint="@color/text_hint"
-            android:textColor="@color/text_primary"
-            android:inputType="textPassword"
-            android:background="@drawable/input_background"
-            android:paddingHorizontal="16dp" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:errorEnabled="true"
+            app:hintEnabled="false"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/text_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etConfirmarSenha"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="@string/confirm_password_hint"
+                android:inputType="textPassword"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_hint"
+                android:background="@drawable/input_background"
+                android:paddingHorizontal="16dp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCriarConta"

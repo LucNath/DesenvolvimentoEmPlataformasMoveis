@@ -174,4 +174,18 @@
     <string name="search_hint_books">Buscar livros</string>
     <string name="view_all">Ver todos</string>
     <string name="my_reservations_title">Minhas Reservas</string>
+
+    <!-- Reset Password -->
+    <string name="reset_password_title">Redefinir Senha</string>
+    <string name="reset_password_subtitle">Crie uma nova senha forte para acessar sua conta.</string>
+    <string name="new_password_hint">Nova senha</string>
+    <string name="btn_reset_password">Redefinir senha</string>
+    <string name="error_password_weak">A senha deve ter pelo menos 8 caracteres, incluindo um número e uma letra maiúscula</string>
+    <string name="error_passwords_dont_match">As senhas não coincidem</string>
+    <string name="success_password_reset">Senha redefinida com sucesso!</string>
+
+    <!-- Home Empty State -->
+    <string name="empty_state_title">Nenhum empréstimo por aqui ainda</string>
+    <string name="empty_state_subtitle">Explore o acervo e encontre seu próximo livro favorito!</string>
+    <string name="btn_explore_catalog">Explorar Acervo</string>
 </resources>

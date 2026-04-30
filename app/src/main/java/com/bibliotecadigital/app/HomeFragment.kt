@@ -28,34 +28,39 @@ class HomeFragment : Fragment() {
 
         binding.tvUserName.text = getString(R.string.user_name_placeholder)
 
-        setupLoans()
-        setupReservations()
+        setupListeners()
+        loadData()
     }
 
-    private fun setupLoans() {
-        val loans = listOf(
-            Loan(
-                id = "1",
-                title = "Código Limpo",
-                author = "Robert C. Martin",
-                dueDate = "Vence em 2 dias",
-                isUrgent = true,
-                coverRes = 0
-            ),
-            Loan(
-                id = "2",
-                title = "Direito Constitucional Esquematizado",
-                author = "Pedro Lenza",
-                dueDate = "Vence em 8 dias",
-                isUrgent = false,
-                coverRes = 0
-            )
-        )
+    private fun setupListeners() {
+        binding.btnExploreCatalog.setOnClickListener {
+            navigateToAcervo()
+        }
 
+        binding.tvVerTodosEmprestimos.setOnClickListener {
+            // Ação para ver todos os empréstimos
+        }
+
+        binding.tvVerTodasReservas.setOnClickListener {
+            navigateToAcervo()
+        }
+    }
+
+    private fun loadData() {
+        // Iniciando com listas vazias conforme solicitado.
+        // Ao integrar com o backend, estas listas serão preenchidas com dados reais.
+        val loans = emptyList<Loan>()
+        val reservations = emptyList<Reservation>()
+
+        setupLoansAdapter(loans)
+        setupReservationsAdapter(reservations)
+        
+        updateEmptyState(loans.isNotEmpty(), reservations.isNotEmpty())
+    }
+
+    private fun setupLoansAdapter(loans: List<Loan>) {
         val adapter = LoanAdapter(
-            onVerClick = { loan ->
-                // Navegação removida
-            },
+            onVerClick = { /* navegação */ },
             onRenovarClick = { loan ->
                 Snackbar.make(binding.root, "Renovação solicitada para: ${loan.title}", Snackbar.LENGTH_SHORT).show()
             }
@@ -68,46 +73,32 @@ class HomeFragment : Fragment() {
         adapter.submitList(loans)
     }
 
-    private fun setupReservations() {
-        val reservations = listOf(
-            Reservation(
-                id = "1",
-                title = "Algoritmos: Teoria e Prática",
-                author = "Cormen, Leiserson, Rivest",
-                coverRes = 0,
-                queuePosition = 3
-            ),
-            Reservation(
-                id = "2",
-                title = "Inteligência Artificial: Uma Abordagem Moderna",
-                author = "Stuart Russell, Peter Norvig",
-                coverRes = 0,
-                queuePosition = 1
-            ),
-            Reservation(
-                id = "3",
-                title = "Design Patterns: Elements of Reusable Object-Oriented Software",
-                author = "Erich Gamma, Richard Helm",
-                coverRes = 0,
-                queuePosition = 5
-            )
-        )
-
-        val adapter = ReservationAdapter { reservation ->
-             // Navegação removida
-        }
+    private fun setupReservationsAdapter(reservations: List<Reservation>) {
+        val adapter = ReservationAdapter { /* navegação */ }
 
         binding.rvReservations.apply {
             layoutManager = LinearLayoutManager(requireContext())
             this.adapter = adapter
-            isNestedScrollingEnabled = false
         }
         adapter.submitList(reservations)
+    }
 
-        binding.tvVerTodasReservas.setOnClickListener {
-            // Navegar para aba de Acervo ou filtro de reservas
-            (activity as? MainActivity)?.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavigation)?.selectedItemId = R.id.nav_acervo
-        }
+    private fun updateEmptyState(hasLoans: Boolean, hasReservations: Boolean) {
+        val isEmpty = !hasLoans && !hasReservations
+        
+        binding.layoutEmptyState.visibility = if (isEmpty) View.VISIBLE else View.GONE
+        
+        // Controla as seções de Empréstimos
+        binding.layoutLoansHeader.visibility = if (hasLoans) View.VISIBLE else View.GONE
+        binding.rvLoans.visibility = if (hasLoans) View.VISIBLE else View.GONE
+        
+        // Controla as seções de Reservas
+        binding.layoutReservationsHeader.visibility = if (hasReservations) View.VISIBLE else View.GONE
+        binding.rvReservations.visibility = if (hasReservations) View.VISIBLE else View.GONE
+    }
+
+    private fun navigateToAcervo() {
+        (activity as? MainActivity)?.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavigation)?.selectedItemId = R.id.nav_acervo
     }
 
     override fun onDestroyView() {
