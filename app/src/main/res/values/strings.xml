@@ -189,4 +189,17 @@
     <string name="empty_state_title">Nenhum empréstimo por aqui ainda</string>
     <string name="empty_state_subtitle">Explore o acervo e encontre seu próximo livro favorito!</string>
     <string name="btn_explore_catalog">Explorar Acervo</string>
+    <!-- Support & Feedback -->
+    <string name="support_title">Suporte e Feedback</string>
+    <string name="support_category_hint">Categoria</string>
+    <string name="support_description_hint">Descrição do problema</string>
+    <string name="support_btn_send">Enviar</string>
+    <string name="support_error_category">Selecione uma categoria</string>
+    <string name="support_error_description">A descrição deve ter pelo menos 20 caracteres</string>
+    <string name="support_success_msg">Feedback enviado com sucesso!</string>
+    <string name="support_cat_loan">Empréstimo</string>
+    <string name="support_cat_reservation">Reserva</string>
+    <string name="support_cat_access">Acesso</string>
+    <string name="support_cat_suggestion">Sugestão</string>
+    <string name="support_cat_other">Outro</string>
 </resources>

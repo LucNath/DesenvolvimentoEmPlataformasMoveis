@@ -122,6 +122,7 @@ class ProfileFragment : Fragment() {
         configRow(binding.rowReadingGoals.root, R.drawable.ic_flag, getString(R.string.profile_menu_goals))
         configRow(binding.rowFines.root, R.drawable.ic_payments, getString(R.string.profile_menu_fines))
         configRow(binding.rowChangePassword.root, R.drawable.ic_lock, getString(R.string.profile_menu_password))
+        configRow(binding.rowSupport.root, android.R.drawable.ic_menu_help, getString(R.string.support_title))
         configRow(binding.rowLogout.root, R.drawable.ic_exit_to_app, getString(R.string.profile_menu_logout), isDestructive = true)
     }
 
@@ -170,6 +171,10 @@ class ProfileFragment : Fragment() {
         binding.rowChangePassword.root.setOnClickListener {
             val bottomSheet = ChangePasswordBottomSheet()
             bottomSheet.show(childFragmentManager, ChangePasswordBottomSheet.TAG)
+        }
+
+        binding.rowSupport.root.setOnClickListener {
+            startActivity(android.content.Intent(requireContext(), SupportActivity::class.java))
         }
 
         binding.rowLogout.root.setOnClickListener {

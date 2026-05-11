@@ -252,6 +252,8 @@
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:background="#F3F4F6" />
                     <include layout="@layout/item_menu_row" android:id="@+id/rowChangePassword" />
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:background="#F3F4F6" />
+                    <include layout="@layout/item_menu_row" android:id="@+id/rowSupport" />
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:background="#F3F4F6" />
                     <include layout="@layout/item_menu_row" android:id="@+id/rowLogout" />
 
                 </LinearLayout>
