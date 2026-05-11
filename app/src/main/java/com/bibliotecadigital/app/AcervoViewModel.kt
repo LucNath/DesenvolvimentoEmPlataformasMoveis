@@ -80,13 +80,13 @@ class AcervoViewModel : ViewModel() {
 
     private suspend fun seedDatabase() {
         val mockBooks = listOf(
-            Book("1", "O Senhor dos Anéis", "J.R.R. Tolkien", "Literatura", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9780007136582", isMostBorrowed = true),
-            Book("2", "Direito Civil Contemporâneo", "Tartuce", "Direito", BookStatus.BORROWED, R.drawable.bg_cover_placeholder, "9788530983635"),
-            Book("3", "Cálculo A", "Diva Flemming", "Engenharia", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9788576051152"),
-            Book("4", "1984", "George Orwell", "Literatura", BookStatus.RESERVED, R.drawable.bg_cover_placeholder, "9780451524935", isMostBorrowed = true),
-            Book("5", "Princípios de Engenharia", "Holtzapple", "Engenharia", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9788521615439"),
-            Book("6", "Dom Casmurro", "Machado de Assis", "Literatura", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9788508044304"),
-            Book("7", "Código Penal Comentado", "Nucci", "Direito", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9788530983635", isMostBorrowed = true)
+            Book("1", "O Senhor dos Anéis", "J.R.R. Tolkien", "Literatura", BookStatus.AVAILABLE, "https://m.media-amazon.com/images/I/81hCVY69p8L.jpg", "9780007136582", isMostBorrowed = true),
+            Book("2", "Direito Civil Contemporâneo", "Tartuce", "Direito", BookStatus.BORROWED, "https://m.media-amazon.com/images/I/71D0Y7tG20L.jpg", "9788530983635"),
+            Book("3", "Cálculo A", "Diva Flemming", "Engenharia", BookStatus.AVAILABLE, "https://m.media-amazon.com/images/I/81S6ZIn2QSL.jpg", "9788576051152"),
+            Book("4", "1984", "George Orwell", "Literatura", BookStatus.RESERVED, "https://m.media-amazon.com/images/I/71kxa1-0mfL.jpg", "9780451524935", isMostBorrowed = true),
+            Book("5", "Princípios de Engenharia", "Holtzapple", "Engenharia", BookStatus.AVAILABLE, "https://m.media-amazon.com/images/I/41D8W5S+1zL.jpg", "9788521615439"),
+            Book("6", "Dom Casmurro", "Machado de Assis", "Literatura", BookStatus.AVAILABLE, "https://m.media-amazon.com/images/I/81p8OqL9rAL.jpg", "9788508044304"),
+            Book("7", "Código Penal Comentado", "Nucci", "Direito", BookStatus.AVAILABLE, "https://m.media-amazon.com/images/I/71Yy367Bw8L.jpg", "9788530983635", isMostBorrowed = true)
         )
         
         mockBooks.forEach { book ->

@@ -2,6 +2,7 @@ package com.bibliotecadigital.app
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import coil.load
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -24,7 +25,11 @@ class BookAdapter(private val onBookClick: ((Book) -> Unit)? = null) :
             tvTitle.text = book.title
             tvAuthor.text = book.author
             tvCategory.text = book.category
-            ivCover.setImageResource(book.coverRes)
+            ivCover.load(book.coverUrl) {
+                crossfade(true)
+                placeholder(R.drawable.bg_cover_placeholder)
+                error(R.drawable.bg_cover_placeholder)
+            }
 
             when (book.status) {
                 BookStatus.AVAILABLE -> {

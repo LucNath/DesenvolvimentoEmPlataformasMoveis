@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.bibliotecadigital.app" />
+                  <option name="mobileSdkAppId" value="1:35556831449:android:bf7e16e6532f663b000ec8" />
+                  <option name="projectId" value="biblioteca-digital-a1345" />
+                  <option name="projectNumber" value="35556831449" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

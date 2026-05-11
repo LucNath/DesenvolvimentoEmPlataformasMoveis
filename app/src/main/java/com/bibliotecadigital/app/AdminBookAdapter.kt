@@ -2,6 +2,7 @@ package com.bibliotecadigital.app
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import coil.load
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +26,11 @@ class AdminBookAdapter(
             tvTitle.text = book.title
             tvAuthor.text = book.author
             tvIsbn.text = "ISBN: ${book.isbn}"
-            ivBookCover.setImageResource(if (book.coverRes != 0) book.coverRes else R.drawable.bg_cover_placeholder)
+            ivBookCover.load(book.coverUrl) {
+                crossfade(true)
+                placeholder(R.drawable.bg_cover_placeholder)
+                error(R.drawable.bg_cover_placeholder)
+            }
 
             btnEdit.setOnClickListener { onEditClick(book) }
             btnDelete.setOnClickListener { onDeleteClick(book) }

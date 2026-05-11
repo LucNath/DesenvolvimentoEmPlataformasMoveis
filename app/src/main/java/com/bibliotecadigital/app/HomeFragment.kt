@@ -5,14 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bibliotecadigital.app.databinding.FragmentHomeBinding
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,10 +33,8 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.tvUserName.text = getString(R.string.user_name_placeholder)
-
         setupListeners()
-        loadData()
+        observeViewModel()
     }
 
     private fun setupListeners() {
@@ -46,23 +51,30 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun loadData() {
-        // Iniciando com listas vazias conforme solicitado.
-        // Ao integrar com o backend, estas listas serão preenchidas com dados reais.
-        val loans = emptyList<Loan>()
-        val reservations = emptyList<Reservation>()
-
-        setupLoansAdapter(loans)
-        setupReservationsAdapter(reservations)
-        
-        updateEmptyState(loans.isNotEmpty(), reservations.isNotEmpty())
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    binding.tvUserName.text = "Olá, ${state.userName}"
+                    
+                    setupLoansAdapter(state.loans)
+                    setupReservationsAdapter(state.reservations)
+                    updateEmptyState(state.loans.isNotEmpty(), state.reservations.isNotEmpty())
+                    
+                    if (state.error != null) {
+                        Snackbar.make(binding.root, state.error, Snackbar.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }
     }
 
     private fun setupLoansAdapter(loans: List<Loan>) {
         val adapter = LoanAdapter(
             onVerClick = { /* navegação */ },
             onRenovarClick = { loan ->
-                Snackbar.make(binding.root, "Renovação solicitada para: ${loan.title}", Snackbar.LENGTH_SHORT).show()
+                viewModel.renewLoan(loan)
+                Snackbar.make(binding.root, "Renovando empréstimo de: ${loan.title}", Snackbar.LENGTH_SHORT).show()
             }
         )
 

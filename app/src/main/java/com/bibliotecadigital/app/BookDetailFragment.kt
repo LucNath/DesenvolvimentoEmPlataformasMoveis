@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import coil.load
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -71,7 +72,11 @@ class BookDetailFragment : Fragment() {
         with(binding) {
             tvTitle.text = book.title
             tvAuthor.text = book.author
-            ivCover.setImageResource(book.coverRes)
+            ivCover.load(book.coverUrl) {
+                crossfade(true)
+                placeholder(R.drawable.bg_cover_placeholder)
+                error(R.drawable.bg_cover_placeholder)
+            }
             tvPublisher.text = book.publisher
             tvYear.text = book.year
             tvIsbn.text = book.isbn

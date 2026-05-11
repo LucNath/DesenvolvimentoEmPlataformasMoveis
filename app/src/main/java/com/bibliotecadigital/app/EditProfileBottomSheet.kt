@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.bibliotecadigital.app.databinding.DialogEditProfileBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -12,12 +13,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class EditProfileBottomSheet(
     private val currentName: String,
-    private val currentCourse: String,
-    private val onSave: (name: String, course: String) -> Unit
+    private val currentCourse: String
 ) : BottomSheetDialogFragment() {
 
     private var _binding: DialogEditProfileBinding? = null
     private val binding get() = _binding!!
+    
+    private val viewModel: ProfileViewModel by viewModels({ requireParentFragment() })
 
     override fun getTheme(): Int = R.style.AppBottomSheetDialogTheme
 
@@ -43,7 +45,7 @@ class EditProfileBottomSheet(
 
             if (!validateFields(name, course)) return@setOnClickListener
 
-            onSave(name, course)
+            viewModel.updateProfile(name, course)
             dismiss()
         }
 

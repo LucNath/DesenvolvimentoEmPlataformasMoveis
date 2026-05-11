@@ -5,12 +5,12 @@ enum class BookStatus {
 }
 
 data class Book(
-    val id: String,
-    val title: String,
-    val author: String,
-    val category: String,
-    val status: BookStatus,
-    val coverRes: Int,
+    val id: String = "",
+    val title: String = "",
+    val author: String = "",
+    val category: String = "",
+    val status: BookStatus = BookStatus.AVAILABLE,
+    val coverUrl: String = "",
     val isbn: String = "",
     val publisher: String = "",
     val year: String = "",

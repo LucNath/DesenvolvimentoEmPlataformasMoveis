@@ -2,6 +2,7 @@ package com.bibliotecadigital.app
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import coil.load
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -22,7 +23,11 @@ class MostBorrowedAdapter(private val onBookClick: ((Book) -> Unit)? = null) :
         with(holder.binding) {
             tvTitle.text = book.title
             tvAuthor.text = book.author
-            ivCover.setImageResource(book.coverRes)
+            ivCover.load(book.coverUrl) {
+                crossfade(true)
+                placeholder(R.drawable.bg_cover_placeholder)
+                error(R.drawable.bg_cover_placeholder)
+            }
 
             root.setOnClickListener {
                 onBookClick?.invoke(book)

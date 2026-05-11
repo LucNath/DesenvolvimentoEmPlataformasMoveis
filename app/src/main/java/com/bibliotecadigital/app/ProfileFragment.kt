@@ -8,12 +8,17 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bibliotecadigital.app.databinding.DialogAddGoalBinding
 import com.bibliotecadigital.app.databinding.FragmentProfileBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class ProfileFragment : Fragment() {
@@ -21,6 +26,7 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     
+    private val profileViewModel: ProfileViewModel by viewModels()
     private lateinit var goalsViewModel: ReadingGoalsViewModel
     private lateinit var goalsAdapter: ReadingGoalAdapter
 
@@ -39,7 +45,6 @@ class ProfileFragment : Fragment() {
         // Initialize ViewModel (Shared or activity scoped if needed, but here fragment scoped is fine for mock)
         goalsViewModel = ViewModelProvider(this)[ReadingGoalsViewModel::class.java]
         
-        setupUserData()
         setupMenuRows()
         setupFines()
         setupGoalsRecyclerView()
@@ -52,13 +57,11 @@ class ProfileFragment : Fragment() {
         goalsViewModel.refresh()
     }
 
-    private fun setupUserData() {
-        binding.tvAvatar.text = "LM"
-        binding.tvUserName.text = "Lucas Mendes"
-        binding.tvUserCourse.text = "Aluno · Direito"
-        binding.tvBorrowed.text = "2"
-        binding.tvReturned.text = "14"
-        binding.tvReserved.text = "1"
+    private fun setupUserData(user: User) {
+        binding.tvAvatar.text = user.name.take(2).uppercase()
+        binding.tvUserName.text = user.name
+        binding.tvUserCourse.text = user.course.ifEmpty { "Estudante" }
+        // binding.tvBorrowed.text = ... (será implementado na migração de empréstimos)
     }
 
     private fun setupFines() {
@@ -91,6 +94,24 @@ class ProfileFragment : Fragment() {
     }
 
     private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                profileViewModel.uiState.collect { state ->
+                    when (state) {
+                        is ProfileState.Loading -> {
+                            // Mostrar loading se necessário
+                        }
+                        is ProfileState.Success -> {
+                            setupUserData(state.user)
+                        }
+                        is ProfileState.Error -> {
+                            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        }
+
         goalsViewModel.goals.observe(viewLifecycleOwner) { goals ->
             // No perfil mostramos apenas metas em andamento para não poluir
             val activeGoals = goals.filter { it.status == GoalStatus.EM_ANDAMENTO }
@@ -130,12 +151,7 @@ class ProfileFragment : Fragment() {
         binding.btnEditProfile.setOnClickListener {
             val bottomSheet = EditProfileBottomSheet(
                 currentName = binding.tvUserName.text.toString(),
-                currentCourse = binding.tvUserCourse.text.toString(),
-                onSave = { name, course ->
-                    binding.tvUserName.text = name
-                    binding.tvUserCourse.text = course
-                    Snackbar.make(binding.root, "Perfil atualizado com sucesso!", Snackbar.LENGTH_SHORT).show()
-                }
+                currentCourse = binding.tvUserCourse.text.toString()
             )
             bottomSheet.show(childFragmentManager, EditProfileBottomSheet.TAG)
         }
