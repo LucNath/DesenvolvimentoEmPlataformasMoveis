@@ -161,6 +161,7 @@
     <string name="confirm_password_hint">Confirmar senha</string>
     <string name="btn_create_account">Criar conta</string>
     <string name="btn_already_have_account">Já tem uma conta? Login</string>
+    <string name="error_email_exists">O email informado já está cadastrado</string>
     <string name="home_greeting">Olá, bem-vindo de volta</string>
     <string name="loans_active_title">Empréstimos Ativos</string>
     <string name="notifications_btn_desc">Abrir notificações</string>

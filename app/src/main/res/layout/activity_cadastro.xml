@@ -53,17 +53,26 @@
             android:background="@drawable/input_background"
             android:paddingHorizontal="16dp" />
 
-        <EditText
-            android:id="@+id/etEmail"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilEmail"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="@string/email_inst_hint"
-            android:textColorHint="@color/text_hint"
-            android:textColor="@color/text_primary"
-            android:inputType="textEmailAddress"
-            android:background="@drawable/input_background"
-            android:paddingHorizontal="16dp" />
+            app:errorEnabled="true"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="@string/email_inst_hint"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_hint"
+                android:background="@drawable/input_background"
+                android:paddingHorizontal="16dp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <EditText
             android:id="@+id/etMatricula"

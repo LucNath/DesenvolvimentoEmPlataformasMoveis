@@ -53,8 +53,8 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.tvRegister.setOnClickListener {
-            // Ação para abrir tela de cadastro (se existir)
-            Toast.makeText(this, "Navegar para Cadastro", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, CadastroActivity::class.java)
+            startActivity(intent)
         }
     }
 }
