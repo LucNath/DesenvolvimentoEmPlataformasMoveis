@@ -5,18 +5,25 @@ import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.bibliotecadigital.app.databinding.ActivityMainBinding
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var appPrefs: AppPrefs
+    private lateinit var networkMonitor: NetworkMonitor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         appPrefs = AppPrefs(this)
+        networkMonitor = NetworkMonitor(this)
+        
         AppCompatDelegate.setDefaultNightMode(
             if (appPrefs.isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
         )
@@ -29,10 +36,26 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupNavigation()
+        setupNetworkMonitor()
 
         if (savedInstanceState == null) {
             loadFragment(HomeFragment())
         }
+        
+        binding.root.findViewById<View>(R.id.btnRetry)?.setOnClickListener {
+            // Recarrega o estado de rede ou apenas tenta dar o refresh na tela
+            // Como o NetworkMonitor já é reativo, ele vai atualizar o estado
+        }
+    }
+
+    private fun setupNetworkMonitor() {
+        val offlineLayout = binding.root.findViewById<View>(R.id.offline_layout)
+        
+        networkMonitor.isConnected
+            .onEach { isConnected ->
+                offlineLayout?.visibility = if (isConnected) View.GONE else View.VISIBLE
+            }
+            .launchIn(lifecycleScope)
     }
 
     private fun setupNavigation() {

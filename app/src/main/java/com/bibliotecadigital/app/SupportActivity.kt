@@ -4,13 +4,21 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.bibliotecadigital.app.databinding.ActivitySupportBinding
 import com.google.android.material.snackbar.Snackbar
 
 class SupportActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySupportBinding
-    private val viewModel: SupportViewModel by viewModels()
+    private val viewModel: SupportViewModel by viewModels {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return SupportViewModel(NetworkMonitor(applicationContext)) as T
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +77,15 @@ class SupportActivity : AppCompatActivity() {
             if (success) {
                 Snackbar.make(binding.root, R.string.support_success_msg, Snackbar.LENGTH_LONG).show()
                 clearFields()
+            }
+        }
+
+        viewModel.isConnected?.observe(this) { isConnected ->
+            binding.btnSend.isEnabled = isConnected
+            if (!isConnected) {
+                Snackbar.make(binding.root, "Sem conexão com a internet", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("OK") {}
+                    .show()
             }
         }
     }

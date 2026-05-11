@@ -17,6 +17,7 @@ sealed class CadastroResult {
 
 class CadastroViewModel : ViewModel() {
 
+    private val authRepository = AuthRepository()
     private val _cadastroResult = MutableStateFlow<CadastroResult>(CadastroResult.Idle)
     val cadastroResult: StateFlow<CadastroResult> = _cadastroResult
 
@@ -24,14 +25,24 @@ class CadastroViewModel : ViewModel() {
         viewModelScope.launch {
             _cadastroResult.value = CadastroResult.Loading
             
-            // Simulação de chamada de API
-            delay(1500)
+            val user = User(
+                id = "", // Será gerado pelo Firebase
+                name = nome,
+                email = email,
+                role = "user",
+                registrationDate = System.currentTimeMillis().toString()
+            )
 
-            // Regra de negócio simulada para e-mail duplicado
-            if (email == "teste@duplicado.com") {
-                _cadastroResult.value = CadastroResult.EmailDuplicado
-            } else {
+            val result = authRepository.cadastrar(user, senha)
+            
+            result.onSuccess {
                 _cadastroResult.value = CadastroResult.Success
+            }.onFailure { exception ->
+                if (exception.message?.contains("email address is already in use") == true) {
+                    _cadastroResult.value = CadastroResult.EmailDuplicado
+                } else {
+                    _cadastroResult.value = CadastroResult.Error(exception.message ?: "Erro desconhecido")
+                }
             }
         }
     }

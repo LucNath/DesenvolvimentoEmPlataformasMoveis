@@ -4,10 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class AcervoViewModel : ViewModel() {
 
-    private val _allBooks = MutableLiveData<List<Book>>()
+    private val db = FirebaseFirestore.getInstance()
+    private val _allBooks = MutableLiveData<List<Book>>(emptyList())
     
     private val _searchQuery = MutableLiveData("")
     val searchQuery: LiveData<String> = _searchQuery
@@ -48,10 +53,32 @@ class AcervoViewModel : ViewModel() {
     }
 
     init {
-        loadMockData()
+        loadBooks()
     }
 
-    private fun loadMockData() {
+    private fun loadBooks() {
+        viewModelScope.launch {
+            try {
+                val snapshot = db.collection("books").get().await()
+                val books = snapshot.documents.mapNotNull { doc ->
+                    // Converter documento Firestore para objeto Book
+                    // Para simplificar, assumimos que os campos batem ou usamos mapeamento manual
+                    val book = doc.toObject(Book::class.java)
+                    book?.copy(id = doc.id)
+                }
+                _allBooks.value = books
+                
+                // Se o Firestore estiver vazio, podemos popular com dados iniciais (opcional)
+                if (books.isEmpty()) {
+                    seedDatabase()
+                }
+            } catch (e: Exception) {
+                // Log error or update UI state
+            }
+        }
+    }
+
+    private suspend fun seedDatabase() {
         val mockBooks = listOf(
             Book("1", "O Senhor dos Anéis", "J.R.R. Tolkien", "Literatura", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9780007136582", isMostBorrowed = true),
             Book("2", "Direito Civil Contemporâneo", "Tartuce", "Direito", BookStatus.BORROWED, R.drawable.bg_cover_placeholder, "9788530983635"),
@@ -61,6 +88,10 @@ class AcervoViewModel : ViewModel() {
             Book("6", "Dom Casmurro", "Machado de Assis", "Literatura", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9788508044304"),
             Book("7", "Código Penal Comentado", "Nucci", "Direito", BookStatus.AVAILABLE, R.drawable.bg_cover_placeholder, "9788530983635", isMostBorrowed = true)
         )
+        
+        mockBooks.forEach { book ->
+            db.collection("books").document(book.id).set(book).await()
+        }
         _allBooks.value = mockBooks
     }
 

@@ -2,13 +2,19 @@ package com.bibliotecadigital.app
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.bibliotecadigital.app.databinding.ActivityLoginBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
+    private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,6 +22,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupListeners()
+        observeViewModel()
     }
 
     private fun setupListeners() {
@@ -29,24 +36,7 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.etPassword.text.toString()
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                val appPrefs = AppPrefs(this)
-                appPrefs.isLoggedIn = true
-                appPrefs.userEmail = email
-                
-                // Simulação simples: se o email contém "admin", loga como admin
-                if (email.contains("admin")) {
-                    appPrefs.userRole = "admin"
-                } else {
-                    appPrefs.userRole = "user"
-                }
-
-                val intent = if (appPrefs.userRole == "admin") {
-                    Intent(this, AdminDashboardActivity::class.java)
-                } else {
-                    Intent(this, MainActivity::class.java)
-                }
-                startActivity(intent)
-                finish()
+                viewModel.login(email, password)
             } else {
                 Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
             }
@@ -55,6 +45,41 @@ class LoginActivity : AppCompatActivity() {
         binding.tvRegister.setOnClickListener {
             val intent = Intent(this, CadastroActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            viewModel.loginResult.collectLatest { result ->
+                when (result) {
+                    is LoginResult.Loading -> {
+                        binding.btnLogin.isEnabled = false
+                        // Adicionar ProgressBar se houver
+                    }
+                    is LoginResult.Success -> {
+                        binding.btnLogin.isEnabled = true
+                        val appPrefs = AppPrefs(this@LoginActivity)
+                        appPrefs.isLoggedIn = true
+                        appPrefs.userEmail = binding.etEmail.text.toString()
+                        appPrefs.userRole = result.role
+
+                        val intent = if (result.role == "admin") {
+                            Intent(this@LoginActivity, AdminDashboardActivity::class.java)
+                        } else {
+                            Intent(this@LoginActivity, MainActivity::class.java)
+                        }
+                        startActivity(intent)
+                        finish()
+                    }
+                    is LoginResult.Error -> {
+                        binding.btnLogin.isEnabled = true
+                        Toast.makeText(this@LoginActivity, result.message, Toast.LENGTH_LONG).show()
+                    }
+                    else -> {
+                        binding.btnLogin.isEnabled = true
+                    }
+                }
+            }
         }
     }
 }
