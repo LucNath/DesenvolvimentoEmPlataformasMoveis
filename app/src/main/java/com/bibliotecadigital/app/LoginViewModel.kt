@@ -26,7 +26,7 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             _loginResult.value = LoginResult.Loading
             
-            val result = authRepository.login(email, senha)
+            val result = authRepository.signIn(email, senha)
             
             result.onSuccess { uid ->
                 try {
@@ -40,10 +40,13 @@ class LoginViewModel : ViewModel() {
                 }
             }.onFailure { exception ->
                 val errorMessage = when {
-                    exception.message?.contains("password") == true -> "Senha incorreta (RF01.3)"
-                    exception.message?.contains("user-not-found") == true -> "Usuário não encontrado (RF01.3)"
+                    exception.message?.contains("password") == true || 
+                    exception.message?.contains("wrong-password") == true -> "Senha incorreta (RF01.3)"
+                    exception.message?.contains("user-not-found") == true || 
+                    exception.message?.contains("no user record") == true -> "Usuário não encontrado (RF01.3)"
                     exception.message?.contains("invalid-email") == true -> "E-mail inválido"
-                    else -> exception.message ?: "Erro na autenticação"
+                    exception.message?.contains("network-request-failed") == true -> "Sem conexão com a internet"
+                    else -> "Falha na autenticação (RF01.3)"
                 }
                 _loginResult.value = LoginResult.Error(errorMessage)
             }
@@ -53,11 +56,15 @@ class LoginViewModel : ViewModel() {
     fun resetPassword(email: String) {
         viewModelScope.launch {
             _loginResult.value = LoginResult.Loading
-            val result = authRepository.enviarEmailRecuperacao(email)
+            val result = authRepository.sendPasswordResetEmail(email)
             result.onSuccess {
                 _loginResult.value = LoginResult.ResetEmailSent
             }.onFailure { exception ->
-                _loginResult.value = LoginResult.Error(exception.message ?: "Erro ao enviar e-mail")
+                val errorMessage = when {
+                    exception.message?.contains("user-not-found") == true -> "E-mail não cadastrado"
+                    else -> "Erro ao enviar e-mail de recuperação"
+                }
+                _loginResult.value = LoginResult.Error(errorMessage)
             }
         }
     }

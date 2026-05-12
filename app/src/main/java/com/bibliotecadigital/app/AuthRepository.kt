@@ -1,6 +1,7 @@
 package com.bibliotecadigital.app
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -8,7 +9,7 @@ class AuthRepository {
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
 
-    suspend fun cadastrar(user: User, senha: String): Result<Boolean> {
+    suspend fun signUp(user: User, senha: String): Result<Boolean> {
         return try {
             val result = auth.createUserWithEmailAndPassword(user.email, senha).await()
             val uid = result.user?.uid ?: throw Exception("Falha ao obter UID")
@@ -22,7 +23,7 @@ class AuthRepository {
         }
     }
 
-    suspend fun login(email: String, senha: String): Result<String> {
+    suspend fun signIn(email: String, senha: String): Result<String> {
         return try {
             val result = auth.signInWithEmailAndPassword(email, senha).await()
             Result.success(result.user?.uid ?: "")
@@ -35,7 +36,7 @@ class AuthRepository {
         auth.signOut()
     }
 
-    suspend fun enviarEmailRecuperacao(email: String): Result<Boolean> {
+    suspend fun sendPasswordResetEmail(email: String): Result<Boolean> {
         return try {
             auth.sendPasswordResetEmail(email).await()
             Result.success(true)
@@ -46,6 +47,10 @@ class AuthRepository {
 
     fun isUserLoggedIn(): Boolean {
         return auth.currentUser != null
+    }
+
+    fun getCurrentUser(): FirebaseUser? {
+        return auth.currentUser
     }
 
     fun getCurrentUserUid(): String? {

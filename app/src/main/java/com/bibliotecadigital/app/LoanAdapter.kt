@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.bibliotecadigital.app.databinding.ItemLoanBinding
 
 class LoanAdapter(
@@ -40,7 +41,10 @@ class LoanAdapter(
                 btnRenovar.visibility = View.GONE
             }
 
-            ivCover.setImageResource(if (item.coverRes != 0) item.coverRes else R.drawable.bg_cover_placeholder)
+            ivCover.load(item.coverUrl) {
+                placeholder(R.drawable.bg_cover_placeholder)
+                error(R.drawable.bg_cover_placeholder)
+            }
 
             btnVer.setOnClickListener { onVerClick(item) }
             btnRenovar.setOnClickListener { onRenovarClick(item) }

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.bibliotecadigital.app.databinding.ItemReservationBinding
 
 class ReservationAdapter(
@@ -25,8 +26,9 @@ class ReservationAdapter(
             tvAuthor.text = item.author
             tvQueue.text = "${item.queuePosition}º na fila de espera"
 
-            if (item.coverRes != 0) {
-                ivCover.setImageResource(item.coverRes)
+            ivCover.load(item.coverUrl) {
+                placeholder(R.drawable.bg_cover_placeholder)
+                error(R.drawable.bg_cover_placeholder)
             }
 
             btnVer.setOnClickListener { onVerClick(item) }

@@ -26,17 +26,17 @@ class CadastroViewModel : ViewModel() {
             _cadastroResult.value = CadastroResult.Loading
             
             val user = User(
-                id = "", // Será gerado pelo Firebase
+                id = "", // Gerado pelo Firebase
                 name = nome,
                 email = email,
                 role = "user",
-                registrationDate = System.currentTimeMillis().toString()
+                registrationDate = System.currentTimeMillis().toString(),
+                course = matricula // Usando campo matricula no campo course ou adaptando se necessário
             )
 
-            val result = authRepository.cadastrar(user, senha)
+            val result = authRepository.signUp(user, senha)
             
             result.onSuccess {
-                // Atualiza o UID no Firestore caso necessário, embora o AuthRepository já faça isso
                 _cadastroResult.value = CadastroResult.Success
             }.onFailure { exception ->
                 val errorMessage = when {
@@ -44,8 +44,9 @@ class CadastroViewModel : ViewModel() {
                         _cadastroResult.value = CadastroResult.EmailDuplicado
                         return@onFailure
                     }
-                    exception.message?.contains("weak-password") == true -> "A senha deve ter pelo menos 6 caracteres"
-                    else -> exception.message ?: "Erro desconhecido"
+                    exception.message?.contains("weak-password") == true -> "A senha deve ter pelo menos 6 caracteres (RF02.2)"
+                    exception.message?.contains("invalid-email") == true -> "E-mail inválido (RF02.3)"
+                    else -> "Erro ao realizar cadastro. Tente novamente."
                 }
                 _cadastroResult.value = CadastroResult.Error(errorMessage)
             }

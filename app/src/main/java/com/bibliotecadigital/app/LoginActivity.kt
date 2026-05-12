@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
 import com.bibliotecadigital.app.databinding.ActivityLoginBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -27,8 +28,12 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.tvForgotPassword.setOnClickListener {
-            val intent = Intent(this, ForgotPasswordActivity::class.java)
-            startActivity(intent)
+            val email = binding.etEmail.text.toString()
+            if (email.isNotEmpty()) {
+                viewModel.resetPassword(email)
+            } else {
+                binding.tilEmail.error = "Insira seu e-mail para recuperar a senha"
+            }
         }
 
         binding.btnLogin.setOnClickListener {
@@ -51,12 +56,17 @@ class LoginActivity : AppCompatActivity() {
     private fun observeViewModel() {
         lifecycleScope.launch {
             viewModel.loginResult.collectLatest { result ->
+                // Reset errors
+                binding.tilEmail.error = null
+                binding.tilPassword.error = null
+
                 when (result) {
                     is LoginResult.Loading -> {
                         binding.btnLogin.isEnabled = false
-                        // Adicionar ProgressBar se houver
+                        binding.progressBar.visibility = View.VISIBLE
                     }
                     is LoginResult.Success -> {
+                        binding.progressBar.visibility = View.GONE
                         binding.btnLogin.isEnabled = true
                         val appPrefs = AppPrefs(this@LoginActivity)
                         appPrefs.isLoggedIn = true
@@ -68,14 +78,28 @@ class LoginActivity : AppCompatActivity() {
                         } else {
                             Intent(this@LoginActivity, MainActivity::class.java)
                         }
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
                         finish()
                     }
                     is LoginResult.Error -> {
+                        binding.progressBar.visibility = View.GONE
                         binding.btnLogin.isEnabled = true
-                        Toast.makeText(this@LoginActivity, result.message, Toast.LENGTH_LONG).show()
+                        if (result.message.contains("E-mail") || result.message.contains("Usuário")) {
+                            binding.tilEmail.error = result.message
+                        } else if (result.message.contains("Senha")) {
+                            binding.tilPassword.error = result.message
+                        } else {
+                            Toast.makeText(this@LoginActivity, result.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                    is LoginResult.ResetEmailSent -> {
+                        binding.progressBar.visibility = View.GONE
+                        binding.btnLogin.isEnabled = true
+                        Snackbar.make(binding.root, "E-mail de recuperação enviado!", Snackbar.LENGTH_LONG).show()
                     }
                     else -> {
+                        binding.progressBar.visibility = View.GONE
                         binding.btnLogin.isEnabled = true
                     }
                 }
