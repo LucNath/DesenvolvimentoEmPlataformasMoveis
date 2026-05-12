@@ -92,8 +92,17 @@ class AcervoFragment : Fragment() {
                 isCheckable = true
                 isChecked = (category == viewModel.selectedCategory.value)
                 
-                setChipBackgroundColorResource(R.color.bg_card_inner)
-                setTextColor(resources.getColor(R.color.text_white, null))
+                // Estilo dos Chips baseado na seleção
+                if (isChecked) {
+                    setChipBackgroundColorResource(R.color.blue_royal)
+                    setTextColor(resources.getColor(R.color.white, null))
+                } else {
+                    setChipBackgroundColorResource(R.color.blue_ice)
+                    setTextColor(resources.getColor(R.color.blue_royal, null))
+                }
+                
+                setChipStrokeColorResource(R.color.blue_royal)
+                setChipStrokeWidth(1f)
                 
                 setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {

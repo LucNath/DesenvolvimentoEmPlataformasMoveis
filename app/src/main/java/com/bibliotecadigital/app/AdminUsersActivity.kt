@@ -6,17 +6,22 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bibliotecadigital.app.databinding.ActivityAdminUsersBinding
 import com.bibliotecadigital.app.databinding.DialogAddUserBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class AdminUsersActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAdminUsersBinding
+    private val viewModel: AdminUsersViewModel by viewModels()
     private lateinit var adapter: AdminUserAdapter
-    private var allUsers = mutableListOf<User>()
+    private var allUsers = listOf<User>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,34 +29,43 @@ class AdminUsersActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupToolbar()
-        loadMockUsers()
         setupRecyclerView()
         setupSearch()
         setupFab()
+        observeViewModel()
     }
 
     private fun setupToolbar() {
         binding.toolbar.setNavigationOnClickListener { finish() }
     }
 
-    private fun loadMockUsers() {
-        allUsers = mutableListOf(
-            User("1", "Lucas Mendes", "lucas@email.com", "admin", "10/01/2024"),
-            User("2", "Maria Silva", "maria@email.com", "user", "15/01/2024"),
-            User("3", "João Souza", "joao@email.com", "user", "20/01/2024"),
-            User("4", "Ana Costa", "ana@email.com", "user", "22/01/2024"),
-            User("5", "Pedro Rocha", "pedro@email.com", "user", "25/01/2024")
-        )
-    }
-
     private fun setupRecyclerView() {
         adapter = AdminUserAdapter(
-            allUsers,
+            emptyList(),
             onEdit = { user -> showUserDialog(user) },
             onDelete = { user -> confirmDelete(user) }
         )
         binding.rvUsers.layoutManager = LinearLayoutManager(this)
         binding.rvUsers.adapter = adapter
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            viewModel.uiState.collectLatest { state ->
+                when (state) {
+                    is AdminUsersState.Loading -> {
+                        // Mostrar progress se necessário
+                    }
+                    is AdminUsersState.Success -> {
+                        allUsers = state.users
+                        adapter.updateList(allUsers)
+                    }
+                    is AdminUsersState.Error -> {
+                        Toast.makeText(this@AdminUsersActivity, state.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
 
     private fun setupSearch() {
@@ -74,7 +88,7 @@ class AdminUsersActivity : AppCompatActivity() {
 
     private fun showUserDialog(user: User?) {
         val dialogBinding = DialogAddUserBinding.inflate(LayoutInflater.from(this))
-        val roles = arrayOf("admin", "user")
+        val roles = arrayOf("admin", "student")
         val roleAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, roles)
         dialogBinding.spinnerRole.setAdapter(roleAdapter)
 
@@ -93,21 +107,10 @@ class AdminUsersActivity : AppCompatActivity() {
                 val role = dialogBinding.spinnerRole.text.toString()
 
                 if (name.isNotEmpty() && email.isNotEmpty()) {
-                    if (user == null) {
-                        val newUser = User(
-                            (allUsers.size + 1).toString(),
-                            name, email, role, "27/04/2026"
-                        )
-                        allUsers.add(newUser)
-                        Toast.makeText(this, "Usuário adicionado", Toast.LENGTH_SHORT).show()
-                    } else {
-                        val index = allUsers.indexOfFirst { it.id == user.id }
-                        if (index != -1) {
-                            allUsers[index] = user.copy(name = name, email = email, role = role)
-                            Toast.makeText(this, "Usuário atualizado", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    adapter.updateList(allUsers)
+                    val userToSave = user?.copy(name = name, email = email, role = role)
+                        ?: User(uid = java.util.UUID.randomUUID().toString(), name = name, email = email, role = role)
+                    
+                    viewModel.saveUser(userToSave)
                 }
             }
             .setNegativeButton("Cancelar", null)
@@ -119,9 +122,7 @@ class AdminUsersActivity : AppCompatActivity() {
             .setTitle("Excluir Usuário")
             .setMessage("Tem certeza que deseja excluir ${user.name}?")
             .setPositiveButton("Excluir") { _, _ ->
-                allUsers.removeIf { it.id == user.id }
-                adapter.updateList(allUsers)
-                Toast.makeText(this, "Usuário removido", Toast.LENGTH_SHORT).show()
+                viewModel.deleteUser(user.uid)
             }
             .setNegativeButton("Cancelar", null)
             .show()

@@ -201,5 +201,7 @@
     <string name="support_cat_reservation">Reserva</string>
     <string name="support_cat_access">Acesso</string>
     <string name="support_cat_suggestion">Sugestão</string>
+    <string name="btn_google_login">Continuar com Google</string>
+    <string name="default_web_client_id" translatable="false">35556831449-i3ltkleqkuu2dlfqub534e945e1am9n9.apps.googleusercontent.com</string>
     <string name="support_cat_other">Outro</string>
 </resources>

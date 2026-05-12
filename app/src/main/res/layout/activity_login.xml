@@ -102,6 +102,21 @@
             android:backgroundTint="@color/blue_royal"
             app:cornerRadius="8dp" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGoogleLogin"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/btn_google_login"
+            android:textAllCaps="false"
+            android:textColor="?attr/colorOnSurface"
+            app:cornerRadius="8dp"
+            app:icon="@android:drawable/ic_menu_send"
+            app:iconGravity="textStart"
+            app:iconPadding="12dp"
+            app:strokeColor="?attr/colorOutline" />
+
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"

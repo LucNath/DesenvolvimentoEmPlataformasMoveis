@@ -2,6 +2,7 @@ package com.bibliotecadigital.app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuthException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -11,7 +12,7 @@ import kotlinx.coroutines.tasks.await
 sealed class LoginResult {
     object Idle : LoginResult()
     object Loading : LoginResult()
-    data class Success(val uid: String, val role: String) : LoginResult()
+    data class Success(val uid: String, val role: String, val email: String) : LoginResult()
     data class Error(val message: String) : LoginResult()
     object ResetEmailSent : LoginResult()
 }
@@ -29,28 +30,53 @@ class LoginViewModel : ViewModel() {
             val result = authRepository.signIn(email, senha)
             
             result.onSuccess { uid ->
-                try {
-                    val userDoc = db.collection("users").document(uid).get().await()
-                    val role = userDoc.getString("role") ?: "user"
-                    _loginResult.value = LoginResult.Success(uid, role)
-                } catch (e: Exception) {
-                    // Fallback se não conseguir ler do Firestore
-                    val role = if (email.contains("admin")) "admin" else "user"
-                    _loginResult.value = LoginResult.Success(uid, role)
-                }
+                fetchUserRoleAndFinish(uid, email)
             }.onFailure { exception ->
-                val errorMessage = when {
-                    exception.message?.contains("password") == true || 
-                    exception.message?.contains("wrong-password") == true -> "Senha incorreta (RF01.3)"
-                    exception.message?.contains("user-not-found") == true || 
-                    exception.message?.contains("no user record") == true -> "Usuário não encontrado (RF01.3)"
-                    exception.message?.contains("invalid-email") == true -> "E-mail inválido"
-                    exception.message?.contains("network-request-failed") == true -> "Sem conexão com a internet"
-                    else -> "Falha na autenticação (RF01.3)"
-                }
-                _loginResult.value = LoginResult.Error(errorMessage)
+                handleLoginFailure(exception)
             }
         }
+    }
+
+    fun loginWithGoogle(idToken: String) {
+        viewModelScope.launch {
+            _loginResult.value = LoginResult.Loading
+            val result = authRepository.signInWithGoogle(idToken)
+            result.onSuccess { uid ->
+                // O email pode ser pego do FirebaseAuth.getInstance().currentUser?.email
+                val email = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.email ?: ""
+                fetchUserRoleAndFinish(uid, email)
+            }.onFailure { exception ->
+                handleLoginFailure(exception)
+            }
+        }
+    }
+
+    private suspend fun fetchUserRoleAndFinish(uid: String, email: String) {
+        try {
+            val userDoc = db.collection("users").document(uid).get().await()
+            val role = userDoc.getString("role") ?: "student"
+            _loginResult.value = LoginResult.Success(uid, role, email)
+        } catch (e: Exception) {
+            // Fallback se não conseguir ler do Firestore
+            val role = if (email.contains("admin")) "admin" else "student"
+            _loginResult.value = LoginResult.Success(uid, role, email)
+        }
+    }
+
+    private fun handleLoginFailure(exception: Throwable) {
+        val errorMessage = if (exception is FirebaseAuthException) {
+            when (exception.errorCode) {
+                "ERROR_WRONG_PASSWORD" -> "Senha incorreta (RF01.3)"
+                "ERROR_USER_NOT_FOUND" -> "Usuário não encontrado (RF01.3)"
+                "ERROR_INVALID_EMAIL" -> "E-mail inválido"
+                "ERROR_USER_DISABLED" -> "Esta conta foi desativada"
+                "ERROR_NETWORK_REQUEST_FAILED" -> "Sem conexão com a internet"
+                else -> "Falha na autenticação: ${exception.message} (RF01.3)"
+            }
+        } else {
+            exception.message ?: "Falha na autenticação (RF01.3)"
+        }
+        _loginResult.value = LoginResult.Error(errorMessage)
     }
 
     fun resetPassword(email: String) {

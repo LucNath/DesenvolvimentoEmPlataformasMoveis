@@ -1,10 +1,15 @@
 package com.bibliotecadigital.app
 
+import com.google.firebase.Timestamp
+
 data class User(
-    val id: String = "",
+    val uid: String = "",
     val name: String = "",
     val email: String = "",
-    val role: String = "user", // "admin" or "user"
-    val registrationDate: String = "",
-    val course: String = ""
+    val matricula: String = "",
+    val course: String = "",
+    val role: String = "student",
+    val fcmToken: String = "",
+    val photoUrl: String = "",
+    val createdAt: Timestamp = Timestamp.now()
 )

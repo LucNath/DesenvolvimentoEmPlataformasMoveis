@@ -15,9 +15,10 @@ sealed class ProfileState {
     data class Error(val message: String) : ProfileState()
 }
 
-class ProfileViewModel : ViewModel() {
-    private val auth = FirebaseAuth.getInstance()
-    private val db = FirebaseFirestore.getInstance()
+class ProfileViewModel(
+    private val userRepository: UserRepository = UserRepository(),
+    private val authRepository: AuthRepository = AuthRepository()
+) : ViewModel() {
     
     private val _uiState = MutableStateFlow<ProfileState>(ProfileState.Loading)
     val uiState: StateFlow<ProfileState> = _uiState
@@ -27,37 +28,33 @@ class ProfileViewModel : ViewModel() {
     }
 
     fun loadUserProfile() {
-        val uid = auth.currentUser?.uid ?: return
+        val uid = authRepository.getCurrentUserUid() ?: return
         viewModelScope.launch {
             _uiState.value = ProfileState.Loading
-            try {
-                val snapshot = db.collection("users").document(uid).get().await()
-                val user = snapshot.toObject(User::class.java)
-                if (user != null) {
+            userRepository.getUser(uid)
+                .onSuccess { user ->
                     _uiState.value = ProfileState.Success(user)
-                } else {
-                    _uiState.value = ProfileState.Error("Usuário não encontrado")
                 }
-            } catch (e: Exception) {
-                _uiState.value = ProfileState.Error(e.message ?: "Erro ao carregar perfil")
-            }
+                .onFailure { e ->
+                    _uiState.value = ProfileState.Error(e.message ?: "Erro ao carregar perfil")
+                }
         }
     }
 
     fun updateProfile(name: String, course: String) {
-        val uid = auth.currentUser?.uid ?: return
+        val uid = authRepository.getCurrentUserUid() ?: return
         viewModelScope.launch {
-            try {
-                db.collection("users").document(uid).update(
-                    mapOf(
-                        "name" to name,
-                        "course" to course
-                    )
-                ).await()
-                loadUserProfile()
-            } catch (e: Exception) {
-                _uiState.value = ProfileState.Error(e.message ?: "Erro ao atualizar perfil")
-            }
+            val fields = mapOf(
+                "name" to name,
+                "course" to course
+            )
+            userRepository.updateUser(uid, fields)
+                .onSuccess {
+                    loadUserProfile()
+                }
+                .onFailure { e ->
+                    _uiState.value = ProfileState.Error(e.message ?: "Erro ao atualizar perfil")
+                }
         }
     }
 }

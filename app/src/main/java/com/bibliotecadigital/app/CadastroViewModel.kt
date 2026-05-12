@@ -2,6 +2,7 @@ package com.bibliotecadigital.app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuthException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,12 +27,12 @@ class CadastroViewModel : ViewModel() {
             _cadastroResult.value = CadastroResult.Loading
             
             val user = User(
-                id = "", // Gerado pelo Firebase
+                uid = "", // Gerado pelo Firebase
                 name = nome,
                 email = email,
-                role = "user",
-                registrationDate = System.currentTimeMillis().toString(),
-                course = matricula // Usando campo matricula no campo course ou adaptando se necessário
+                role = "student",
+                course = "", // Adicionado depois ou via matricula se for o caso
+                matricula = matricula
             )
 
             val result = authRepository.signUp(user, senha)
@@ -39,14 +40,19 @@ class CadastroViewModel : ViewModel() {
             result.onSuccess {
                 _cadastroResult.value = CadastroResult.Success
             }.onFailure { exception ->
-                val errorMessage = when {
-                    exception.message?.contains("email address is already in use") == true -> {
-                        _cadastroResult.value = CadastroResult.EmailDuplicado
-                        return@onFailure
+                val errorMessage = if (exception is FirebaseAuthException) {
+                    when (exception.errorCode) {
+                        "ERROR_EMAIL_ALREADY_IN_USE" -> {
+                            _cadastroResult.value = CadastroResult.EmailDuplicado
+                            return@onFailure
+                        }
+                        "ERROR_WEAK_PASSWORD" -> "A senha deve ter pelo menos 6 caracteres (RF02.2)"
+                        "ERROR_INVALID_EMAIL" -> "E-mail inválido (RF02.3)"
+                        "ERROR_NETWORK_REQUEST_FAILED" -> "Sem conexão com a internet"
+                        else -> "Erro na autenticação: ${exception.message}"
                     }
-                    exception.message?.contains("weak-password") == true -> "A senha deve ter pelo menos 6 caracteres (RF02.2)"
-                    exception.message?.contains("invalid-email") == true -> "E-mail inválido (RF02.3)"
-                    else -> "Erro ao realizar cadastro. Tente novamente."
+                } else {
+                    exception.message ?: "Erro ao realizar cadastro. Tente novamente."
                 }
                 _cadastroResult.value = CadastroResult.Error(errorMessage)
             }
