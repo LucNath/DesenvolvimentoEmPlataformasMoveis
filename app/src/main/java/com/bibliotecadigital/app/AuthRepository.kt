@@ -35,6 +35,19 @@ class AuthRepository {
         auth.signOut()
     }
 
+    suspend fun enviarEmailRecuperacao(email: String): Result<Boolean> {
+        return try {
+            auth.sendPasswordResetEmail(email).await()
+            Result.success(true)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return auth.currentUser != null
+    }
+
     fun getCurrentUserUid(): String? {
         return auth.currentUser?.uid
     }

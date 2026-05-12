@@ -36,13 +36,18 @@ class CadastroViewModel : ViewModel() {
             val result = authRepository.cadastrar(user, senha)
             
             result.onSuccess {
+                // Atualiza o UID no Firestore caso necessário, embora o AuthRepository já faça isso
                 _cadastroResult.value = CadastroResult.Success
             }.onFailure { exception ->
-                if (exception.message?.contains("email address is already in use") == true) {
-                    _cadastroResult.value = CadastroResult.EmailDuplicado
-                } else {
-                    _cadastroResult.value = CadastroResult.Error(exception.message ?: "Erro desconhecido")
+                val errorMessage = when {
+                    exception.message?.contains("email address is already in use") == true -> {
+                        _cadastroResult.value = CadastroResult.EmailDuplicado
+                        return@onFailure
+                    }
+                    exception.message?.contains("weak-password") == true -> "A senha deve ter pelo menos 6 caracteres"
+                    else -> exception.message ?: "Erro desconhecido"
                 }
+                _cadastroResult.value = CadastroResult.Error(errorMessage)
             }
         }
     }

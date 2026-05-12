@@ -178,9 +178,9 @@
 
     <!-- Reset Password -->
     <string name="reset_password_title">Redefinir Senha</string>
-    <string name="reset_password_subtitle">Crie uma nova senha forte para acessar sua conta.</string>
+    <string name="reset_password_subtitle">Insira seu e-mail institucional para receber um link de redefinição.</string>
     <string name="new_password_hint">Nova senha</string>
-    <string name="btn_reset_password">Redefinir senha</string>
+    <string name="btn_reset_password">Enviar link</string>
     <string name="error_password_weak">A senha deve ter pelo menos 8 caracteres, incluindo um número e uma letra maiúscula</string>
     <string name="error_passwords_dont_match">As senhas não coincidem</string>
     <string name="success_password_reset">Senha redefinida com sucesso!</string>

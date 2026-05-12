@@ -13,6 +13,7 @@ sealed class LoginResult {
     object Loading : LoginResult()
     data class Success(val uid: String, val role: String) : LoginResult()
     data class Error(val message: String) : LoginResult()
+    object ResetEmailSent : LoginResult()
 }
 
 class LoginViewModel : ViewModel() {
@@ -38,7 +39,25 @@ class LoginViewModel : ViewModel() {
                     _loginResult.value = LoginResult.Success(uid, role)
                 }
             }.onFailure { exception ->
-                _loginResult.value = LoginResult.Error(exception.message ?: "Falha na autenticação")
+                val errorMessage = when {
+                    exception.message?.contains("password") == true -> "Senha incorreta (RF01.3)"
+                    exception.message?.contains("user-not-found") == true -> "Usuário não encontrado (RF01.3)"
+                    exception.message?.contains("invalid-email") == true -> "E-mail inválido"
+                    else -> exception.message ?: "Erro na autenticação"
+                }
+                _loginResult.value = LoginResult.Error(errorMessage)
+            }
+        }
+    }
+
+    fun resetPassword(email: String) {
+        viewModelScope.launch {
+            _loginResult.value = LoginResult.Loading
+            val result = authRepository.enviarEmailRecuperacao(email)
+            result.onSuccess {
+                _loginResult.value = LoginResult.ResetEmailSent
+            }.onFailure { exception ->
+                _loginResult.value = LoginResult.Error(exception.message ?: "Erro ao enviar e-mail")
             }
         }
     }

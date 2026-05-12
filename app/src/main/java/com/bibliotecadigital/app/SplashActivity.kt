@@ -33,17 +33,23 @@ class SplashActivity : AppCompatActivity() {
 
     private fun checkNavigation() {
         val appPrefs = AppPrefs(this)
+        val authRepository = AuthRepository()
         
         val intent = when {
             !appPrefs.onboardingFinished -> Intent(this, OnboardingActivity::class.java)
-            appPrefs.isLoggedIn -> {
+            authRepository.isUserLoggedIn() -> {
+                // Sincroniza o estado de login local com o Firebase
+                appPrefs.isLoggedIn = true
                 if (appPrefs.userRole == "admin") {
                     Intent(this, AdminDashboardActivity::class.java)
                 } else {
                     Intent(this, MainActivity::class.java)
                 }
             }
-            else -> Intent(this, LoginActivity::class.java)
+            else -> {
+                appPrefs.isLoggedIn = false
+                Intent(this, LoginActivity::class.java)
+            }
         }
 
         startActivity(intent)

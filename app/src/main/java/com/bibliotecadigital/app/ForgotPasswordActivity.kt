@@ -1,14 +1,19 @@
 package com.bibliotecadigital.app
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.bibliotecadigital.app.databinding.ActivityForgotPasswordBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class ForgotPasswordActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityForgotPasswordBinding
-    private val passwordRegex = Regex("^(?=.*[A-Z])(?=.*\\d).{8,}$")
+    private val viewModel: LoginViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,6 +21,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupListeners()
+        observeViewModel()
     }
 
     private fun setupListeners() {
@@ -24,38 +30,35 @@ class ForgotPasswordActivity : AppCompatActivity() {
         }
 
         binding.btnReset.setOnClickListener {
-            resetErrors()
-            val newPassword = binding.etNewPassword.text.toString()
-            val confirmPassword = binding.etConfirmPassword.text.toString()
-
-            if (validatePassword(newPassword) && validateConfirmation(newPassword, confirmPassword)) {
-                // Lógica de sucesso
-                Toast.makeText(this, "Senha redefinida com sucesso!", Toast.LENGTH_SHORT).show()
-                // Aqui entraria a chamada ao backend futuramente
+            val email = binding.etEmailReset.text.toString()
+            if (email.isNotEmpty()) {
+                viewModel.resetPassword(email)
+            } else {
+                Toast.makeText(this, "Por favor, insira seu e-mail", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun resetErrors() {
-        binding.tilNewPassword.error = null
-        binding.tilConfirmPassword.error = null
-    }
-
-    private fun validatePassword(password: String): Boolean {
-        return if (!passwordRegex.matches(password)) {
-            binding.tilNewPassword.error = "A senha deve ter pelo menos 8 caracteres, incluindo um número e uma letra maiúscula"
-            false
-        } else {
-            true
-        }
-    }
-
-    private fun validateConfirmation(password: String, confirmation: String): Boolean {
-        return if (password != confirmation) {
-            binding.tilConfirmPassword.error = "As senhas não coincidem"
-            false
-        } else {
-            true
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            viewModel.loginResult.collectLatest { result ->
+                when (result) {
+                    is LoginResult.Loading -> {
+                        binding.btnReset.isEnabled = false
+                    }
+                    is LoginResult.ResetEmailSent -> {
+                        binding.btnReset.isEnabled = true
+                        Toast.makeText(this@ForgotPasswordActivity, 
+                            "E-mail de recuperação enviado!", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
+                    is LoginResult.Error -> {
+                        binding.btnReset.isEnabled = true
+                        Toast.makeText(this@ForgotPasswordActivity, result.message, Toast.LENGTH_LONG).show()
+                    }
+                    else -> {}
+                }
+            }
         }
     }
 }
