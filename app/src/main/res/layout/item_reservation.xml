@@ -74,6 +74,7 @@
             android:textSize="12sp"
             android:textColor="@color/blue_royal"
             android:paddingHorizontal="16dp"
+            app:cornerRadius="24dp"
             app:strokeColor="#F3F4F6" />
 
     </LinearLayout>

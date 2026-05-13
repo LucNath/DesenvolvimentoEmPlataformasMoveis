@@ -92,7 +92,7 @@
                 android:textColor="@color/blue_royal"
                 android:backgroundTint="@color/blue_ice"
                 android:paddingHorizontal="16dp"
-                app:cornerRadius="12dp"
+                app:cornerRadius="24dp"
                 android:layout_marginEnd="8dp" />
 
             <com.google.android.material.button.MaterialButton
@@ -105,7 +105,7 @@
                 android:textColor="@color/blue_royal"
                 android:backgroundTint="@color/blue_ice"
                 android:paddingHorizontal="16dp"
-                app:cornerRadius="12dp" />
+                app:cornerRadius="24dp" />
 
         </LinearLayout>
 

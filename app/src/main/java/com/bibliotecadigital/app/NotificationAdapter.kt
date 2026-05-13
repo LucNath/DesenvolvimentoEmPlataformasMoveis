@@ -4,13 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bibliotecadigital.app.databinding.ItemNotificationBinding
 
 class NotificationAdapter(
-    private var items: List<Notification>,
     private val onItemClick: (Notification) -> Unit
-) : RecyclerView.Adapter<NotificationAdapter.ViewHolder>() {
+) : ListAdapter<Notification, NotificationAdapter.ViewHolder>(NotificationDiffCallback()) {
 
     class ViewHolder(val binding: ItemNotificationBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -23,22 +24,25 @@ class NotificationAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items[position]
+        val item = getItem(position)
         with(holder.binding) {
             tvMessage.text = item.message
             tvTimestamp.text = item.timestamp
             
             // Destaque de não lida
             viewUnreadIndicator.visibility = if (item.isRead) View.GONE else View.VISIBLE
-            rootLayout.alpha = if (item.isRead) 0.7f else 1.0f
+            rootLayout.setBackgroundResource(if (item.isRead) R.color.white else R.color.blue_ice)
+            rootLayout.alpha = if (item.isRead) 0.8f else 1.0f
 
             // Ícone por tipo
-            val iconRes = when (item.type) {
-                NotificationType.LOAN_REMINDER -> android.R.drawable.ic_dialog_alert
-                NotificationType.RESERVATION_READY -> android.R.drawable.ic_input_add
-                NotificationType.SYSTEM_ALERT -> android.R.drawable.ic_dialog_info
+            val (iconRes, iconTint) = when (item.type) {
+                NotificationType.LOAN_REMINDER -> Pair(R.drawable.ic_notification, R.color.status_unavailable)
+                NotificationType.RESERVATION_READY -> Pair(R.drawable.ic_notification, R.color.status_available_text)
+                NotificationType.SYSTEM_ALERT -> Pair(R.drawable.ic_notification, R.color.blue_royal)
             }
             ivIcon.setImageResource(iconRes)
+            ivIcon.imageTintList = ContextCompat.getColorStateList(root.context, iconTint)
+            ivIcon.backgroundTintList = ContextCompat.getColorStateList(root.context, iconTint)?.withAlpha(40)
 
             root.setOnClickListener {
                 onItemClick(item)
@@ -46,10 +50,11 @@ class NotificationAdapter(
         }
     }
 
-    override fun getItemCount() = items.size
+    class NotificationDiffCallback : DiffUtil.ItemCallback<Notification>() {
+        override fun areItemsTheSame(oldItem: Notification, newItem: Notification): Boolean =
+            oldItem.id == newItem.id
 
-    fun updateData(newItems: List<Notification>) {
-        items = newItems
-        notifyDataSetChanged()
+        override fun areContentsTheSame(oldItem: Notification, newItem: Notification): Boolean =
+            oldItem == newItem
     }
 }

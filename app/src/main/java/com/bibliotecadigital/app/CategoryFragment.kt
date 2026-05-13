@@ -50,8 +50,8 @@ class CategoryFragment : Fragment() {
     }
 
     private fun setupUI() {
-        binding.tvCategoryTitle.text = category
-        binding.btnBack.setOnClickListener {
+        binding.toolbar.title = category
+        binding.toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
     }

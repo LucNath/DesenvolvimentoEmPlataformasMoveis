@@ -6,17 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bibliotecadigital.app.databinding.FragmentAcervoBinding
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class AcervoFragment : Fragment() {
 
     private var _binding: FragmentAcervoBinding? = null
     private val binding get() = _binding!!
     
-    private lateinit var viewModel: AcervoViewModel
+    private val viewModel: AcervoViewModel by viewModels()
     
     private lateinit var bookAdapter: BookAdapter
     private lateinit var mostBorrowedAdapter: MostBorrowedAdapter
@@ -32,7 +36,6 @@ class AcervoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this)[AcervoViewModel::class.java]
         
         setupRecyclerViews()
         setupSearch()
@@ -66,19 +69,31 @@ class AcervoFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.filteredBooks.observe(viewLifecycleOwner) { books ->
-            bookAdapter.submitList(books)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.filteredBooks
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .collectLatest { books ->
+                    bookAdapter.submitList(books)
+                }
         }
 
-        viewModel.mostBorrowedBooks.observe(viewLifecycleOwner) { books ->
-            mostBorrowedAdapter.submitList(books)
-            val visibility = if (books.isEmpty()) View.GONE else View.VISIBLE
-            binding.tvMostBorrowedHeader.visibility = visibility
-            binding.rvMostBorrowed.visibility = visibility
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.mostBorrowedBooks
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .collectLatest { books ->
+                    mostBorrowedAdapter.submitList(books)
+                    val visibility = if (books.isEmpty()) View.GONE else View.VISIBLE
+                    binding.tvMostBorrowedHeader.visibility = visibility
+                    binding.rvMostBorrowed.visibility = visibility
+                }
         }
 
-        viewModel.categories.observe(viewLifecycleOwner) { categories ->
-            setupCategoryChips(categories)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.categories
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .collectLatest { categories ->
+                    setupCategoryChips(categories)
+                }
         }
     }
 
@@ -92,7 +107,6 @@ class AcervoFragment : Fragment() {
                 isCheckable = true
                 isChecked = (category == viewModel.selectedCategory.value)
                 
-                // Estilo dos Chips baseado na seleção
                 if (isChecked) {
                     setChipBackgroundColorResource(R.color.blue_royal)
                     setTextColor(resources.getColor(R.color.white, null))

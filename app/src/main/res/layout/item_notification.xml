@@ -13,7 +13,7 @@
         android:layout_width="8dp"
         android:layout_height="8dp"
         android:background="@drawable/bg_badge_queue"
-        android:backgroundTint="@color/brand_orange"
+        android:backgroundTint="@color/blue_royal"
         app:layout_constraintTop_toTopOf="@id/ivIcon"
         app:layout_constraintStart_toStartOf="parent"
         android:visibility="visible" />

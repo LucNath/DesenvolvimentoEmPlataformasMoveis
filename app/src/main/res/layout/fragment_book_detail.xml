@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_dark">
+    android:background="@color/background_light">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_dark"
+        android:background="@color/white"
         app:elevation="0dp">
 
         <androidx.appcompat.widget.Toolbar
@@ -17,7 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="?attr/homeAsUpIndicator"
-            app:navigationIconTint="@color/text_white" />
+            app:navigationIconTint="@color/blue_royal"
+            app:title="Detalhes do Livro"
+            app:titleTextColor="@color/blue_royal" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -90,7 +92,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textColor="@color/text_white"
+                    android:textColor="@color/text_secondary_light"
                     android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/tvTitle"
@@ -115,7 +117,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Informações"
-                    android:textColor="@color/text_white"
+                    android:textColor="@color/text_primary_light"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -129,13 +131,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Editora: "
-                        android:textColor="@color/text_gray" />
+                        android:textColor="@color/text_secondary_light" />
 
                     <TextView
                         android:id="@+id/tvPublisher"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/text_white"
+                        android:textColor="@color/text_primary_light"
                         tools:text="HarperCollins" />
 
                     <TextView
@@ -143,14 +145,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Ano: "
-                        android:textColor="@color/text_gray" />
+                        android:textColor="@color/text_secondary_light" />
 
                     <TextView
                         android:id="@+id/tvYear"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:textColor="@color/text_white"
+                        android:textColor="@color/text_primary_light"
                         tools:text="1954" />
 
                     <TextView
@@ -158,14 +160,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="ISBN: "
-                        android:textColor="@color/text_gray" />
+                        android:textColor="@color/text_secondary_light" />
 
                     <TextView
                         android:id="@+id/tvIsbn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:textColor="@color/text_white"
+                        android:textColor="@color/text_primary_light"
                         tools:text="9780007136582" />
 
                     <TextView
@@ -173,14 +175,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:text="Prazo: "
-                        android:textColor="@color/text_gray" />
+                        android:textColor="@color/text_secondary_light" />
 
                     <TextView
                         android:id="@+id/tvLoanPeriod"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:textColor="@color/text_white"
+                        android:textColor="@color/text_primary_light"
                         tools:text="15 dias" />
                 </GridLayout>
 
@@ -189,7 +191,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:text="Sinopse"
-                    android:textColor="@color/text_white"
+                    android:textColor="@color/text_primary_light"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -199,7 +201,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:lineSpacingExtra="4dp"
-                    android:textColor="@color/text_gray"
+                    android:textColor="@color/text_secondary_light"
                     tools:text="O Senhor dos Anéis é uma trilogia de livros de alta fantasia escrita por J.R.R. Tolkien..." />
             </LinearLayout>
 
@@ -294,7 +296,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:visibility="gone"
-                app:cornerRadius="12dp"
+                app:cornerRadius="28dp"
                 tools:visibility="visible" />
 
             <com.google.android.material.button.MaterialButton
@@ -306,7 +308,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:visibility="gone"
-                app:cornerRadius="12dp"
+                app:cornerRadius="28dp"
                 tools:visibility="visible" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

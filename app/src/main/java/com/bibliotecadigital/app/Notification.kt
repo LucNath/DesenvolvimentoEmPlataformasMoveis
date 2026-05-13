@@ -1,10 +1,11 @@
 package com.bibliotecadigital.app
 
 data class Notification(
-    val id: String,
-    val message: String,
-    val type: NotificationType,
-    val timestamp: String,
+    val id: String = "",
+    val message: String = "",
+    val type: NotificationType = NotificationType.SYSTEM_ALERT,
+    val timestamp: String = "",
+    @field:JvmField
     var isRead: Boolean = false
 )
 

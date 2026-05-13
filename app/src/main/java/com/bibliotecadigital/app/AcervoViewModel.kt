@@ -1,56 +1,49 @@
 package com.bibliotecadigital.app
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class AcervoViewModel : ViewModel() {
 
     private val db = FirebaseFirestore.getInstance()
-    private val _allBooks = MutableLiveData<List<Book>>(emptyList())
+    private val _allBooks = MutableStateFlow<List<Book>>(emptyList())
     
-    private val _searchQuery = MutableLiveData("")
-    val searchQuery: LiveData<String> = _searchQuery
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery
 
-    private val _selectedCategory = MutableLiveData("Todas")
-    val selectedCategory: LiveData<String> = _selectedCategory
+    private val _selectedCategory = MutableStateFlow("Todas")
+    val selectedCategory: StateFlow<String> = _selectedCategory
 
-    val categories: LiveData<List<String>> = _allBooks.map { books ->
+    val categories: StateFlow<List<String>> = _allBooks.map { books ->
         val list = books.map { it.category }.distinct().sorted().toMutableList()
         list.add(0, "Todas")
         list
-    }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), listOf("Todas"))
 
-    val mostBorrowedBooks: LiveData<List<Book>> = _allBooks.map { books ->
+    val mostBorrowedBooks: StateFlow<List<Book>> = _allBooks.map { books ->
         books.filter { it.isMostBorrowed }
-    }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val filteredBooks: LiveData<List<Book>> = androidx.lifecycle.MediatorLiveData<List<Book>>().apply {
-        fun update() {
-            val query = _searchQuery.value ?: ""
-            val category = _selectedCategory.value ?: "Todas"
-            val books = _allBooks.value ?: emptyList()
-
-            value = books.filter { book ->
-                val matchesQuery = book.title.contains(query, ignoreCase = true) ||
-                        book.author.contains(query, ignoreCase = true) ||
-                        book.isbn.contains(query, ignoreCase = true)
-                
-                val matchesCategory = category == "Todas" || book.category == category
-                
-                matchesQuery && matchesCategory
-            }
+    val filteredBooks: StateFlow<List<Book>> = combine(_allBooks, _searchQuery, _selectedCategory) { books, query, category ->
+        books.filter { book ->
+            val matchesQuery = book.title.contains(query, ignoreCase = true) ||
+                    book.author.contains(query, ignoreCase = true) ||
+                    book.isbn.contains(query, ignoreCase = true)
+            
+            val matchesCategory = category == "Todas" || book.category == category
+            
+            matchesQuery && matchesCategory
         }
-
-        addSource(_allBooks) { update() }
-        addSource(_searchQuery) { update() }
-        addSource(_selectedCategory) { update() }
-    }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     init {
         loadBooks()
@@ -61,19 +54,16 @@ class AcervoViewModel : ViewModel() {
             try {
                 val snapshot = db.collection("books").get().await()
                 val books = snapshot.documents.mapNotNull { doc ->
-                    // Converter documento Firestore para objeto Book
-                    // Para simplificar, assumimos que os campos batem ou usamos mapeamento manual
                     val book = doc.toObject(Book::class.java)
                     book?.copy(id = doc.id)
                 }
                 _allBooks.value = books
                 
-                // Se o Firestore estiver vazio, podemos popular com dados iniciais (opcional)
                 if (books.isEmpty()) {
                     seedDatabase()
                 }
             } catch (e: Exception) {
-                // Log error or update UI state
+                // Log error
             }
         }
     }

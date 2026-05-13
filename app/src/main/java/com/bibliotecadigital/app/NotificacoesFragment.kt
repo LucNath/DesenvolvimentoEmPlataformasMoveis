@@ -4,17 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bibliotecadigital.app.databinding.FragmentNotificationsBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class NotificacoesFragment : Fragment() {
 
     private var _binding: FragmentNotificationsBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: NotificationsViewModel by viewModels()
     private lateinit var adapter: NotificationAdapter
-    private var notifications = mutableListOf<Notification>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,93 +35,50 @@ class NotificacoesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         setupRecyclerView()
-        loadMockNotifications()
+        observeViewModel()
 
         binding.tvMarkAllRead.setOnClickListener {
-            markAllAsRead()
+            viewModel.markAllAsRead()
         }
     }
 
     private fun setupRecyclerView() {
-        adapter = NotificationAdapter(notifications) { notification ->
-            markAsRead(notification)
+        adapter = NotificationAdapter { notification ->
+            viewModel.markAsRead(notification.id)
         }
         binding.rvNotifications.layoutManager = LinearLayoutManager(requireContext())
         binding.rvNotifications.adapter = adapter
-    }
 
-    private fun loadMockNotifications() {
-        notifications = mutableListOf(
-            Notification(
-                id = "1",
-                message = "O livro 'Código Limpo' deve ser devolvido em 2 dias.",
-                type = NotificationType.LOAN_REMINDER,
-                timestamp = "Há 2 horas",
-                isRead = false
-            ),
-            Notification(
-                id = "2",
-                message = "Sua reserva para 'Algoritmos' está disponível para retirada!",
-                type = NotificationType.RESERVATION_READY,
-                timestamp = "Há 5 horas",
-                isRead = false
-            ),
-            Notification(
-                id = "3",
-                message = "A biblioteca fechará mais cedo nesta sexta-feira devido ao feriado.",
-                type = NotificationType.SYSTEM_ALERT,
-                timestamp = "Ontem",
-                isRead = true
-            ),
-            Notification(
-                id = "4",
-                message = "Sua multa de R$ 5,00 foi processada e está pendente de pagamento.",
-                type = NotificationType.SYSTEM_ALERT,
-                timestamp = "Há 1 dia",
-                isRead = false
-            ),
-            Notification(
-                id = "5",
-                message = "Novo livro adicionado ao acervo: 'Design Patterns' de Erich Gamma.",
-                type = NotificationType.SYSTEM_ALERT,
-                timestamp = "Há 2 dias",
-                isRead = true
-            )
-        )
-        updateUI()
-    }
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean = false
 
-    private fun markAsRead(notification: Notification) {
-        val index = notifications.indexOf(notification)
-        if (index != -1 && !notification.isRead) {
-            notifications[index].isRead = true
-            adapter.notifyItemChanged(index)
-            Toast.makeText(requireContext(), "Notificação lida", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun markAllAsRead() {
-        var count = 0
-        notifications.forEachIndexed { index, notification ->
-            if (!notification.isRead) {
-                notification.isRead = true
-                adapter.notifyItemChanged(index)
-                count++
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val notification = adapter.currentList[position]
+                viewModel.deleteNotification(notification.id)
             }
-        }
-        if (count > 0) {
-            Toast.makeText(requireContext(), "Todas as notificações marcadas como lidas", Toast.LENGTH_SHORT).show()
+        })
+        itemTouchHelper.attachToRecyclerView(binding.rvNotifications)
+    }
+
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.notifications
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .collectLatest { notifications: List<Notification> ->
+                    adapter.submitList(notifications)
+                    updateVisibility(notifications)
+                }
         }
     }
 
-    private fun updateUI() {
+    private fun updateVisibility(notifications: List<Notification>) {
         if (notifications.isEmpty()) {
             binding.tvEmptyState.visibility = View.VISIBLE
             binding.rvNotifications.visibility = View.GONE
         } else {
             binding.tvEmptyState.visibility = View.GONE
             binding.rvNotifications.visibility = View.VISIBLE
-            adapter.updateData(notifications)
         }
     }
 

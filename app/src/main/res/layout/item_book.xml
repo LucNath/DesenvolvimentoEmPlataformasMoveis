@@ -100,7 +100,7 @@
                 android:textSize="13sp"
                 android:textStyle="bold"
                 app:backgroundTint="@color/blue_royal"
-                app:cornerRadius="12dp" />
+                app:cornerRadius="24dp" />
 
         </LinearLayout>
     </LinearLayout>
