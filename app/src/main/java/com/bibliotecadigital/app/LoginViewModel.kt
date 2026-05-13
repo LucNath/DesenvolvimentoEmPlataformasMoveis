@@ -37,20 +37,6 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun loginWithGoogle(idToken: String) {
-        viewModelScope.launch {
-            _loginResult.value = LoginResult.Loading
-            val result = authRepository.signInWithGoogle(idToken)
-            result.onSuccess { uid ->
-                // O email pode ser pego do FirebaseAuth.getInstance().currentUser?.email
-                val email = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.email ?: ""
-                fetchUserRoleAndFinish(uid, email)
-            }.onFailure { exception ->
-                handleLoginFailure(exception)
-            }
-        }
-    }
-
     private suspend fun fetchUserRoleAndFinish(uid: String, email: String) {
         try {
             val userDoc = db.collection("users").document(uid).get().await()

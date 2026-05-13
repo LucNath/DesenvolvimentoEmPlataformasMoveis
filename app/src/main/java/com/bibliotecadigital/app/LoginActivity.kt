@@ -4,15 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bibliotecadigital.app.databinding.ActivityLoginBinding
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -21,53 +16,17 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private val viewModel: LoginViewModel by viewModels()
-    private lateinit var googleSignInClient: GoogleSignInClient
-
-    private val googleSignInLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            try {
-                val account = task.getResult(ApiException::class.java)
-                val idToken = account.idToken
-                if (idToken != null) {
-                    viewModel.loginWithGoogle(idToken)
-                } else {
-                    Toast.makeText(this, "Erro ao obter ID Token", Toast.LENGTH_SHORT).show()
-                }
-            } catch (e: ApiException) {
-                Toast.makeText(this, "Erro no Google Sign-In: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupGoogleSignIn()
         setupListeners()
         observeViewModel()
     }
 
-    private fun setupGoogleSignIn() {
-        val webClientId = getString(R.string.default_web_client_id)
-
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(webClientId)
-            .requestEmail()
-            .build()
-
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
-    }
-
     private fun setupListeners() {
-        binding.btnGoogleLogin.setOnClickListener {
-            googleSignInLauncher.launch(googleSignInClient.signInIntent)
-        }
-
         binding.tvForgotPassword.setOnClickListener {
             val email = binding.etEmail.text.toString()
             if (email.isNotEmpty()) {
@@ -104,13 +63,11 @@ class LoginActivity : AppCompatActivity() {
                 when (result) {
                     is LoginResult.Loading -> {
                         binding.btnLogin.isEnabled = false
-                        binding.btnGoogleLogin.isEnabled = false
                         binding.progressBar.visibility = View.VISIBLE
                     }
                     is LoginResult.Success -> {
                         binding.progressBar.visibility = View.GONE
                         binding.btnLogin.isEnabled = true
-                        binding.btnGoogleLogin.isEnabled = true
                         
                         val appPrefs = AppPrefs(this@LoginActivity)
                         appPrefs.isLoggedIn = true
@@ -129,7 +86,6 @@ class LoginActivity : AppCompatActivity() {
                     is LoginResult.Error -> {
                         binding.progressBar.visibility = View.GONE
                         binding.btnLogin.isEnabled = true
-                        binding.btnGoogleLogin.isEnabled = true
                         
                         val msg = result.message.lowercase()
                         when {
@@ -147,13 +103,11 @@ class LoginActivity : AppCompatActivity() {
                     is LoginResult.ResetEmailSent -> {
                         binding.progressBar.visibility = View.GONE
                         binding.btnLogin.isEnabled = true
-                        binding.btnGoogleLogin.isEnabled = true
                         Snackbar.make(binding.root, "E-mail de recuperação enviado!", Snackbar.LENGTH_LONG).show()
                     }
                     else -> {
                         binding.progressBar.visibility = View.GONE
                         binding.btnLogin.isEnabled = true
-                        binding.btnGoogleLogin.isEnabled = true
                     }
                 }
             }

@@ -42,36 +42,6 @@ class AuthRepository {
         }
     }
 
-    suspend fun signInWithGoogle(idToken: String): Result<String> {
-        return try {
-            val credential = com.google.firebase.auth.GoogleAuthProvider.getCredential(idToken, null)
-            val result = auth.signInWithCredential(credential).await()
-            val user = result.user
-            val uid = user?.uid ?: ""
-            
-            // Verifica se o usuário já existe no Firestore, se não, cria
-            val doc = db.collection("users").document(uid).get().await()
-            if (!doc.exists()) {
-                val newUser = User(
-                    uid = uid,
-                    name = user?.displayName ?: "",
-                    email = user?.email ?: "",
-                    photoUrl = user?.photoUrl?.toString() ?: "",
-                    role = "student"
-                )
-                db.collection("users").document(uid).set(newUser).await()
-            }
-            
-            Result.success(uid)
-        } catch (e: FirebaseAuthException) {
-            Log.e("AuthRepository", "googleSignIn error: ${e.errorCode} - ${e.message}")
-            Result.failure(e)
-        } catch (e: Exception) {
-            Log.e("AuthRepository", "googleSignIn general error: ${e.message}", e)
-            Result.failure(e)
-        }
-    }
-
     fun logout() {
         auth.signOut()
     }
