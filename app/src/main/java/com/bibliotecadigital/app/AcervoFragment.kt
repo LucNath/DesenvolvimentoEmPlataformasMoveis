@@ -70,6 +70,14 @@ class AcervoFragment : Fragment() {
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.isLoading
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .collectLatest { isLoading ->
+                    binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+                }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.filteredBooks
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle)
                 .collectLatest { books ->

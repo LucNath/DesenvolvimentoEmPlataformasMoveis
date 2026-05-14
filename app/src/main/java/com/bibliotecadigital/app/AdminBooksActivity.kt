@@ -39,11 +39,11 @@ class AdminBooksActivity : AppCompatActivity() {
 
     private fun setupMockData() {
         allBooks = mutableListOf(
-            Book("1", "O Senhor dos Anéis", "J.R.R. Tolkien", "Fantasia", BookStatus.AVAILABLE, "", "9780007525546", "HarperCollins", "1954", availableQuantity = 5),
-            Book("2", "1984", "George Orwell", "Ficção Científica", BookStatus.AVAILABLE, "", "9780451524935", "Signet Classic", "1949", availableQuantity = 3),
-            Book("3", "Dom Casmurro", "Machado de Assis", "Clássico", BookStatus.BORROWED, "", "9788520921029", "Editora Nova Fronteira", "1899", availableQuantity = 2),
-            Book("4", "O Pequeno Príncipe", "Antoine de Saint-Exupéry", "Infantil", BookStatus.AVAILABLE, "", "9780156012195", "Harcourt", "1943", availableQuantity = 10),
-            Book("5", "Harry Potter", "J.K. Rowling", "Fantasia", BookStatus.BORROWED, "", "9780439708180", "Scholastic", "1997", availableQuantity = 4)
+            Book("1", "O Senhor dos Anéis", "J.R.R. Tolkien", "Fantasia", "", 5, 5, "available", "9780007525546", "", "HarperCollins", "1954"),
+            Book("2", "1984", "George Orwell", "Ficção Científica", "", 3, 3, "available", "9780451524935", "", "Signet Classic", "1949"),
+            Book("3", "Dom Casmurro", "Machado de Assis", "Clássico", "", 2, 2, "borrowed", "9788520921029", "", "Editora Nova Fronteira", "1899"),
+            Book("4", "O Pequeno Príncipe", "Antoine de Saint-Exupéry", "Infantil", "", 10, 10, "available", "9780156012195", "", "Harcourt", "1943"),
+            Book("5", "Harry Potter", "J.K. Rowling", "Fantasia", "", 4, 4, "borrowed", "9780439708180", "", "Scholastic", "1997")
         )
         filteredBooks.addAll(allBooks)
     }
@@ -97,7 +97,7 @@ class AdminBooksActivity : AppCompatActivity() {
             dialogBinding.etIsbn.setText(book.isbn)
             dialogBinding.etPublisher.setText(book.publisher)
             dialogBinding.etYear.setText(book.year)
-            dialogBinding.etQuantity.setText(book.availableQuantity.toString())
+            dialogBinding.etQuantity.setText(book.available.toString())
             dialogBinding.etCategory.setText(book.category)
         }
 
@@ -117,6 +117,7 @@ class AdminBooksActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            val quantity = dialogBinding.etQuantity.text.toString().toIntOrNull() ?: 1
             val updatedBook = Book(
                 id = book?.id ?: System.currentTimeMillis().toString(),
                 title = title,
@@ -124,9 +125,10 @@ class AdminBooksActivity : AppCompatActivity() {
                 isbn = isbn,
                 publisher = dialogBinding.etPublisher.text.toString(),
                 year = dialogBinding.etYear.text.toString(),
-                availableQuantity = dialogBinding.etQuantity.text.toString().toIntOrNull() ?: 1,
+                available = quantity,
+                total = quantity,
                 category = dialogBinding.etCategory.text.toString(),
-                status = book?.status ?: BookStatus.AVAILABLE,
+                status = book?.status ?: "available",
                 coverUrl = book?.coverUrl ?: ""
             )
 

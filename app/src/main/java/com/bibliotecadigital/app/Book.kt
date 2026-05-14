@@ -1,22 +1,20 @@
 package com.bibliotecadigital.app
 
-enum class BookStatus {
-    AVAILABLE, BORROWED, RESERVED
-}
+import com.google.firebase.Timestamp
 
 data class Book(
     val id: String = "",
     val title: String = "",
     val author: String = "",
     val category: String = "",
-    val status: BookStatus = BookStatus.AVAILABLE,
     val coverUrl: String = "",
+    val available: Int = 0,
+    val total: Int = 0,
+    val status: String = "available",
     val isbn: String = "",
+    val synopsis: String = "",
     val publisher: String = "",
     val year: String = "",
-    val synopsis: String = "",
-    val loanPeriod: String = "15 dias",
-    val availableQuantity: Int = 0,
-    val waitingListCount: Int = 0,
-    val isMostBorrowed: Boolean = false
+    val isMostBorrowed: Boolean = false,
+    val createdAt: Timestamp = Timestamp.now()
 )

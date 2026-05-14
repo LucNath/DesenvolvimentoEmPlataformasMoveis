@@ -80,31 +80,37 @@ class BookDetailFragment : Fragment() {
             tvPublisher.text = book.publisher
             tvYear.text = book.year
             tvIsbn.text = book.isbn
-            tvLoanPeriod.text = book.loanPeriod
+            tvLoanPeriod.text = "15 dias" // Mock loan period since it's not in Book model anymore
             tvSynopsis.text = book.synopsis
             
             // Status and Availability
             when (book.status) {
-                BookStatus.AVAILABLE -> {
+                "available" -> {
                     tvStatusLabel.text = "DISPONÍVEL"
                     tvStatusLabel.setBackgroundResource(R.drawable.bg_status_green)
                     tvStatusLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.green_text))
-                    tvAvailability.text = "${book.availableQuantity} exemplares disponíveis"
+                    tvAvailability.text = "${book.available} exemplares disponíveis"
                     btnLoan.visibility = View.VISIBLE
                     btnReserve.visibility = View.GONE
                 }
-                BookStatus.BORROWED, BookStatus.RESERVED -> {
-                    val statusText = if (book.status == BookStatus.BORROWED) "EMPRESTADO" else "RESERVADO"
-                    val bgRes = if (book.status == BookStatus.BORROWED) R.drawable.bg_status_red else R.drawable.bg_status_yellow
-                    val colorRes = if (book.status == BookStatus.BORROWED) R.color.text_red else R.color.star_yellow
+                "borrowed", "reserved" -> {
+                    val statusText = if (book.status == "borrowed") "EMPRESTADO" else "RESERVADO"
+                    val bgRes = if (book.status == "borrowed") R.drawable.bg_status_red else R.drawable.bg_status_yellow
+                    val colorRes = if (book.status == "borrowed") R.color.text_red else R.color.star_yellow
                     
                     tvStatusLabel.text = statusText
                     tvStatusLabel.setBackgroundResource(bgRes)
                     tvStatusLabel.setTextColor(ContextCompat.getColor(requireContext(), colorRes))
-                    tvAvailability.text = "Fila de espera: ${book.waitingListCount} pessoas"
+                    tvAvailability.text = "Fila de espera: 0 pessoas" // Waiting list logic to be implemented
                     
                     btnLoan.visibility = View.GONE
                     btnReserve.visibility = View.VISIBLE
+                }
+                else -> {
+                    tvStatusLabel.text = book.status.uppercase()
+                    tvStatusLabel.setBackgroundResource(R.drawable.bg_status_yellow)
+                    tvStatusLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.blue_royal))
+                    tvAvailability.text = "${book.available} exemplares"
                 }
             }
             

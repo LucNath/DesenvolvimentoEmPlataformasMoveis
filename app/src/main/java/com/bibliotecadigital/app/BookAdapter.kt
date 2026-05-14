@@ -32,20 +32,25 @@ class BookAdapter(private val onBookClick: ((Book) -> Unit)? = null) :
             }
 
             when (book.status) {
-                BookStatus.AVAILABLE -> {
+                "available" -> {
                     tvStatus.text = "DISPONÍVEL"
                     tvStatus.setBackgroundResource(R.drawable.bg_status_green)
                     tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.green_text))
                 }
-                BookStatus.BORROWED -> {
+                "borrowed" -> {
                     tvStatus.text = "EMPRESTADO"
                     tvStatus.setBackgroundResource(R.drawable.bg_status_red)
                     tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.text_red))
                 }
-                BookStatus.RESERVED -> {
+                "reserved" -> {
                     tvStatus.text = "RESERVADO"
                     tvStatus.setBackgroundResource(R.drawable.bg_status_yellow)
                     tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.star_yellow))
+                }
+                else -> {
+                    tvStatus.text = book.status.uppercase()
+                    tvStatus.setBackgroundResource(R.drawable.bg_status_yellow)
+                    tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.blue_royal))
                 }
             }
 

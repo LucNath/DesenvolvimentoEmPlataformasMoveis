@@ -10,20 +10,29 @@ import kotlinx.coroutines.tasks.await
 
 class BookDetailViewModel : ViewModel() {
 
-    private val db = FirebaseFirestore.getInstance()
+    private val bookRepository = BookRepository(FirebaseFirestore.getInstance())
     private val _book = MutableLiveData<Book>()
     val book: LiveData<Book> = _book
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
     fun loadBook(bookId: String) {
         viewModelScope.launch {
-            try {
-                val snapshot = db.collection("books").document(bookId).get().await()
-                val book = snapshot.toObject(Book::class.java)
-                if (book != null) {
-                    _book.value = book.copy(id = snapshot.id)
-                }
-            } catch (e: Exception) {
+            _isLoading.value = true
+            bookRepository.getBookById(bookId).onSuccess {
+                _book.value = it
+            }.onFailure {
                 // Handle error
+            }
+            _isLoading.value = false
+        }
+    }
+
+    fun updateBookAvailability(bookId: String, delta: Int) {
+        viewModelScope.launch {
+            bookRepository.updateAvailability(bookId, delta).onSuccess {
+                loadBook(bookId) // Reload to get updated data
             }
         }
     }
