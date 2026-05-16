@@ -17,7 +17,8 @@ class NotificationRepository(private val firestore: FirebaseFirestore = Firebase
             .orderBy("id", Query.Direction.DESCENDING) // Usando id como fallback se não houver timestamp real
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    close(error)
+                    android.util.Log.e("NotificationRepository", "Error listening to notifications", error)
+                    trySend(emptyList())
                     return@addSnapshotListener
                 }
                 

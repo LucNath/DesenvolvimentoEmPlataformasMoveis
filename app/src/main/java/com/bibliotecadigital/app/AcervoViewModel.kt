@@ -55,8 +55,14 @@ class AcervoViewModel : ViewModel() {
     private fun observeBooks() {
         viewModelScope.launch {
             _isLoading.value = true
-            bookRepository.getBooks().collect { books ->
-                _allBooks.value = books
+            try {
+                bookRepository.getBooks().collect { books ->
+                    _allBooks.value = books
+                    _isLoading.value = false
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("AcervoViewModel", "Error observing books", e)
+                _allBooks.value = emptyList()
                 _isLoading.value = false
             }
         }

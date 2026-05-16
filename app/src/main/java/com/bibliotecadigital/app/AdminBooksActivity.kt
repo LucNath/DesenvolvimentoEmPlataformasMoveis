@@ -12,16 +12,27 @@ import com.bibliotecadigital.app.databinding.ActivityAdminBooksBinding
 import com.bibliotecadigital.app.databinding.DialogAdminBookBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
+import android.net.Uri
+import androidx.lifecycle.lifecycleScope
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+
 class AdminBooksActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAdminBooksBinding
     private lateinit var adapter: AdminBookAdapter
     private var allBooks = mutableListOf<Book>()
     private var filteredBooks = mutableListOf<Book>()
+    private lateinit var bookRepository: BookRepository
+    private lateinit var storageRepository: StorageRepository
+    private var selectedImageUri: Uri? = null
 
     private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
-            Toast.makeText(this, "Imagem selecionada: $it", Toast.LENGTH_SHORT).show()
+            selectedImageUri = it
+            Toast.makeText(this, "Imagem selecionada", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -30,22 +41,23 @@ class AdminBooksActivity : AppCompatActivity() {
         binding = ActivityAdminBooksBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupMockData()
+        bookRepository = BookRepository(FirebaseFirestore.getInstance())
+        storageRepository = StorageRepository(FirebaseStorage.getInstance())
+        
         setupToolbar()
         setupRecyclerView()
         setupSearch()
         setupFab()
+        observeBooks()
     }
 
-    private fun setupMockData() {
-        allBooks = mutableListOf(
-            Book("1", "O Senhor dos Anéis", "J.R.R. Tolkien", "Fantasia", "", 5, 5, "available", "9780007525546", "", "HarperCollins", "1954"),
-            Book("2", "1984", "George Orwell", "Ficção Científica", "", 3, 3, "available", "9780451524935", "", "Signet Classic", "1949"),
-            Book("3", "Dom Casmurro", "Machado de Assis", "Clássico", "", 2, 2, "borrowed", "9788520921029", "", "Editora Nova Fronteira", "1899"),
-            Book("4", "O Pequeno Príncipe", "Antoine de Saint-Exupéry", "Infantil", "", 10, 10, "available", "9780156012195", "", "Harcourt", "1943"),
-            Book("5", "Harry Potter", "J.K. Rowling", "Fantasia", "", 4, 4, "borrowed", "9780439708180", "", "Scholastic", "1997")
-        )
-        filteredBooks.addAll(allBooks)
+    private fun observeBooks() {
+        lifecycleScope.launch {
+            bookRepository.getBooks().collectLatest { books ->
+                allBooks = books.toMutableList()
+                filter(binding.etSearch.text.toString())
+            }
+        }
     }
 
     private fun setupToolbar() {
@@ -119,7 +131,7 @@ class AdminBooksActivity : AppCompatActivity() {
 
             val quantity = dialogBinding.etQuantity.text.toString().toIntOrNull() ?: 1
             val updatedBook = Book(
-                id = book?.id ?: System.currentTimeMillis().toString(),
+                id = book?.id ?: "",
                 title = title,
                 author = author,
                 isbn = isbn,
@@ -132,19 +144,38 @@ class AdminBooksActivity : AppCompatActivity() {
                 coverUrl = book?.coverUrl ?: ""
             )
 
-            if (book == null) {
-                allBooks.add(0, updatedBook)
-                Toast.makeText(this, "Obra cadastrada!", Toast.LENGTH_SHORT).show()
-            } else {
-                val index = allBooks.indexOfFirst { it.id == book.id }
-                if (index != -1) {
-                    allBooks[index] = updatedBook
-                }
-                Toast.makeText(this, "Obra atualizada!", Toast.LENGTH_SHORT).show()
-            }
+            lifecycleScope.launch {
+                try {
+                    val finalBook = if (selectedImageUri != null) {
+                        val tempId = book?.id ?: FirebaseFirestore.getInstance().collection("books").document().id
+                        val imageUrl = storageRepository.uploadBookCover(tempId, selectedImageUri!!).getOrThrow()
+                        updatedBook.copy(id = tempId, coverUrl = imageUrl)
+                    } else {
+                        updatedBook
+                    }
 
-            filter(binding.etSearch.text.toString())
-            dialog.dismiss()
+                    val result = if (book == null && selectedImageUri == null) {
+                        bookRepository.addBook(finalBook)
+                    } else if (book == null) {
+                         // tempId already generated above
+                        bookRepository.updateBook(finalBook)
+                    } else {
+                        bookRepository.updateBook(finalBook)
+                    }
+
+                    result.onSuccess {
+                        Toast.makeText(this@AdminBooksActivity, 
+                            if (book == null) "Obra cadastrada!" else "Obra atualizada!", 
+                            Toast.LENGTH_SHORT).show()
+                        selectedImageUri = null
+                        dialog.dismiss()
+                    }.onFailure {
+                        Toast.makeText(this@AdminBooksActivity, "Erro ao salvar: ${it.message}", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(this@AdminBooksActivity, "Erro: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         dialog.show()
@@ -155,9 +186,13 @@ class AdminBooksActivity : AppCompatActivity() {
             .setTitle("Excluir Obra")
             .setMessage("Deseja realmente excluir '${book.title}'?")
             .setPositiveButton("Excluir") { _, _ ->
-                allBooks.remove(book)
-                filter(binding.etSearch.text.toString())
-                Toast.makeText(this, "Obra removida", Toast.LENGTH_SHORT).show()
+                lifecycleScope.launch {
+                    bookRepository.deleteBook(book.id).onSuccess {
+                        Toast.makeText(this@AdminBooksActivity, "Obra removida", Toast.LENGTH_SHORT).show()
+                    }.onFailure {
+                        Toast.makeText(this@AdminBooksActivity, "Erro ao remover: ${it.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
             .setNegativeButton("Cancelar", null)
             .show()

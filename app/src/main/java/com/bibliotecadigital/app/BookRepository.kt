@@ -33,6 +33,21 @@ class BookRepository(private val db: FirebaseFirestore) : FirestoreRepository(db
         return getDocument(booksCollection, bookId, Book::class.java)
     }
 
+    suspend fun addBook(book: Book): Result<String> = runCatching {
+        val docRef = db.collection(booksCollection).document()
+        val bookWithId = book.copy(id = docRef.id)
+        docRef.set(bookWithId).await()
+        docRef.id
+    }
+
+    suspend fun updateBook(book: Book): Result<Unit> = runCatching {
+        setDocument(booksCollection, book.id, book).getOrThrow()
+    }
+
+    suspend fun deleteBook(bookId: String): Result<Unit> = runCatching {
+        deleteDocument(booksCollection, bookId).getOrThrow()
+    }
+
     suspend fun updateAvailability(bookId: String, delta: Int): Result<Unit> = runCatching {
         db.runTransaction { transaction ->
             val ref = db.collection(booksCollection).document(bookId)

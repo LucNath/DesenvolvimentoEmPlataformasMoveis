@@ -29,7 +29,9 @@ open class FirestoreRepository(private val db: FirebaseFirestore) {
     fun <T : Any> getCollection(collection: String, clazz: Class<T>): Flow<List<T>> = callbackFlow {
         val registration = db.collection(collection).addSnapshotListener { snapshot, error ->
             if (error != null) {
-                close(error)
+                android.util.Log.e("FirestoreRepository", "Error listening to collection: $collection", error)
+                // Emit empty list or handle error without closing the flow with exception
+                trySend(emptyList())
                 return@addSnapshotListener
             }
             if (snapshot != null) {
@@ -51,7 +53,8 @@ open class FirestoreRepository(private val db: FirebaseFirestore) {
         
         val registration = query.addSnapshotListener { snapshot, error ->
             if (error != null) {
-                close(error)
+                android.util.Log.e("FirestoreRepository", "Error listening to filtered collection: $collection", error)
+                trySend(emptyList())
                 return@addSnapshotListener
             }
             if (snapshot != null) {
