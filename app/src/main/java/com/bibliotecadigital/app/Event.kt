@@ -1,11 +1,14 @@
 package com.bibliotecadigital.app
 
+import com.google.firebase.firestore.DocumentId
+
 data class Event(
-    val id: String,
-    val name: String,
-    val date: String,
-    val time: String,
-    val facilitator: String,
-    var availableSpots: Int,
-    var isRegistered: Boolean = false
+    @DocumentId val id: String = "",
+    val name: String = "",
+    val date: String = "",
+    val time: String = "",
+    val facilitator: String = "",
+    val totalSlots: Int = 0,
+    val usedSlots: Int = 0,
+    val participants: List<String> = emptyList()
 )

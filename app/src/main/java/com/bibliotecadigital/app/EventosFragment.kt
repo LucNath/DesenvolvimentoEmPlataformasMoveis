@@ -8,17 +8,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bibliotecadigital.app.databinding.FragmentEventosBinding
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 class EventosFragment : Fragment() {
 
     private var _binding: FragmentEventosBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: EventViewModel by viewModels()
     private lateinit var eventAdapter: EventAdapter
-    private var allEvents = mutableListOf<Event>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,27 +37,19 @@ class EventosFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupMockData()
-        setupCalendar()
+        
         setupRecyclerView()
-    }
-
-    private fun setupMockData() {
-        allEvents = mutableListOf(
-            Event("1", "Clube de Leitura: 1984", "15 Out", "19:00", "Prof. Ricardo Silva", 12),
-            Event("2", "Oficina de Poesia", "15 Out", "14:00", "Maria Oliveira", 0),
-            Event("3", "Palestra: IA na Literatura", "16 Out", "10:00", "Dr. Fabio Santos", 50),
-            Event("4", "Workshop de Escrita", "17 Out", "15:30", "Ana Costa", 8),
-            Event("5", "Lançamento de Livro", "18 Out", "18:00", "Autor Convidado", 100)
-        )
+        setupCalendar()
+        observeViewModel()
     }
 
     private fun setupCalendar() {
-        val days = listOf("15\nOut", "16\nOut", "17\nOut", "18\nOut", "19\nOut", "20\nOut", "21\nOut")
+        // Datas para o cabeçalho (exemplo fixo mantendo a lógica de UI original)
+        val days = listOf("Todas", "15 Out", "16 Out", "17 Out", "18 Out", "19 Out", "20 Out")
         
         days.forEachIndexed { index, day ->
             val textView = TextView(requireContext()).apply {
-                text = day
+                text = day.replace(" ", "\n")
                 gravity = Gravity.CENTER
                 setPadding(32, 16, 32, 16)
                 setTextColor(Color.WHITE)
@@ -65,8 +63,10 @@ class EventosFragment : Fragment() {
                 }
                 layoutParams = params
 
-                if (index == 0) {
+                // Estado inicial
+                if (day == "Todas") {
                     setBackgroundResource(R.drawable.bg_tag_orange)
+                    viewModel.setSelectedDate("Todas")
                 } else {
                     setBackgroundResource(R.drawable.bg_card)
                 }
@@ -79,30 +79,55 @@ class EventosFragment : Fragment() {
                     // Seleciona o atual
                     setBackgroundResource(R.drawable.bg_tag_orange)
                     
-                    val dateFilter = day.replace("\n", " ")
-                    filterEvents(dateFilter)
+                    viewModel.setSelectedDate(day)
                 }
             }
             binding.llCalendar.addView(textView)
         }
     }
 
-    private fun filterEvents(date: String) {
-        val filtered = allEvents.filter { it.date == date }
-        eventAdapter.submitList(filtered)
-    }
-
     private fun setupRecyclerView() {
-        eventAdapter = EventAdapter { event ->
-            // Lógica adicional se necessário (ex: analytics)
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+        
+        eventAdapter = EventAdapter(userId) { event, isEnrolling ->
+            if (isEnrolling) {
+                viewModel.enrollEvent(event.id, userId)
+            } else {
+                viewModel.cancelEnrollment(event.id, userId)
+            }
         }
-        binding.rvEvents.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvEvents.adapter = eventAdapter
-        eventAdapter.submitList(allEvents.filter { it.date == "15 Out" })
+        
+        binding.rvEvents.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = eventAdapter
+        }
     }
 
-    private fun Int.spToPx(): Float {
-        return this * resources.displayMetrics.scaledDensity
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.events.collect { events ->
+                        eventAdapter.submitList(events)
+                    }
+                }
+                
+                launch {
+                    viewModel.isLoading.collect { isLoading ->
+                        // Opcional: mostrar progress bar
+                    }
+                }
+
+                launch {
+                    viewModel.actionMessage.collect { message ->
+                        message?.let {
+                            Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
+                            viewModel.clearActionMessage()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {

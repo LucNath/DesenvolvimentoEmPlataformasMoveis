@@ -23,6 +23,7 @@ data class HomeUiState(
 class HomeViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
+    private val reservationRepository = ReservationRepository(db)
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState
@@ -33,30 +34,21 @@ class HomeViewModel : ViewModel() {
 
     fun loadData() {
         val uid = auth.currentUser?.uid ?: return
-        
+
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
-                // Carregar nome do usuário
                 val userSnapshot = db.collection("users").document(uid).get().await()
                 val name = userSnapshot.getString("name") ?: "Usuário"
 
-                // Carregar empréstimos
                 val loansSnapshot = db.collection("loans")
                     .whereEqualTo("userId", uid)
                     .get().await()
                 val loans = loansSnapshot.toObjects(Loan::class.java)
 
-                // Carregar reservas
-                val reservationsSnapshot = db.collection("reservations")
-                    .whereEqualTo("userId", uid)
-                    .get().await()
-                val reservations = reservationsSnapshot.toObjects(Reservation::class.java)
-
                 _uiState.value = _uiState.value.copy(
                     userName = name,
                     loans = loans,
-                    reservations = reservations,
                     isLoading = false
                 )
             } catch (e: Exception) {
@@ -64,6 +56,14 @@ class HomeViewModel : ViewModel() {
                     error = e.message ?: "Erro ao carregar dados",
                     isLoading = false
                 )
+            }
+        }
+
+        // Observa reservas em tempo real separadamente
+        viewModelScope.launch {
+            val uid2 = auth.currentUser?.uid ?: return@launch
+            reservationRepository.getReservations(uid2).collect { reservations ->
+                _uiState.value = _uiState.value.copy(reservations = reservations)
             }
         }
     }

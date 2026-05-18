@@ -8,5 +8,6 @@ data class Loan(
     val author: String = "",
     val dueDate: String = "",
     val isUrgent: Boolean = false,
-    val coverUrl: String = ""
+    val coverUrl: String = "",
+    val status: String = ""
 )

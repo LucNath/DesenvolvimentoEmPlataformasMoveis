@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bibliotecadigital.app.databinding.ItemReviewBinding
 
 class ReviewAdapter(
+    private val currentUserId: String,
     private val onEditClick: (Review) -> Unit,
     private val onDeleteClick: (Review) -> Unit
 ) : ListAdapter<Review, ReviewAdapter.ViewHolder>(ReviewDiffCallback()) {
@@ -27,20 +28,24 @@ class ReviewAdapter(
             tvComment.text = review.comment
             reviewRating.rating = review.rating
 
-            root.setOnLongClickListener {
-                android.widget.PopupMenu(root.context, it).apply {
-                    menu.add("Editar")
-                    menu.add("Excluir")
-                    setOnMenuItemClickListener { item ->
-                        when (item.title) {
-                            "Editar" -> onEditClick(review)
-                            "Excluir" -> onDeleteClick(review)
+            if (review.userId == currentUserId) {
+                root.setOnLongClickListener {
+                    android.widget.PopupMenu(root.context, it).apply {
+                        menu.add("Editar")
+                        menu.add("Excluir")
+                        setOnMenuItemClickListener { item ->
+                            when (item.title) {
+                                "Editar" -> onEditClick(review)
+                                "Excluir" -> onDeleteClick(review)
+                            }
+                            true
                         }
-                        true
+                        show()
                     }
-                    show()
+                    true
                 }
-                true
+            } else {
+                root.setOnLongClickListener(null)
             }
         }
     }

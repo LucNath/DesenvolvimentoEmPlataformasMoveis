@@ -1,6 +1,5 @@
 package com.bibliotecadigital.app
 
-import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -11,7 +10,8 @@ import com.bibliotecadigital.app.databinding.ItemEventBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class EventAdapter(
-    private val onRegistrationChanged: (Event) -> Unit
+    private val currentUserId: String,
+    private val onAction: (Event, Boolean) -> Unit // Boolean: true for enroll, false for cancel
 ) : ListAdapter<Event, EventAdapter.ViewHolder>(EventDiffCallback()) {
 
     class ViewHolder(val binding: ItemEventBinding) : RecyclerView.ViewHolder(binding.root)
@@ -23,29 +23,32 @@ class EventAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val event = getItem(position)
+        val isRegistered = event.participants.contains(currentUserId)
+        val availableSpots = event.totalSlots - event.usedSlots
+
         with(holder.binding) {
             tvEventName.text = event.name
             tvEventDateTime.text = "${event.date} · ${event.time}"
             tvFacilitator.text = event.facilitator
-            tvSpots.text = root.context.getString(R.string.spots_available, event.availableSpots)
+            tvSpots.text = root.context.getString(R.string.spots_available, availableSpots)
 
-            updateButtonStyle(this, event)
+            updateButtonStyle(this, isRegistered, availableSpots)
 
             btnRegister.setOnClickListener {
-                showConfirmationDialog(holder, event)
+                showConfirmationDialog(it.context, event, isRegistered)
             }
         }
     }
 
-    private fun updateButtonStyle(binding: ItemEventBinding, event: Event) {
+    private fun updateButtonStyle(binding: ItemEventBinding, isRegistered: Boolean, availableSpots: Int) {
         val context = binding.root.context
         when {
-            event.isRegistered -> {
+            isRegistered -> {
                 binding.btnRegister.text = context.getString(R.string.event_registered)
                 binding.btnRegister.isEnabled = true
                 binding.btnRegister.setBackgroundColor(ContextCompat.getColor(context, R.color.green_text))
             }
-            event.availableSpots <= 0 -> {
+            availableSpots <= 0 -> {
                 binding.btnRegister.text = context.getString(R.string.event_sold_out)
                 binding.btnRegister.isEnabled = false
                 binding.btnRegister.setBackgroundColor(ContextCompat.getColor(context, R.color.text_gray))
@@ -58,13 +61,12 @@ class EventAdapter(
         }
     }
 
-    private fun showConfirmationDialog(holder: ViewHolder, event: Event) {
-        val context = holder.binding.root.context
-        val title = if (event.isRegistered) 
+    private fun showConfirmationDialog(context: android.content.Context, event: Event, isRegistered: Boolean) {
+        val title = if (isRegistered) 
             context.getString(R.string.cancel_registration) 
             else context.getString(R.string.confirm_registration)
         
-        val message = if (event.isRegistered) 
+        val message = if (isRegistered) 
             context.getString(R.string.cancel_registration_msg, event.name) 
             else context.getString(R.string.confirm_registration_msg, event.name)
 
@@ -72,16 +74,7 @@ class EventAdapter(
             .setTitle(title)
             .setMessage(message)
             .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                // Note: In a real app, this should be handled by a ViewModel and the list updated
-                if (event.isRegistered) {
-                    event.isRegistered = false
-                    event.availableSpots++
-                } else {
-                    event.isRegistered = true
-                    event.availableSpots--
-                }
-                notifyItemChanged(holder.adapterPosition)
-                onRegistrationChanged(event)
+                onAction(event, !isRegistered)
             }
             .setNegativeButton(R.string.btn_cancel, null)
             .show()

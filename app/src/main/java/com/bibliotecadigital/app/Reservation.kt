@@ -1,11 +1,14 @@
 package com.bibliotecadigital.app
 
+import com.google.firebase.firestore.DocumentId
+
 data class Reservation(
-    val id: String = "",
+    @DocumentId val id: String = "",
     val userId: String = "",
     val bookId: String = "",
     val title: String = "",
     val author: String = "",
     val coverUrl: String = "",
-    val queuePosition: Int = 0
+    val queuePosition: Int = 0,
+    val status: String = "active"
 )

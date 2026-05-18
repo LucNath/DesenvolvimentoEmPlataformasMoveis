@@ -1,9 +1,10 @@
 package com.bibliotecadigital.app
 
+import com.google.firebase.firestore.DocumentId
 import com.google.firebase.Timestamp
 
 data class Book(
-    val id: String = "",
+    @DocumentId val id: String = "",
     val title: String = "",
     val author: String = "",
     val category: String = "",
@@ -16,5 +17,6 @@ data class Book(
     val publisher: String = "",
     val year: String = "",
     val isMostBorrowed: Boolean = false,
+    val rating: Float = 0f,
     val createdAt: Timestamp = Timestamp.now()
 )
