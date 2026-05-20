@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bibliotecadigital.app.databinding.FragmentBookDetailBinding
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -80,7 +81,7 @@ class BookDetailFragment : Fragment() {
             tvPublisher.text = book.publisher
             tvYear.text = book.year
             tvIsbn.text = book.isbn
-            tvLoanPeriod.text = "15 dias" // Mock loan period since it's not in Book model anymore
+            tvLoanPeriod.text = "15 dias" // Mock loan period
             tvSynopsis.text = book.synopsis
             
             // Status and Availability
@@ -101,7 +102,7 @@ class BookDetailFragment : Fragment() {
                     tvStatusLabel.text = statusText
                     tvStatusLabel.setBackgroundResource(bgRes)
                     tvStatusLabel.setTextColor(ContextCompat.getColor(requireContext(), colorRes))
-                    tvAvailability.text = "Fila de espera: 0 pessoas" // Waiting list logic to be implemented
+                    tvAvailability.text = "Fila de espera: 0 pessoas"
                     
                     btnLoan.visibility = View.GONE
                     btnReserve.visibility = View.VISIBLE
@@ -137,11 +138,14 @@ class BookDetailFragment : Fragment() {
     }
 
     private fun setupReviews() {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
         reviewsList.clear()
-        reviewsList.add(Review("1", "Maria Oliveira", bookId, 5f, "Livro fantástico!", "10/10/2023"))
-        reviewsList.add(Review("2", "Pedro Santos", bookId, 4f, "Muito bom.", "12/10/2023"))
+        // Corrigindo a instanciação de Review usando argumentos nomeados
+        reviewsList.add(Review(id = "1", userId = "u1", userName = "Maria Oliveira", bookId = bookId, rating = 5f, comment = "Livro fantástico!", date = "10/10/2023"))
+        reviewsList.add(Review(id = "2", userId = "u2", userName = "Pedro Santos", bookId = bookId, rating = 4f, comment = "Muito bom.", date = "12/10/2023"))
 
         reviewAdapter = ReviewAdapter(
+            currentUserId = currentUserId,
             onEditClick = { review -> editReview(review) },
             onDeleteClick = { review -> deleteReview(review) }
         )
@@ -178,9 +182,11 @@ class BookDetailFragment : Fragment() {
 
             val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             val currentDate = sdf.format(Date())
+            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: "anonymous"
 
             val newReview = Review(
                 id = System.currentTimeMillis().toString(),
+                userId = currentUserId,
                 userName = "Você",
                 bookId = bookId,
                 rating = rating,

@@ -7,6 +7,7 @@
     android:padding="24dp">
 
     <TextView
+        android:id="@+id/tvDialogTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Avaliar Obra"
@@ -22,7 +23,7 @@
         android:textColor="?attr/colorOnSurfaceVariant" />
 
     <RatingBar
-        android:id="@+id/ratingBarDialog"
+        android:id="@+id/ratingBarInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -46,5 +47,27 @@
             android:inputType="textMultiLine"
             android:lines="3" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancel"
+            style="?attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancelar" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSubmit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Enviar" />
+    </LinearLayout>
 
 </LinearLayout>
