@@ -21,6 +21,36 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
+        <FrameLayout
+            android:layout_width="120dp"
+            android:layout_height="180dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_cover_placeholder">
+
+            <ImageView
+                android:id="@+id/ivBookPreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:contentDescription="Preview da Capa" />
+
+            <ProgressBar
+                android:id="@+id/pbUpload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/btnSelectImage"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Selecionar Capa da Galeria" />
+
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -129,14 +159,6 @@
                 android:textColor="@color/text_white" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/btnSelectImage"
-            style="@style/Widget.Material3.Button.TonalButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:text="Selecionar Capa da Galeria" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -148,7 +170,7 @@
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:text="@string/btn_cancel"
+            android:text="Cancelar"
             android:textColor="@color/text_gray" />
 
         <Button
@@ -157,7 +179,7 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
-            android:text="@string/btn_save"
+            android:text="Salvar"
             android:backgroundTint="@color/brand_orange"
             android:textColor="@color/white" />
         </LinearLayout>

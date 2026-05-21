@@ -42,7 +42,7 @@ class AdminBooksActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         bookRepository = BookRepository(FirebaseFirestore.getInstance())
-        storageRepository = StorageRepository(FirebaseStorage.getInstance())
+        storageRepository = StorageRepository(FirebaseStorage.getInstance(), applicationContext)
         
         setupToolbar()
         setupRecyclerView()
@@ -148,7 +148,7 @@ class AdminBooksActivity : AppCompatActivity() {
                 try {
                     val finalBook = if (selectedImageUri != null) {
                         val tempId = book?.id ?: FirebaseFirestore.getInstance().collection("books").document().id
-                        val imageUrl = storageRepository.uploadBookCover(tempId, selectedImageUri!!).getOrThrow()
+                        val imageUrl = storageRepository.uploadCover(tempId, selectedImageUri!!).getOrThrow()
                         updatedBook.copy(id = tempId, coverUrl = imageUrl)
                     } else {
                         updatedBook
@@ -157,8 +157,7 @@ class AdminBooksActivity : AppCompatActivity() {
                     val result = if (book == null && selectedImageUri == null) {
                         bookRepository.addBook(finalBook)
                     } else if (book == null) {
-                         // tempId already generated above
-                        bookRepository.updateBook(finalBook)
+                        bookRepository.addBook(finalBook)
                     } else {
                         bookRepository.updateBook(finalBook)
                     }
@@ -188,6 +187,7 @@ class AdminBooksActivity : AppCompatActivity() {
             .setPositiveButton("Excluir") { _, _ ->
                 lifecycleScope.launch {
                     bookRepository.deleteBook(book.id).onSuccess {
+                        storageRepository.deleteCover(book.id)
                         Toast.makeText(this@AdminBooksActivity, "Obra removida", Toast.LENGTH_SHORT).show()
                     }.onFailure {
                         Toast.makeText(this@AdminBooksActivity, "Erro ao remover: ${it.message}", Toast.LENGTH_SHORT).show()
