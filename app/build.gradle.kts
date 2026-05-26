@@ -48,12 +48,17 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 }
 
 dependencies {
+    //Dependências Firebase
     implementation(platform(libs.firebase.bom))
+    //Autenticação
     implementation(libs.firebase.auth)
+    //Banco de dados
     implementation(libs.firebase.firestore)
+    //Armazenamento
     implementation(libs.firebase.storage)
-    implementation(libs.firebase.analytics)
-    implementation("com.google.android.gms:play-services-auth:21.3.0")
+    //Analise de uso
+    //implementation(libs.firebase.analytics)
+    implementation(libs.play.services.auth)
     implementation(libs.kotlinx.coroutines.play.services)
 
     implementation(libs.androidx.core.ktx)

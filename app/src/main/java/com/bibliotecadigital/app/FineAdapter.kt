@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bibliotecadigital.app.databinding.ItemFineBinding
+import com.bibliotecadigital.app.entity.Fine
+import com.bibliotecadigital.app.entity.FineStatus
 import java.util.Locale
 
 class FineAdapter(private val onPayClick: ((Fine) -> Unit)? = null) : ListAdapter<Fine, FineAdapter.ViewHolder>(FineDiffCallback()) {

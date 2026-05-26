@@ -16,12 +16,12 @@
         android:theme="@style/Theme.DEVWEB">
 
         <activity
-            android:name=".AdminDashboardActivity"
+            android:name=".ui.AdminDashboardActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
-            android:name=".AdminBooksActivity"
+            android:name=".ui.AdminBooksActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
@@ -31,17 +31,17 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
-            android:name=".FinesActivity"
+            android:name=".ui.FinesActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
-            android:name=".ReadingActivity"
+            android:name=".ui.ReadingActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
@@ -51,41 +51,41 @@
         </activity>
 
         <activity
-            android:name=".OnboardingActivity"
+            android:name=".ui.OnboardingActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.LoginActivity"
             android:exported="false" />
 
         <activity
-            android:name=".CadastroActivity"
+            android:name=".ui.CadastroActivity"
             android:exported="false" />
 
         <activity
-            android:name=".AdminUsersActivity"
+            android:name=".ui.AdminUsersActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="false" />
 
         <activity
-            android:name=".ForgotPasswordActivity"
+            android:name=".ui.ForgotPasswordActivity"
             android:exported="false" />
 
         <activity
-            android:name=".ReadingGoalsActivity"
+            android:name=".ui.ReadingGoalsActivity"
             android:exported="false" />
 
         <activity
-            android:name=".NotificationPrefsActivity"
+            android:name=".ui.NotificationPrefsActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".SupportActivity"
+            android:name=".ui.SupportActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>

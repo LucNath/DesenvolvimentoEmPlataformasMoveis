@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bibliotecadigital.app.databinding.ItemBookBinding
+import com.bibliotecadigital.app.entity.Book
 
-class BookAdapter(private val onBookClick: ((Book) -> Unit)? = null) : 
+class BookAdapter(private val onBookClick: ((Book) -> Unit)? = null) :
     ListAdapter<Book, BookAdapter.ViewHolder>(BookDiffCallback()) {
 
     class ViewHolder(val binding: ItemBookBinding) : RecyclerView.ViewHolder(binding.root)

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bibliotecadigital.app.databinding.ItemReadingHistoryBinding
+import com.bibliotecadigital.app.entity.ReadingHistoryEntry
 
 class ReadingHistoryAdapter : ListAdapter<ReadingHistoryEntry, ReadingHistoryAdapter.ViewHolder>(DiffCallback()) {
 

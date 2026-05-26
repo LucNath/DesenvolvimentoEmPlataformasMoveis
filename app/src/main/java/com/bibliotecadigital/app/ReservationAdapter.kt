@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.bibliotecadigital.app.databinding.ItemReservationBinding
+import com.bibliotecadigital.app.entity.Reservation
 
 class ReservationAdapter(
     private val onVerClick: (Reservation) -> Unit
