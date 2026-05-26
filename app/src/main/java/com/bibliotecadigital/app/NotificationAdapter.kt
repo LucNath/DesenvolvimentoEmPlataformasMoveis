@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bibliotecadigital.app.databinding.ItemNotificationBinding
+import com.bibliotecadigital.app.entity.Notification
+import com.bibliotecadigital.app.entity.NotificationType
 
 class NotificationAdapter(
     private val onItemClick: (Notification) -> Unit

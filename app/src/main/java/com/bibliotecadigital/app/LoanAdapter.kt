@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.bibliotecadigital.app.databinding.ItemLoanBinding
+import com.bibliotecadigital.app.entity.Loan
 
 class LoanAdapter(
     private val onVerClick: (Loan) -> Unit,

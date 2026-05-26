@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bibliotecadigital.app.databinding.ItemAdminBookBinding
+import com.bibliotecadigital.app.entity.Book
 
 class AdminBookAdapter(
     private val onEditClick: (Book) -> Unit,
