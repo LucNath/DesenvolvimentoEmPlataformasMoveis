@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bibliotecadigital.app.databinding.ItemBookBinding
 import com.bibliotecadigital.app.entity.Book
 
-class BookAdapter(private val onBookClick: ((Book) -> Unit)? = null) :
-    ListAdapter<Book, BookAdapter.ViewHolder>(BookDiffCallback()) {
+class BookAdapter(
+    private val onBookClick: (Book) -> Unit,
+    private val onReserveClick: (Book) -> Unit
+) : ListAdapter<Book, BookAdapter.ViewHolder>(BookDiffCallback()) {
 
     class ViewHolder(val binding: ItemBookBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -32,31 +34,28 @@ class BookAdapter(private val onBookClick: ((Book) -> Unit)? = null) :
                 error(R.drawable.bg_cover_placeholder)
             }
 
+            // Configuração de Status
             when (book.status) {
                 "available" -> {
                     tvStatus.text = "DISPONÍVEL"
                     tvStatus.setBackgroundResource(R.drawable.bg_status_green)
                     tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.green_text))
-                }
-                "borrowed" -> {
-                    tvStatus.text = "EMPRESTADO"
-                    tvStatus.setBackgroundResource(R.drawable.bg_status_red)
-                    tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.text_red))
-                }
-                "reserved" -> {
-                    tvStatus.text = "RESERVADO"
-                    tvStatus.setBackgroundResource(R.drawable.bg_status_yellow)
-                    tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.star_yellow))
+                    btnReservar.text = "Reservar" // Alterado de "Emprestar" para "Reservar"
                 }
                 else -> {
-                    tvStatus.text = book.status.uppercase()
-                    tvStatus.setBackgroundResource(R.drawable.bg_status_yellow)
-                    tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.blue_royal))
+                    tvStatus.text = "INDISPONÍVEL"
+                    tvStatus.setBackgroundResource(R.drawable.bg_status_red)
+                    tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.text_red))
+                    btnReservar.text = "Reservar"
                 }
             }
 
+            btnReservar.setOnClickListener {
+                onReserveClick(book)
+            }
+
             root.setOnClickListener {
-                onBookClick?.invoke(book)
+                onBookClick(book)
             }
         }
     }

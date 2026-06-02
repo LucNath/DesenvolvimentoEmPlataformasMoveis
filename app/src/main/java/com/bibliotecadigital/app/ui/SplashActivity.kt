@@ -38,15 +38,10 @@ class SplashActivity : AppCompatActivity() {
         val authRepository = AuthRepository()
 
         val intent = when {
-            !appPrefs.onboardingFinished -> Intent(this, OnboardingActivity::class.java)
             authRepository.isUserLoggedIn() -> {
                 // Sincroniza o estado de login local com o Firebase
                 appPrefs.isLoggedIn = true
-                if (appPrefs.userRole == "admin") {
-                    Intent(this, AdminDashboardActivity::class.java)
-                } else {
-                    Intent(this, MainActivity::class.java)
-                }
+                Intent(this, MainActivity::class.java)
             }
             else -> {
                 appPrefs.isLoggedIn = false

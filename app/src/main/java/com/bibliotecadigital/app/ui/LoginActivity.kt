@@ -32,12 +32,12 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.tvForgotPassword.setOnClickListener {
-            val email = binding.etEmail.text.toString()
-            if (email.isNotEmpty()) {
-                viewModel.resetPassword(email)
-            } else {
-                binding.tilEmail.error = "Insira seu e-mail para recuperar a senha"
+            val intent = Intent(this, ForgotPasswordActivity::class.java)
+            val currentEmail = binding.etEmail.text.toString()
+            if (currentEmail.isNotEmpty()) {
+                intent.putExtra("email", currentEmail)
             }
+            startActivity(intent)
         }
 
         binding.btnLogin.setOnClickListener {
@@ -78,11 +78,7 @@ class LoginActivity : AppCompatActivity() {
                         appPrefs.userEmail = result.email
                         appPrefs.userRole = result.role
 
-                        val intent = if (result.role == "admin") {
-                            Intent(this@LoginActivity, AdminDashboardActivity::class.java)
-                        } else {
-                            Intent(this@LoginActivity, MainActivity::class.java)
-                        }
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
                         finish()

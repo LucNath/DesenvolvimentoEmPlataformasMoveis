@@ -9,11 +9,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bibliotecadigital.app.databinding.ItemNotificationBinding
 import com.bibliotecadigital.app.entity.Notification
-import com.bibliotecadigital.app.entity.NotificationType
+import java.text.SimpleDateFormat
+import java.util.*
 
 class NotificationAdapter(
     private val onItemClick: (Notification) -> Unit
 ) : ListAdapter<Notification, NotificationAdapter.ViewHolder>(NotificationDiffCallback()) {
+
+    private val dateFormat = SimpleDateFormat("dd/MM HH:mm", Locale.getDefault())
 
     class ViewHolder(val binding: ItemNotificationBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -28,8 +31,9 @@ class NotificationAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         with(holder.binding) {
+            tvTitle.text = item.title.ifEmpty { "Notificação" }
             tvMessage.text = item.message
-            tvTimestamp.text = item.timestamp
+            tvTimestamp.text = if (item.timestamp > 0) dateFormat.format(Date(item.timestamp)) else ""
             
             // Destaque de não lida
             viewUnreadIndicator.visibility = if (item.isRead) View.GONE else View.VISIBLE
@@ -38,9 +42,9 @@ class NotificationAdapter(
 
             // Ícone por tipo
             val (iconRes, iconTint) = when (item.type) {
-                NotificationType.LOAN_REMINDER -> Pair(R.drawable.ic_notification, R.color.status_unavailable)
-                NotificationType.RESERVATION_READY -> Pair(R.drawable.ic_notification, R.color.status_available_text)
-                NotificationType.SYSTEM_ALERT -> Pair(R.drawable.ic_notification, R.color.blue_royal)
+                "loan" -> Pair(R.drawable.ic_bookmark, R.color.blue_royal)
+                "reservation" -> Pair(R.drawable.ic_notification, R.color.status_available_text)
+                else -> Pair(R.drawable.ic_notification, R.color.blue_royal)
             }
             ivIcon.setImageResource(iconRes)
             ivIcon.imageTintList = ContextCompat.getColorStateList(root.context, iconTint)

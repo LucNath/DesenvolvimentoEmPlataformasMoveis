@@ -21,6 +21,11 @@ class ForgotPasswordActivity : AppCompatActivity() {
         binding = ActivityForgotPasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val emailExtra = intent.getStringExtra("email")
+        if (!emailExtra.isNullOrEmpty()) {
+            binding.etEmailReset.setText(emailExtra)
+        }
+
         setupListeners()
         observeViewModel()
     }

@@ -15,30 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DEVWEB">
 
-        <activity
-            android:name=".ui.AdminDashboardActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-
-        <activity
-            android:name=".ui.AdminBooksActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-
-        <activity
-            android:name=".AdminLoansActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-
-        <activity
-            android:name=".ui.FinesActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-
-        <activity
-            android:name=".ui.ReadingActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
             android:name=".ui.SplashActivity"
@@ -51,22 +27,12 @@
         </activity>
 
         <activity
-            android:name=".ui.OnboardingActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-
-        <activity
             android:name=".ui.LoginActivity"
             android:exported="false" />
 
         <activity
             android:name=".ui.CadastroActivity"
             android:exported="false" />
-
-        <activity
-            android:name=".ui.AdminUsersActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
             android:name=".ui.MainActivity"
@@ -76,14 +42,6 @@
             android:name=".ui.ForgotPasswordActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".ui.ReadingGoalsActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.NotificationPrefsActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".ui.SupportActivity"
             android:exported="false"

@@ -16,10 +16,7 @@ class NotificationRepository(private val firestore: FirebaseFirestore = Firebase
 
     fun getNotifications(userId: String): Flow<List<Notification>> = callbackFlow {
         val subscription = getCollection(userId)
-            .orderBy(
-                "id",
-                Query.Direction.DESCENDING
-            ) // Usando id como fallback se não houver timestamp real
+            .orderBy("timestamp", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     Log.e("NotificationRepository", "Error listening to notifications", error)

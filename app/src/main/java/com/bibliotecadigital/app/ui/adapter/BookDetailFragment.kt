@@ -11,15 +11,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.bibliotecadigital.app.ui.LoanSuccessFragment
 import com.bibliotecadigital.app.R
-import com.bibliotecadigital.app.entity.Review
-import com.bibliotecadigital.app.ReviewAdapter
-import com.bibliotecadigital.app.databinding.DialogReviewBinding
 import com.bibliotecadigital.app.databinding.FragmentBookDetailBinding
 import com.bibliotecadigital.app.entity.Book
 import com.bibliotecadigital.app.viewmodels.BookDetailViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import com.bibliotecadigital.app.repository.ReservationRepository
+import com.bibliotecadigital.app.repository.UserRepository
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -31,8 +33,6 @@ class BookDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: BookDetailViewModel
-    private lateinit var reviewAdapter: ReviewAdapter
-    private val reviewsList = mutableListOf<Review>()
 
     private var bookId: String = ""
 
@@ -58,8 +58,6 @@ class BookDetailFragment : Fragment() {
         bookId = arguments?.getString("bookId") ?: ""
 
         setupToolbar()
-        setupReviews()
-        setupSubmitAction()
         observeViewModel()
 
         viewModel.loadBook(bookId)
@@ -75,6 +73,23 @@ class BookDetailFragment : Fragment() {
         viewModel.book.observe(viewLifecycleOwner) { book ->
             displayBookDetails(book)
         }
+
+        viewModel.borrowResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess { dueDate ->
+                val title = viewModel.book.value?.title ?: ""
+                navigateToLoanSuccess(title, dueDate)
+            }.onFailure {
+                Snackbar.make(binding.root, it.message ?: "Erro ao realizar empréstimo", Snackbar.LENGTH_LONG).show()
+            }
+        }
+
+        viewModel.reserveResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess {
+                Snackbar.make(binding.root, "Reserva realizada com sucesso!", Snackbar.LENGTH_LONG).show()
+            }.onFailure {
+                Snackbar.make(binding.root, it.message ?: "Erro ao reservar", Snackbar.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun displayBookDetails(book: Book) {
@@ -89,7 +104,7 @@ class BookDetailFragment : Fragment() {
             tvPublisher.text = book.publisher
             tvYear.text = book.year
             tvIsbn.text = book.isbn
-            tvLoanPeriod.text = "15 dias" // Mock loan period
+            tvLoanPeriod.text = "15 dias"
             tvSynopsis.text = book.synopsis
 
             // Status and Availability
@@ -99,18 +114,20 @@ class BookDetailFragment : Fragment() {
                     tvStatusLabel.setBackgroundResource(R.drawable.bg_status_green)
                     tvStatusLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.green_text))
                     tvAvailability.text = "${book.available} exemplares disponíveis"
+                    btnLoan.text = "Reservar" // Alterado de "Emprestar" para "Reservar"
                     btnLoan.visibility = View.VISIBLE
                     btnReserve.visibility = View.GONE
                 }
-                "borrowed", "reserved" -> {
-                    val statusText = if (book.status == "borrowed") "EMPRESTADO" else "RESERVADO"
-                    val bgRes = if (book.status == "borrowed") R.drawable.bg_status_red else R.drawable.bg_status_yellow
-                    val colorRes = if (book.status == "borrowed") R.color.text_red else R.color.star_yellow
+                "borrowed", "reserved", "unavailable" -> {
+                    val isBorrowed = book.status == "borrowed" || book.status == "unavailable"
+                    val statusText = if (isBorrowed) "EMPRESTADO" else "RESERVADO"
+                    val bgRes = if (isBorrowed) R.drawable.bg_status_red else R.drawable.bg_status_yellow
+                    val colorRes = if (isBorrowed) R.color.text_red else R.color.star_yellow
 
                     tvStatusLabel.text = statusText
                     tvStatusLabel.setBackgroundResource(bgRes)
                     tvStatusLabel.setTextColor(ContextCompat.getColor(requireContext(), colorRes))
-                    tvAvailability.text = "Fila de espera: 0 pessoas"
+                    tvAvailability.text = "Indisponível no momento"
 
                     btnLoan.visibility = View.GONE
                     btnReserve.visibility = View.VISIBLE
@@ -124,138 +141,27 @@ class BookDetailFragment : Fragment() {
             }
 
             btnLoan.setOnClickListener {
-                navigateToLoanSuccess(book.title)
+                viewModel.borrowBook(book)
             }
 
             btnReserve.setOnClickListener {
-                Snackbar.make(root, "Reserva realizada com sucesso!", Snackbar.LENGTH_LONG).show()
+                viewModel.reserveBook(book)
             }
+            
+            // Hide reviews section
+            tvRatingAvg.visibility = View.GONE
+            ratingBar.visibility = View.GONE
+            tvTotalReviews.visibility = View.GONE
+            rvReviews.visibility = View.GONE
+            btnAddReview.visibility = View.GONE
         }
     }
 
-    private fun navigateToLoanSuccess(title: String) {
-        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_YEAR, 15)
-        val dueDate = sdf.format(calendar.time)
-
+    private fun navigateToLoanSuccess(title: String, dueDate: String) {
         parentFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, LoanSuccessFragment.Companion.newInstance(title, dueDate))
+            .replace(R.id.fragmentContainer, LoanSuccessFragment.newInstance(title, dueDate))
             .addToBackStack(null)
             .commit()
-    }
-
-    private fun setupReviews() {
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-        reviewsList.clear()
-        // Corrigindo a instanciação de Review usando argumentos nomeados
-        reviewsList.add(
-            Review(
-                id = "1",
-                userId = "u1",
-                userName = "Maria Oliveira",
-                bookId = bookId,
-                rating = 5f,
-                comment = "Livro fantástico!",
-                date = "10/10/2023"
-            )
-        )
-        reviewsList.add(
-            Review(
-                id = "2",
-                userId = "u2",
-                userName = "Pedro Santos",
-                bookId = bookId,
-                rating = 4f,
-                comment = "Muito bom.",
-                date = "12/10/2023"
-            )
-        )
-
-        reviewAdapter = ReviewAdapter(
-            currentUserId = currentUserId,
-            onEditClick = { review -> editReview(review) },
-            onDeleteClick = { review -> deleteReview(review) }
-        )
-
-        binding.rvReviews.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvReviews.adapter = reviewAdapter
-        reviewAdapter.submitList(reviewsList.toList())
-
-        updateRatingSummary()
-    }
-
-    private fun setupSubmitAction() {
-        binding.btnAddReview.setOnClickListener {
-            showReviewDialog()
-        }
-    }
-
-    private fun showReviewDialog() {
-        val dialogBinding = DialogReviewBinding.inflate(layoutInflater)
-        val builder = MaterialAlertDialogBuilder(requireContext())
-        builder.setView(dialogBinding.root)
-        val dialog = builder.create()
-
-        dialogBinding.btnCancel.setOnClickListener { dialog.dismiss() }
-
-        dialogBinding.btnSubmit.setOnClickListener {
-            val rating = dialogBinding.ratingBarInput.rating
-            val comment = dialogBinding.etComment.text.toString()
-
-            if (rating == 0f) {
-                Snackbar.make(binding.root, "Por favor, selecione uma nota", Snackbar.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            val currentDate = sdf.format(Date())
-            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: "anonymous"
-
-            val newReview = Review(
-                id = System.currentTimeMillis().toString(),
-                userId = currentUserId,
-                userName = "Você",
-                bookId = bookId,
-                rating = rating,
-                comment = if (comment.isBlank()) "Sem comentário" else comment,
-                date = currentDate
-            )
-
-            reviewsList.add(0, newReview)
-            reviewAdapter.submitList(reviewsList.toList())
-            updateRatingSummary()
-
-            dialog.dismiss()
-            Snackbar.make(binding.root, "Avaliação enviada com sucesso!", Snackbar.LENGTH_SHORT).show()
-        }
-
-        dialog.show()
-    }
-
-    private fun updateRatingSummary() {
-        if (reviewsList.isEmpty()) {
-            binding.tvRatingAvg.text = "0.0"
-            binding.ratingBar.rating = 0f
-            binding.tvTotalReviews.text = "(0 avaliações)"
-            return
-        }
-
-        val avg = reviewsList.map { it.rating }.average()
-        binding.tvRatingAvg.text = String.Companion.format(Locale.getDefault(), "%.1f", avg)
-        binding.ratingBar.rating = avg.toFloat()
-        binding.tvTotalReviews.text = "(${reviewsList.size} avaliações)"
-    }
-
-    private fun editReview(review: Review) {
-        Snackbar.make(binding.root, "Edição disponível em breve", Snackbar.LENGTH_SHORT).show()
-    }
-
-    private fun deleteReview(review: Review) {
-        reviewsList.remove(review)
-        reviewAdapter.submitList(reviewsList.toList())
-        updateRatingSummary()
-        Snackbar.make(binding.root, "Avaliação removida", Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

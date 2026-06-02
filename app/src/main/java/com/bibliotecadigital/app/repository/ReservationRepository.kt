@@ -1,14 +1,11 @@
 package com.bibliotecadigital.app.repository
 
 import com.bibliotecadigital.app.entity.Notification
-import com.bibliotecadigital.app.entity.NotificationType
 import com.bibliotecadigital.app.entity.Reservation
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 class ReservationRepository(
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -106,7 +103,6 @@ class ReservationRepository(
         val userId = nextReservation.getString("userId") ?: return@runCatching
         val title = nextReservation.getString("title") ?: "livro reservado"
 
-        val timestamp = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date())
         val notificationId = db.collection(usersCollection)
             .document(userId)
             .collection("notifications")
@@ -114,9 +110,10 @@ class ReservationRepository(
 
         val notification = Notification(
             id = notificationId,
+            title = "Livro Disponível!",
             message = "O livro \"$title\" está disponível para retirada!",
-            type = NotificationType.RESERVATION_READY,
-            timestamp = timestamp,
+            type = "reservation",
+            timestamp = System.currentTimeMillis(),
             isRead = false
         )
 

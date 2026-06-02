@@ -43,7 +43,14 @@ class EventosFragment : Fragment() {
 
         setupRecyclerView()
         setupCalendar()
+        setupListeners()
         observeViewModel()
+    }
+
+    private fun setupListeners() {
+        binding.btnSeedEvents.setOnClickListener {
+            viewModel.seedEvents()
+        }
     }
 
     private fun setupCalendar() {
@@ -69,18 +76,23 @@ class EventosFragment : Fragment() {
                 // Estado inicial
                 if (day == "Todas") {
                     setBackgroundResource(R.drawable.bg_tag_orange)
+                    setTextColor(Color.WHITE)
                     viewModel.setSelectedDate("Todas")
                 } else {
                     setBackgroundResource(R.drawable.bg_card)
+                    setTextColor(Color.parseColor("#4A90E2")) // Azul para datas não selecionadas
                 }
 
                 setOnClickListener {
                     // Limpa seleções anteriores
                     for (i in 0 until binding.llCalendar.childCount) {
-                        binding.llCalendar.getChildAt(i).setBackgroundResource(R.drawable.bg_card)
+                        val child = binding.llCalendar.getChildAt(i) as TextView
+                        child.setBackgroundResource(R.drawable.bg_card)
+                        child.setTextColor(Color.parseColor("#4A90E2"))
                     }
                     // Seleciona o atual
                     setBackgroundResource(R.drawable.bg_tag_orange)
+                    setTextColor(Color.WHITE)
 
                     viewModel.setSelectedDate(day)
                 }
@@ -112,12 +124,13 @@ class EventosFragment : Fragment() {
                 launch {
                     viewModel.events.collect { events ->
                         eventAdapter.submitList(events)
+                        updateEmptyState(events.isEmpty())
                     }
                 }
 
                 launch {
                     viewModel.isLoading.collect { isLoading ->
-                        // Opcional: mostrar progress bar
+                        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
                     }
                 }
 
@@ -131,6 +144,11 @@ class EventosFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun updateEmptyState(isEmpty: Boolean) {
+        binding.layoutEmptyState.visibility = if (isEmpty) View.VISIBLE else View.GONE
+        binding.rvEvents.visibility = if (isEmpty) View.GONE else View.VISIBLE
     }
 
     override fun onDestroyView() {

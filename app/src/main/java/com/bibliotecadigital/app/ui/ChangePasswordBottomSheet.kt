@@ -7,20 +7,23 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.bibliotecadigital.app.R
 import com.bibliotecadigital.app.databinding.DialogChangePasswordBinding
+import com.bibliotecadigital.app.viewmodels.ProfileViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 class ChangePasswordBottomSheet : BottomSheetDialogFragment() {
 
     private var _binding: DialogChangePasswordBinding? = null
     private val binding get() = _binding!!
 
-    // Senha atual mockada
-    private val MOCK_CURRENT_PASSWORD = "senha123"
+    private val profileViewModel: ProfileViewModel by viewModels({ requireParentFragment() })
 
     override fun getTheme(): Int = R.style.AppBottomSheetDialogTheme
 
@@ -53,18 +56,38 @@ class ChangePasswordBottomSheet : BottomSheetDialogFragment() {
         binding.etConfirmPassword.addTextChangedListener(textWatcher)
 
         binding.btnChangePassword.setOnClickListener {
-            if (performValidation()) {
-                Snackbar.make(
-                    requireActivity().findViewById(android.R.id.content),
-                    "Senha alterada com sucesso!",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-                dismiss()
+            if (performLocalValidation()) {
+                performFirebaseUpdate()
             }
         }
 
         binding.btnCancel.setOnClickListener {
             dismiss()
+        }
+    }
+
+    private fun performFirebaseUpdate() {
+        val current = binding.etCurrentPassword.text.toString().trim()
+        val new = binding.etNewPassword.text.toString().trim()
+
+        binding.btnChangePassword.isEnabled = false
+        binding.btnCancel.isEnabled = false
+
+        lifecycleScope.launch {
+            profileViewModel.changePassword(current, new)
+                .onSuccess {
+                    Snackbar.make(
+                        requireActivity().findViewById(android.R.id.content),
+                        "Senha alterada com sucesso!",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                    dismiss()
+                }
+                .onFailure { e ->
+                    binding.btnChangePassword.isEnabled = true
+                    binding.btnCancel.isEnabled = true
+                    binding.tilCurrentPassword.error = "Erro ao alterar: ${e.message}"
+                }
         }
     }
 
@@ -81,18 +104,11 @@ class ChangePasswordBottomSheet : BottomSheetDialogFragment() {
         binding.tilConfirmPassword.error = null
     }
 
-    private fun performValidation(): Boolean {
-        val current = binding.etCurrentPassword.text.toString().trim()
+    private fun performLocalValidation(): Boolean {
         val new = binding.etNewPassword.text.toString().trim()
         val confirm = binding.etConfirmPassword.text.toString().trim()
 
         var isValid = true
-
-        // Validação senha atual
-        if (current != MOCK_CURRENT_PASSWORD) {
-            binding.tilCurrentPassword.error = "Senha atual incorreta"
-            isValid = false
-        }
 
         // Validação tamanho nova senha
         if (new.length < 6) {

@@ -17,6 +17,7 @@ import com.bibliotecadigital.app.R
 import com.bibliotecadigital.app.databinding.FragmentAcervoBinding
 import com.bibliotecadigital.app.viewmodels.AcervoViewModel
 import com.google.android.material.chip.Chip
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -44,19 +45,31 @@ class AcervoFragment : Fragment() {
 
         setupRecyclerViews()
         setupSearch()
+        setupListeners()
         observeViewModel()
     }
 
-    private fun setupRecyclerViews() {
-        bookAdapter = BookAdapter { book ->
-            parentFragmentManager.beginTransaction()
-                .replace(
-                    R.id.fragmentContainer,
-                    BookDetailFragment.Companion.newInstance(book.id, book.title, book.author)
-                )
-                .addToBackStack(null)
-                .commit()
+    private fun setupListeners() {
+        binding.btnSeedDatabase.setOnClickListener {
+            viewModel.seedDatabase()
         }
+    }
+
+    private fun setupRecyclerViews() {
+        bookAdapter = BookAdapter(
+            onBookClick = { book ->
+                parentFragmentManager.beginTransaction()
+                    .replace(
+                        R.id.fragmentContainer,
+                        BookDetailFragment.Companion.newInstance(book.id, book.title, book.author)
+                    )
+                    .addToBackStack(null)
+                    .commit()
+            },
+            onReserveClick = { book ->
+                viewModel.handleBookAction(book)
+            }
+        )
         binding.rvBooks.layoutManager = LinearLayoutManager(requireContext())
         binding.rvBooks.adapter = bookAdapter
 
@@ -82,6 +95,14 @@ class AcervoFragment : Fragment() {
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.actionMessage
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .collectLatest { message ->
+                    Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isLoading
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle)
                 .collectLatest { isLoading ->
@@ -94,6 +115,7 @@ class AcervoFragment : Fragment() {
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle)
                 .collectLatest { books ->
                     bookAdapter.submitList(books)
+                    updateVisibility(books.isEmpty())
                 }
         }
 
@@ -114,6 +136,20 @@ class AcervoFragment : Fragment() {
                 .collectLatest { categories ->
                     setupCategoryChips(categories)
                 }
+        }
+    }
+
+    private fun updateVisibility(isEmpty: Boolean) {
+        if (isEmpty) {
+            binding.layoutEmptyState.visibility = View.VISIBLE
+            binding.rvBooks.visibility = View.GONE
+            binding.tvAllBooksHeader.visibility = View.GONE
+            binding.tvMostBorrowedHeader.visibility = View.GONE
+            binding.rvMostBorrowed.visibility = View.GONE
+        } else {
+            binding.layoutEmptyState.visibility = View.GONE
+            binding.rvBooks.visibility = View.VISIBLE
+            binding.tvAllBooksHeader.visibility = View.VISIBLE
         }
     }
 

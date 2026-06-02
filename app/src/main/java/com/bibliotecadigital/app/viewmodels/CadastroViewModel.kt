@@ -27,6 +27,10 @@ class CadastroViewModel : ViewModel() {
 
 
     fun cadastrar(nome: String, email: String, matricula: String, senha: String) {
+        if (senha.length < 8 || !senha.any { it.isDigit() } || !senha.any { it.isUpperCase() }) {
+            _cadastroResult.value = CadastroResult.Error("A senha deve ter pelo menos 8 caracteres, incluindo um número e uma letra maiúscula (RF02.3)")
+            return
+        }
 
         viewModelScope.launch {
             _cadastroResult.value = CadastroResult.Loading
@@ -35,7 +39,7 @@ class CadastroViewModel : ViewModel() {
                 uid = "", // Gerado pelo Firebase
                 name = nome,
                 email = email,
-                role = "admin",
+                role = "student",
                 course = "", // Adicionado depois ou via matricula se for o caso
                 matricula = matricula
             )

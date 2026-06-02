@@ -23,7 +23,7 @@ class AppPrefs(context: Context) {
         set(value) = prefs.edit { putBoolean(KEY_IS_LOGGED_IN, value) }
 
     var userRole: String?
-        get() = prefs.getString(KEY_USER_ROLE, "user")
+        get() = prefs.getString(KEY_USER_ROLE, "student")
         set(value) = prefs.edit { putString(KEY_USER_ROLE, value) }
 
     var userEmail: String?

@@ -74,9 +74,9 @@ class CadastroActivity : AppCompatActivity() {
                     is CadastroResult.Success -> {
                         binding.progressBar.visibility = View.GONE
                         Toast.makeText(this@CadastroActivity, "Conta criada com sucesso!", Toast.LENGTH_SHORT).show()
-                        Intent(this@CadastroActivity, MainActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
+                        val mainIntent = Intent(this@CadastroActivity, MainActivity::class.java)
+                        mainIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(mainIntent)
                         finish()
                     }
                     is CadastroResult.Error -> {

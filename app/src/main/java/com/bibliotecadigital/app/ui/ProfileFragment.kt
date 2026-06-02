@@ -11,30 +11,17 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bibliotecadigital.app.AppPrefs
-import com.bibliotecadigital.app.FineAdapter
 import com.bibliotecadigital.app.R
-import com.bibliotecadigital.app.ReadingGoalAdapter
-import com.bibliotecadigital.app.ui.ReadingGoalsActivity
-import com.bibliotecadigital.app.ui.SettingsFragment
-import com.bibliotecadigital.app.ui.SupportActivity
-import com.bibliotecadigital.app.databinding.DialogAddGoalBinding
 import com.bibliotecadigital.app.databinding.FragmentProfileBinding
-import com.bibliotecadigital.app.entity.Fine
-import com.bibliotecadigital.app.entity.FineStatus
-import com.bibliotecadigital.app.entity.GoalStatus
 import com.bibliotecadigital.app.entity.User
 import com.bibliotecadigital.app.repository.AuthRepository
 import com.bibliotecadigital.app.viewmodels.ProfileState
 import com.bibliotecadigital.app.viewmodels.ProfileViewModel
-import com.bibliotecadigital.app.viewmodels.ReadingGoalsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 class ProfileFragment : Fragment() {
 
@@ -42,8 +29,6 @@ class ProfileFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val profileViewModel: ProfileViewModel by viewModels()
-    private lateinit var goalsViewModel: ReadingGoalsViewModel
-    private lateinit var goalsAdapter: ReadingGoalAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,55 +42,23 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize ViewModel (Shared or activity scoped if needed, but here fragment scoped is fine for mock)
-        goalsViewModel = ViewModelProvider(this)[ReadingGoalsViewModel::class.java]
-
         setupMenuRows()
-        setupFines()
-        setupGoalsRecyclerView()
         setupClickListeners()
         observeViewModel()
+        
+        // Garante o carregamento dos dados
+        profileViewModel.loadUserProfile()
     }
 
-    override fun onResume() {
-        super.onResume()
-        goalsViewModel.refresh()
-    }
-
-    private fun setupUserData(user: User) {
+    private fun setupUserData(state: ProfileState.Success) {
+        val user = state.user
         binding.tvAvatar.text = user.name.take(2).uppercase()
         binding.tvUserName.text = user.name
         binding.tvUserCourse.text = user.course.ifEmpty { "Estudante" }
-        // binding.tvBorrowed.text = ... (será implementado na migração de empréstimos)
-    }
-
-    private fun setupFines() {
-        val fines = listOf(
-            Fine("1", "Engenharia de Software", 5, 10.0, FineStatus.PENDENTE),
-            Fine("2", "Código Limpo", 3, 6.0, FineStatus.PENDENTE),
-            Fine("3", "Estruturas de Dados", 2, 4.0, FineStatus.PAGO)
-        )
-
-        val totalPending = fines.filter { it.status == FineStatus.PENDENTE }.sumOf { it.amount }
-        binding.tvTotalFine.text = String.Companion.format(Locale("pt", "BR"), "R$ %.2f", totalPending)
-
-        val adapter = FineAdapter()
-        binding.rvFines.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            this.adapter = adapter
-        }
-        adapter.submitList(fines)
-    }
-
-    private fun setupGoalsRecyclerView() {
-        goalsAdapter = ReadingGoalAdapter(
-            onIncrement = { id -> goalsViewModel.incrementProgress(id) },
-            onDelete = { id -> goalsViewModel.deleteGoal(id) }
-        )
-        binding.rvGoals.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = goalsAdapter
-        }
+        
+        binding.tvBorrowed.text = state.borrowedCount.toString()
+        binding.tvReturned.text = state.returnedCount.toString()
+        binding.tvReserved.text = state.reservedCount.toString()
     }
 
     private fun observeViewModel() {
@@ -117,7 +70,7 @@ class ProfileFragment : Fragment() {
                             // Mostrar loading se necessário
                         }
                         is ProfileState.Success -> {
-                            setupUserData(state.user)
+                            setupUserData(state)
                         }
                         is ProfileState.Error -> {
                             Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
@@ -125,12 +78,6 @@ class ProfileFragment : Fragment() {
                     }
                 }
             }
-        }
-
-        goalsViewModel.goals.observe(viewLifecycleOwner) { goals ->
-            // No perfil mostramos apenas metas em andamento para não poluir
-            val activeGoals = goals.filter { it.status == GoalStatus.EM_ANDAMENTO }
-            goalsAdapter.submitList(activeGoals)
         }
     }
 
@@ -154,11 +101,15 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupMenuRows() {
+        // Atividades Literárias
+        configRow(binding.rowMyReservations.root, R.drawable.ic_bookmark, getString(R.string.my_reservations_title))
         configRow(binding.rowReadingHistory.root, R.drawable.ic_history, getString(R.string.profile_menu_history))
-        configRow(binding.rowReadingGoals.root, R.drawable.ic_flag, getString(R.string.profile_menu_goals))
-        configRow(binding.rowFines.root, R.drawable.ic_payments, getString(R.string.profile_menu_fines))
+        configRow(binding.rowReadingGoals.root, R.drawable.ic_check_circle, getString(R.string.profile_menu_goals))
+        configRow(binding.rowFees.root, R.drawable.ic_payments, getString(R.string.profile_menu_fines))
+
+        // Configurações e Acessibilidade
+        configRow(binding.rowSettingsApp.root, R.drawable.ic_palette, getString(R.string.settings_title))
         configRow(binding.rowChangePassword.root, R.drawable.ic_lock, getString(R.string.profile_menu_password))
-        configRow(binding.rowSupport.root, android.R.drawable.ic_menu_help, getString(R.string.support_title))
         configRow(binding.rowLogout.root, R.drawable.ic_exit_to_app, getString(R.string.profile_menu_logout), isDestructive = true)
     }
 
@@ -178,74 +129,37 @@ class ProfileFragment : Fragment() {
                 .commit()
         }
 
-        binding.btnAddGoal.setOnClickListener {
-            showAddGoalDialog()
-        }
-
-        binding.rowReadingHistory.root.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, HistoricoFragment())
-                .addToBackStack(null)
-                .commit()
-        }
-
-        binding.rowReadingGoals.root.setOnClickListener {
-            val intent = Intent(requireContext(), ReadingGoalsActivity::class.java)
-            startActivity(intent)
-        }
-
-        binding.rowFines.root.setOnClickListener {
-            val intent = Intent(requireContext(), FinesActivity::class.java)
-            startActivity(intent)
-        }
-
         binding.rowChangePassword.root.setOnClickListener {
             val bottomSheet = ChangePasswordBottomSheet()
             bottomSheet.show(childFragmentManager, ChangePasswordBottomSheet.TAG)
         }
 
-        binding.rowSupport.root.setOnClickListener {
-            startActivity(Intent(requireContext(), SupportActivity::class.java))
-        }
-
         binding.rowLogout.root.setOnClickListener {
             showLogoutDialog()
         }
-    }
 
-    private fun showAddGoalDialog() {
-        val dialogBinding = DialogAddGoalBinding.inflate(LayoutInflater.from(requireContext()))
-
-        val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setView(dialogBinding.root)
-            .create()
-
-        dialogBinding.btnSave.setOnClickListener {
-            val title = dialogBinding.etGoalTitle.text.toString().trim()
-            val quantityStr = dialogBinding.etBooksQuantity.text.toString().trim()
-            val deadline = dialogBinding.etDeadline.text.toString().trim()
-
-            if (title.isEmpty() || quantityStr.isEmpty() || deadline.isEmpty()) {
-                Toast.makeText(requireContext(), "Preencha todos os campos", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val quantity = quantityStr.toIntOrNull() ?: 0
-            if (quantity <= 0) {
-                Toast.makeText(requireContext(), "Quantidade inválida", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            goalsViewModel.addGoal(title, quantity, deadline)
-            dialog.dismiss()
-            Toast.makeText(requireContext(), "Meta adicionada!", Toast.LENGTH_SHORT).show()
+        binding.rowSettingsApp.root.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, SettingsFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
-        dialogBinding.btnCancel.setOnClickListener {
-            dialog.dismiss()
+        binding.rowMyReservations.root.setOnClickListener {
+            Toast.makeText(requireContext(), "Abrindo Minhas Reservas...", Toast.LENGTH_SHORT).show()
         }
 
-        dialog.show()
+        binding.rowReadingHistory.root.setOnClickListener {
+            Toast.makeText(requireContext(), "Abrindo Histórico de Leituras...", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.rowReadingGoals.root.setOnClickListener {
+            Toast.makeText(requireContext(), "Abrindo Metas de Leitura...", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.rowFees.root.setOnClickListener {
+            Toast.makeText(requireContext(), "Abrindo Multas e Pagamentos...", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showLogoutDialog() {

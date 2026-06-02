@@ -204,9 +204,21 @@ class CategoryFragment : Fragment() {
 
         categoryBooks = allBooks.filter { it.category == category }
 
-        bookAdapter = BookAdapter { _ ->
-            // Navegação removida
-        }
+        bookAdapter = BookAdapter(
+            onBookClick = { book ->
+                parentFragmentManager.beginTransaction()
+                    .replace(
+                        com.bibliotecadigital.app.R.id.fragmentContainer,
+                        com.bibliotecadigital.app.ui.adapter.BookDetailFragment.newInstance(book.id, book.title, book.author)
+                    )
+                    .addToBackStack(null)
+                    .commit()
+            },
+            onReserveClick = { book ->
+                // Nota: Idealmente este fragmento deve ser migrado para usar AcervoViewModel futuramente
+                android.widget.Toast.makeText(requireContext(), "Ação de reserva: ${book.title}", android.widget.Toast.LENGTH_SHORT).show()
+            }
+        )
         binding.rvCategoryBooks.layoutManager = LinearLayoutManager(requireContext())
         binding.rvCategoryBooks.adapter = bookAdapter
         bookAdapter.submitList(categoryBooks)

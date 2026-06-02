@@ -2,6 +2,7 @@ package com.bibliotecadigital.app.repository
 
 import android.util.Log
 import com.bibliotecadigital.app.entity.User
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
@@ -56,6 +57,29 @@ class AuthRepository {
             Result.failure(e)
         } catch (e: Exception) {
             Log.e("AuthRepository", "resetPassword general error: ${e.message}", e)
+            Result.failure(e)
+        }
+    }
+
+    suspend fun updatePassword(currentPassword: String, newPassword: String): Result<Boolean> {
+        return try {
+            val user = auth.currentUser ?: throw Exception("Usuário não logado")
+            val email = user.email ?: throw Exception("E-mail do usuário não encontrado")
+            
+            val credential = EmailAuthProvider.getCredential(email, currentPassword)
+            
+            // Re-autentica para garantir que podemos mudar a senha
+            user.reauthenticate(credential).await()
+            
+            // Atualiza a senha
+            user.updatePassword(newPassword).await()
+            
+            Result.success(true)
+        } catch (e: FirebaseAuthException) {
+            Log.e("AuthRepository", "updatePassword error: ${e.errorCode} - ${e.message}")
+            Result.failure(e)
+        } catch (e: Exception) {
+            Log.e("AuthRepository", "updatePassword general error: ${e.message}", e)
             Result.failure(e)
         }
     }

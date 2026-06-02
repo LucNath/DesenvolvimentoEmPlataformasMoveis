@@ -44,9 +44,7 @@ class LoginViewModel : ViewModel() {
             val role = userDoc.getString("role") ?: "student"
             _loginResult.value = LoginResult.Success(uid, role, email)
         } catch (e: Exception) {
-            // Fallback se não conseguir ler do Firestore
-            val role = if (email.contains("admin")) "admin" else "student"
-            _loginResult.value = LoginResult.Success(uid, role, email)
+            _loginResult.value = LoginResult.Success(uid, "student", email)
         }
     }
 

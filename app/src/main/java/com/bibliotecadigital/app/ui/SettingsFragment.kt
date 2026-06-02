@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
@@ -18,7 +20,6 @@ class SettingsFragment : Fragment() {
 
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
-
     private lateinit var appPrefs: AppPrefs
 
     override fun onCreateView(
@@ -40,28 +41,32 @@ class SettingsFragment : Fragment() {
 
     private fun setupMenu() {
         // Seção SEGURANÇA
-        binding.itemChangePassword.ivRowIcon.setImageResource(R.drawable.ic_lock)
-        binding.itemChangePassword.tvRowTitle.text = getString(R.string.settings_change_password)
+        configRow(binding.itemChangePassword.root, R.drawable.ic_lock, getString(R.string.settings_change_password))
 
         // Seção PERSONALIZAÇÃO
-        binding.itemFontSize.ivRowIcon.setImageResource(R.drawable.ic_text_fields)
-        binding.itemFontSize.tvRowTitle.text = getString(R.string.settings_font_size)
-
-        binding.itemTheme.ivRowIcon.setImageResource(R.drawable.ic_palette)
-        binding.itemTheme.tvRowTitle.text = getString(R.string.settings_theme)
-
-        binding.itemRotation.ivRowIcon.setImageResource(R.drawable.ic_screen_rotation)
-        binding.itemRotation.tvRowTitle.text = getString(R.string.settings_rotation)
-
-        binding.itemNotifications.ivRowIcon.setImageResource(R.drawable.ic_notifications)
-        binding.itemNotifications.tvRowTitle.text = getString(R.string.settings_notifications)
+        configRow(binding.itemFontSize.root, R.drawable.ic_text_fields, getString(R.string.settings_font_size))
+        configRow(binding.itemTheme.root, R.drawable.ic_palette, getString(R.string.settings_theme))
+        configRow(binding.itemRotation.root, R.drawable.ic_screen_rotation, getString(R.string.settings_rotation))
+        configRow(binding.itemNotifications.root, R.drawable.ic_notifications, getString(R.string.settings_notifications))
 
         // Seção SESSÃO
-        binding.itemLogout.ivRowIcon.setImageResource(R.drawable.ic_exit_to_app)
-        binding.itemLogout.ivRowIcon.setColorFilter(resources.getColor(R.color.text_red, null))
-        binding.itemLogout.tvRowTitle.text = getString(R.string.settings_logout)
-        binding.itemLogout.tvRowTitle.setTextColor(resources.getColor(R.color.text_red, null))
-        binding.itemLogout.tvRowArrow.visibility = View.GONE
+        configRow(binding.itemLogout.root, R.drawable.ic_exit_to_app, getString(R.string.settings_logout), isDestructive = true)
+    }
+
+    private fun configRow(rowView: View, iconRes: Int, title: String, isDestructive: Boolean = false) {
+        val ivIcon = rowView.findViewById<ImageView>(R.id.ivRowIcon)
+        val tvTitle = rowView.findViewById<TextView>(R.id.tvRowTitle)
+        val tvArrow = rowView.findViewById<TextView>(R.id.tvRowArrow)
+
+        ivIcon.setImageResource(iconRes)
+        tvTitle.text = title
+
+        if (isDestructive) {
+            val red = resources.getColor(R.color.status_unavailable, null)
+            ivIcon.setColorFilter(red)
+            tvTitle.setTextColor(red)
+            tvArrow.visibility = View.GONE
+        }
     }
 
     private fun setupListeners() {
@@ -74,26 +79,18 @@ class SettingsFragment : Fragment() {
             bottomSheet.show(childFragmentManager, ChangePasswordBottomSheet.TAG)
         }
 
-        binding.itemFontSize.root.setOnClickListener {
-            showFontSizeDialog()
-        }
-
-        binding.itemTheme.root.setOnClickListener {
-            toggleTheme()
-        }
-
-        binding.itemRotation.root.setOnClickListener {
-            toggleRotation()
-        }
+        binding.itemFontSize.root.setOnClickListener { showFontSizeDialog() }
+        binding.itemTheme.root.setOnClickListener { toggleTheme() }
+        binding.itemRotation.root.setOnClickListener { toggleRotation() }
 
         binding.itemNotifications.root.setOnClickListener {
-            val intent = Intent(requireContext(), NotificationPrefsActivity::class.java)
-            startActivity(intent)
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, NotificacoesFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
-        binding.itemLogout.root.setOnClickListener {
-            showLogoutConfirmation()
-        }
+        binding.itemLogout.root.setOnClickListener { showLogoutConfirmation() }
     }
 
     private fun showFontSizeDialog() {
@@ -102,11 +99,9 @@ class SettingsFragment : Fragment() {
             getString(R.string.settings_font_medium),
             getString(R.string.settings_font_large)
         )
-        val current = appPrefs.fontSize
-
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.settings_font_size))
-            .setSingleChoiceItems(options, current) { dialog, which ->
+            .setSingleChoiceItems(options, appPrefs.fontSize) { dialog, which ->
                 appPrefs.fontSize = which
                 dialog.dismiss()
                 requireActivity().recreate()
@@ -118,7 +113,6 @@ class SettingsFragment : Fragment() {
     private fun toggleTheme() {
         val newMode = !appPrefs.isDarkMode
         appPrefs.isDarkMode = newMode
-
         AppCompatDelegate.setDefaultNightMode(
             if (newMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
         )
@@ -128,16 +122,12 @@ class SettingsFragment : Fragment() {
     private fun toggleRotation() {
         val newValue = !appPrefs.autoRotation
         appPrefs.autoRotation = newValue
-
-        val orientation = if (newValue)
-            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-        else
-            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
-        requireActivity().requestedOrientation = orientation
-
-        val status = if (newValue) getString(R.string.settings_rotation_on) else getString(R.string.settings_rotation_off)
-        Toast.makeText(requireContext(), status, Toast.LENGTH_SHORT).show()
+        requireActivity().requestedOrientation = if (newValue) 
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        
+        Toast.makeText(requireContext(), 
+            if (newValue) getString(R.string.settings_rotation_on) else getString(R.string.settings_rotation_off), 
+            Toast.LENGTH_SHORT).show()
     }
 
     private fun showLogoutConfirmation() {
@@ -145,19 +135,14 @@ class SettingsFragment : Fragment() {
             .setTitle(getString(R.string.profile_logout_confirm_title))
             .setMessage(getString(R.string.settings_logout_confirm))
             .setPositiveButton(getString(R.string.btn_logout)) { _, _ ->
-                logout()
+                appPrefs.logout()
+                val intent = Intent(requireContext(), LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                requireActivity().finish()
             }
             .setNegativeButton(getString(R.string.btn_cancel), null)
             .show()
-    }
-
-    private fun logout() {
-        appPrefs.logout()
-
-        val intent = Intent(requireContext(), LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-        requireActivity().finish()
     }
 
     override fun onDestroyView() {

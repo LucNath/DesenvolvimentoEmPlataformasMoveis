@@ -32,18 +32,31 @@
         app:tint="@color/white"
         android:importantForAccessibility="no" />
 
-    <!-- Mensagem -->
+    <!-- Título -->
     <TextView
-        android:id="@+id/tvMessage"
+        android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="16dp"
         android:textColor="@color/text_primary"
-        android:textSize="14sp"
+        android:textSize="15sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivIcon"
         app:layout_constraintTop_toTopOf="@id/ivIcon" />
+
+    <!-- Mensagem -->
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/text_primary"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
     <!-- Timestamp -->
     <TextView

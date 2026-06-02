@@ -72,4 +72,66 @@ class EventViewModel : ViewModel() {
     fun clearActionMessage() {
         _actionMessage.value = null
     }
+
+    // Função para popular eventos iniciais (Chamar apenas uma vez)
+    fun seedEvents() {
+        viewModelScope.launch {
+            val initialEvents = listOf(
+                Event(
+                    name = "Workshop de Escrita Criativa",
+                    date = "15 Out",
+                    time = "14:00",
+                    facilitator = "Maria Silva",
+                    totalSlots = 20,
+                    usedSlots = 0
+                ),
+                Event(
+                    name = "Palestra: IA no Direito",
+                    date = "20 Out",
+                    time = "19:00",
+                    facilitator = "Dr. Roberto Mendes",
+                    totalSlots = 50,
+                    usedSlots = 0
+                ),
+                Event(
+                    name = "Clube do Livro: Machado de Assis",
+                    date = "18 Out",
+                    time = "16:00",
+                    facilitator = "Prof. Ana Paula",
+                    totalSlots = 15,
+                    usedSlots = 0
+                ),
+                Event(
+                    name = "Seminário: Futuro das Bibliotecas",
+                    date = "16 Out",
+                    time = "10:00",
+                    facilitator = "Carlos Souza",
+                    totalSlots = 30,
+                    usedSlots = 5
+                ),
+                Event(
+                    name = "Curso de Pesquisa Jurídica",
+                    date = "17 Out",
+                    time = "15:00",
+                    facilitator = "Dra. Helena Rocha",
+                    totalSlots = 25,
+                    usedSlots = 10
+                ),
+                Event(
+                    name = "Noite de Poesia",
+                    date = "19 Out",
+                    time = "20:00",
+                    facilitator = "Ricardo Monte",
+                    totalSlots = 40,
+                    usedSlots = 0
+                )
+            )
+
+            initialEvents.forEach { event ->
+                com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                    .collection("events")
+                    .add(event)
+            }
+        }
+    }
 }
