@@ -32,16 +32,14 @@ class CadastroActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.btnCriarConta.setOnClickListener {
-            val nome = binding.etNome.text.toString()
-            val email = binding.etEmail.text.toString()
-            val matricula = binding.etMatricula.text.toString()
+            val nome = binding.etNome.text.toString().trim()
+            val email = binding.etEmail.text.toString().trim()
+            val matricula = binding.etMatricula.text.toString().trim()
             val senha = binding.etSenha.text.toString()
+            val confirmarSenha = binding.etConfirmarSenha.text.toString()
 
-            if (nome.isNotEmpty() && email.isNotEmpty() && matricula.isNotEmpty() && senha.isNotEmpty()) {
+            if (validateFields(nome, email, matricula, senha, confirmarSenha)) {
                 viewModel.cadastrar(nome, email, matricula, senha)
-                //val usuario = viewModel
-            } else {
-                Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -50,12 +48,48 @@ class CadastroActivity : AppCompatActivity() {
         }
 
         // Limpar erros ao digitar
-        binding.etEmail.addTextChangedListener {
-            binding.tilEmail.error = null
+        binding.etNome.addTextChangedListener { binding.tilNome.error = null }
+        binding.etEmail.addTextChangedListener { binding.tilEmail.error = null }
+        binding.etMatricula.addTextChangedListener { binding.tilMatricula.error = null }
+        binding.etSenha.addTextChangedListener { binding.tilSenha.error = null }
+        binding.etConfirmarSenha.addTextChangedListener { binding.tilConfirmarSenha.error = null }
+    }
+
+    private fun validateFields(nome: String, email: String, matricula: String, senha: String, confirmarSenha: String): Boolean {
+        var isValid = true
+
+        if (nome.isEmpty()) {
+            binding.tilNome.error = "Informe seu nome completo"
+            isValid = false
         }
-        binding.etSenha.addTextChangedListener {
-            binding.tilSenha.error = null
+
+        if (email.isEmpty()) {
+            binding.tilEmail.error = "Informe seu e-mail institucional"
+            isValid = false
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            binding.tilEmail.error = "E-mail inválido"
+            isValid = false
         }
+
+        if (matricula.isEmpty()) {
+            binding.tilMatricula.error = "Informe sua matrícula"
+            isValid = false
+        }
+
+        if (senha.isEmpty()) {
+            binding.tilSenha.error = "Informe uma senha"
+            isValid = false
+        } else if (senha.length < 8) {
+            binding.tilSenha.error = "Mínimo de 8 caracteres"
+            isValid = false
+        }
+
+        if (confirmarSenha != senha) {
+            binding.tilConfirmarSenha.error = getString(R.string.error_passwords_dont_match)
+            isValid = false
+        }
+
+        return isValid
     }
 
     private fun observeViewModel() {

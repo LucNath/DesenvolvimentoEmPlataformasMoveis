@@ -107,14 +107,48 @@ class BookDetailFragment : Fragment() {
             tvLoanPeriod.text = "15 dias"
             tvSynopsis.text = book.synopsis
 
-            // Status and Availability
+            val appPrefs = com.bibliotecadigital.app.AppPrefs(requireContext())
+            val isAdmin = appPrefs.userRole == "admin"
+
+            if (isAdmin) {
+                layoutAdminActions.visibility = View.VISIBLE
+                btnLoan.visibility = View.GONE
+                btnReserve.visibility = View.GONE
+                
+                btnDeleteBook.setOnClickListener {
+                    confirmDeleteBook(book)
+                }
+                
+                btnEditBook.setOnClickListener {
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, com.bibliotecadigital.app.ui.admin.AddBookFragment.newInstance(book.id))
+                        .addToBackStack(null)
+                        .commit()
+                }
+            } else {
+                layoutAdminActions.visibility = View.GONE
+                // Status and Availability para usuários
+                setupUserButtons(book)
+            }
+            
+            // Hide reviews section
+            tvRatingAvg.visibility = View.GONE
+            ratingBar.visibility = View.GONE
+            tvTotalReviews.visibility = View.GONE
+            rvReviews.visibility = View.GONE
+            btnAddReview.visibility = View.GONE
+        }
+    }
+
+    private fun setupUserButtons(book: Book) {
+        with(binding) {
             when (book.status) {
                 "available" -> {
                     tvStatusLabel.text = "DISPONÍVEL"
                     tvStatusLabel.setBackgroundResource(R.drawable.bg_status_green)
                     tvStatusLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.green_text))
                     tvAvailability.text = "${book.available} exemplares disponíveis"
-                    btnLoan.text = "Reservar" // Alterado de "Emprestar" para "Reservar"
+                    btnLoan.text = "Emprestar"
                     btnLoan.visibility = View.VISIBLE
                     btnReserve.visibility = View.GONE
                 }
@@ -147,14 +181,30 @@ class BookDetailFragment : Fragment() {
             btnReserve.setOnClickListener {
                 viewModel.reserveBook(book)
             }
-            
-            // Hide reviews section
-            tvRatingAvg.visibility = View.GONE
-            ratingBar.visibility = View.GONE
-            tvTotalReviews.visibility = View.GONE
-            rvReviews.visibility = View.GONE
-            btnAddReview.visibility = View.GONE
         }
+    }
+
+    private fun confirmDeleteBook(book: Book) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Excluir Obra")
+            .setMessage("Tem certeza que deseja excluir '${book.title}'? Esta ação não pode ser desfeita.")
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Excluir") { _, _ ->
+                deleteBook(book.id)
+            }
+            .show()
+    }
+
+    private fun deleteBook(bookId: String) {
+        FirebaseFirestore.getInstance().collection("books").document(bookId)
+            .delete()
+            .addOnSuccessListener {
+                Snackbar.make(binding.root, "Obra excluída com sucesso", Snackbar.LENGTH_LONG).show()
+                parentFragmentManager.popBackStack()
+            }
+            .addOnFailureListener {
+                Snackbar.make(binding.root, "Erro ao excluir: ${it.message}", Snackbar.LENGTH_LONG).show()
+            }
     }
 
     private fun navigateToLoanSuccess(title: String, dueDate: String) {

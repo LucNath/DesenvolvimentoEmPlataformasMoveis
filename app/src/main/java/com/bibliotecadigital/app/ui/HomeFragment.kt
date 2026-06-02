@@ -72,6 +72,13 @@ class HomeFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     binding.tvUserName.text = "Olá, ${state.userName}"
+                    
+                    // Se for Admin, podemos mostrar opções extras ou mudar o layout
+                    if (state.isAdmin) {
+                        setupAdminView(state)
+                    } else {
+                        setupUserView()
+                    }
 
                     setupLoansAdapter(state.loans)
                     setupReservationsAdapter(state.reservations)
@@ -129,6 +136,41 @@ class HomeFragment : Fragment() {
             this.adapter = adapter
         }
         adapter.submitList(reservations)
+    }
+
+    private fun setupAdminView(state: com.bibliotecadigital.app.viewmodels.HomeUiState) {
+        binding.layoutAdminPanel.visibility = View.VISIBLE
+        
+        // Atualiza estatísticas no painel
+        binding.tvTotalBooksCount.text = state.totalBooks.toString()
+        binding.tvGlobalActiveLoansCount.text = state.totalActiveLoans.toString()
+        binding.tvGlobalReservationsCount.text = state.totalReservations.toString()
+
+        binding.btnNewBook.setOnClickListener {
+            // Abre fragmento de cadastro de obra
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, com.bibliotecadigital.app.ui.admin.AddBookFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        binding.btnManageUsers.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, com.bibliotecadigital.app.ui.admin.UserManagementFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+        
+        // Esconde as seções de empréstimos pessoais para o admin na visão geral
+        binding.layoutLoansHeader.visibility = View.GONE
+        binding.rvLoans.visibility = View.GONE
+        binding.layoutReservationsHeader.visibility = View.GONE
+        binding.rvReservations.visibility = View.GONE
+        binding.layoutEmptyState.visibility = View.GONE
+    }
+
+    private fun setupUserView() {
+        binding.layoutAdminPanel.visibility = View.GONE
     }
 
     private fun updateEmptyState(hasLoans: Boolean, hasReservations: Boolean) {

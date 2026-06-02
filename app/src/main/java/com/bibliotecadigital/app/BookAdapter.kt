@@ -11,8 +11,11 @@ import com.bibliotecadigital.app.databinding.ItemBookBinding
 import com.bibliotecadigital.app.entity.Book
 
 class BookAdapter(
+    private val isAdmin: Boolean = false,
     private val onBookClick: (Book) -> Unit,
-    private val onReserveClick: (Book) -> Unit
+    private val onReserveClick: (Book) -> Unit,
+    private val onEditClick: ((Book) -> Unit)? = null,
+    private val onDeleteClick: ((Book) -> Unit)? = null
 ) : ListAdapter<Book, BookAdapter.ViewHolder>(BookDiffCallback()) {
 
     class ViewHolder(val binding: ItemBookBinding) : RecyclerView.ViewHolder(binding.root)
@@ -50,8 +53,27 @@ class BookAdapter(
                 }
             }
 
+            // Controle de visibilidade Admin vs Usuário
+            if (isAdmin) {
+                btnEdit.visibility = android.view.View.VISIBLE
+                btnDelete.visibility = android.view.View.VISIBLE
+                btnReservar.visibility = android.view.View.GONE
+            } else {
+                btnEdit.visibility = android.view.View.GONE
+                btnDelete.visibility = android.view.View.GONE
+                btnReservar.visibility = android.view.View.VISIBLE
+            }
+
             btnReservar.setOnClickListener {
                 onReserveClick(book)
+            }
+
+            btnEdit.setOnClickListener {
+                onEditClick?.invoke(book)
+            }
+
+            btnDelete.setOnClickListener {
+                onDeleteClick?.invoke(book)
             }
 
             root.setOnClickListener {

@@ -32,6 +32,8 @@
     <color name="status_info_bg">#E0F2FE</color>
     <color name="status_info_text">#0369A1</color>
 
+    <color name="error_red">#E05252</color>
+
     <!-- Aliases para compatibilidade e facilidade -->
     <color name="bg_screen">@color/background_light</color>
     <color name="bg_card">@color/white</color>

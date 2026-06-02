@@ -56,7 +56,11 @@ class AcervoFragment : Fragment() {
     }
 
     private fun setupRecyclerViews() {
+        val appPrefs = com.bibliotecadigital.app.AppPrefs(requireContext())
+        val isAdmin = appPrefs.userRole == "admin"
+
         bookAdapter = BookAdapter(
+            isAdmin = isAdmin,
             onBookClick = { book ->
                 parentFragmentManager.beginTransaction()
                     .replace(
@@ -68,6 +72,12 @@ class AcervoFragment : Fragment() {
             },
             onReserveClick = { book ->
                 viewModel.handleBookAction(book)
+            },
+            onEditClick = { book ->
+                Snackbar.make(binding.root, "Editar: ${book.title}", Snackbar.LENGTH_SHORT).show()
+            },
+            onDeleteClick = { book ->
+                Snackbar.make(binding.root, "Excluir: ${book.title}", Snackbar.LENGTH_SHORT).show()
             }
         )
         binding.rvBooks.layoutManager = LinearLayoutManager(requireContext())

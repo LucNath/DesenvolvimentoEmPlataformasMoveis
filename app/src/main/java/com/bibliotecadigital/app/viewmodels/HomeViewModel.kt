@@ -20,6 +20,9 @@ data class HomeUiState(
     val isAdmin: Boolean = false,
     val loans: List<Loan> = emptyList(),
     val reservations: List<Reservation> = emptyList(),
+    val totalBooks: Int = 0,
+    val totalActiveLoans: Int = 0,
+    val totalReservations: Int = 0,
     val isLoading: Boolean = false,
     val error: String? = null
 )
@@ -47,15 +50,20 @@ class HomeViewModel : ViewModel() {
                 if (snapshot != null && snapshot.exists()) {
                     val name = snapshot.getString("name") ?: "Usuário"
                     val role = snapshot.getString("role") ?: "student"
+                    val isAdmin = role == "admin"
                     _uiState.value = _uiState.value.copy(
                         userName = name,
-                        isAdmin = role == "admin"
+                        isAdmin = isAdmin
                     )
+                    
+                    if (isAdmin) {
+                        loadAdminStats()
+                    }
                 }
             }
         }
 
-        // Observa empréstimos em tempo real
+        // Observa empréstimos em tempo real (Visão do Usuário)
         viewModelScope.launch {
             db.collection("loans")
                 .whereEqualTo("userId", uid)
@@ -88,6 +96,28 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch {
             reservationRepository.getReservations(uid).collect { reservations ->
                 _uiState.value = _uiState.value.copy(reservations = reservations)
+            }
+        }
+    }
+
+    private fun loadAdminStats() {
+        // Estatísticas Globais para o Admin
+        viewModelScope.launch {
+            try {
+                // Total de Livros
+                db.collection("books").addSnapshotListener { snapshot, _ ->
+                    _uiState.value = _uiState.value.copy(totalBooks = snapshot?.size() ?: 0)
+                }
+                // Total de Empréstimos Ativos no Sistema
+                db.collection("loans").whereEqualTo("status", "active").addSnapshotListener { snapshot, _ ->
+                    _uiState.value = _uiState.value.copy(totalActiveLoans = snapshot?.size() ?: 0)
+                }
+                // Total de Reservas no Sistema
+                db.collection("reservations").whereEqualTo("status", "active").addSnapshotListener { snapshot, _ ->
+                    _uiState.value = _uiState.value.copy(totalReservations = snapshot?.size() ?: 0)
+                }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(error = "Erro ao carregar estatísticas: ${e.message}")
             }
         }
     }

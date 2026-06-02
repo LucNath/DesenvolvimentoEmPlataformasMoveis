@@ -202,9 +202,14 @@ class CategoryFragment : Fragment() {
             )
         )
 
+        // RF: Filtra os livros pela categoria selecionada
         categoryBooks = allBooks.filter { it.category == category }
 
+        val appPrefs = com.bibliotecadigital.app.AppPrefs(requireContext())
+        val isAdmin = appPrefs.userRole == "admin"
+
         bookAdapter = BookAdapter(
+            isAdmin = isAdmin,
             onBookClick = { book ->
                 parentFragmentManager.beginTransaction()
                     .replace(
@@ -217,6 +222,14 @@ class CategoryFragment : Fragment() {
             onReserveClick = { book ->
                 // Nota: Idealmente este fragmento deve ser migrado para usar AcervoViewModel futuramente
                 android.widget.Toast.makeText(requireContext(), "Ação de reserva: ${book.title}", android.widget.Toast.LENGTH_SHORT).show()
+            },
+            onEditClick = { book ->
+                // Ação para Administrador: Editar obra
+                com.google.android.material.snackbar.Snackbar.make(binding.root, "Editar obra: ${book.title}", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
+            },
+            onDeleteClick = { book ->
+                // Ação para Administrador: Excluir obra
+                com.google.android.material.snackbar.Snackbar.make(binding.root, "Excluir obra: ${book.title}", com.google.android.material.snackbar.Snackbar.LENGTH_SHORT).show()
             }
         )
         binding.rvCategoryBooks.layoutManager = LinearLayoutManager(requireContext())
