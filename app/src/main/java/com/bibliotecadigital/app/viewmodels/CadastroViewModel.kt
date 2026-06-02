@@ -26,7 +26,7 @@ class CadastroViewModel : ViewModel() {
     val cadastroResult: StateFlow<CadastroResult> = _cadastroResult
 
 
-    fun cadastrar(nome: String, email: String, matricula: String, senha: String) {
+    fun cadastrar(nome: String, email: String, senha: String) {
         if (senha.length < 8 || !senha.any { it.isDigit() } || !senha.any { it.isUpperCase() }) {
             _cadastroResult.value = CadastroResult.Error("A senha deve ter pelo menos 8 caracteres, incluindo um número e uma letra maiúscula (RF02.3)")
             return
@@ -40,8 +40,8 @@ class CadastroViewModel : ViewModel() {
                 name = nome,
                 email = email,
                 role = "student",
-                course = "", // Adicionado depois ou via matricula se for o caso
-                matricula = matricula
+                course = "",
+                matricula = ""
             )
             //val userResult = FirebaseAuth.getInstance()
 

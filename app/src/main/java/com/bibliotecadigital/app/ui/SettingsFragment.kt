@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.bibliotecadigital.app.AppPrefs
 import com.bibliotecadigital.app.R
@@ -45,7 +44,6 @@ class SettingsFragment : Fragment() {
 
         // Seção PERSONALIZAÇÃO
         configRow(binding.itemFontSize.root, R.drawable.ic_text_fields, getString(R.string.settings_font_size))
-        configRow(binding.itemTheme.root, R.drawable.ic_palette, getString(R.string.settings_theme))
         configRow(binding.itemRotation.root, R.drawable.ic_screen_rotation, getString(R.string.settings_rotation))
         configRow(binding.itemNotifications.root, R.drawable.ic_notifications, getString(R.string.settings_notifications))
 
@@ -80,7 +78,6 @@ class SettingsFragment : Fragment() {
         }
 
         binding.itemFontSize.root.setOnClickListener { showFontSizeDialog() }
-        binding.itemTheme.root.setOnClickListener { toggleTheme() }
         binding.itemRotation.root.setOnClickListener { toggleRotation() }
 
         binding.itemNotifications.root.setOnClickListener {
@@ -108,15 +105,6 @@ class SettingsFragment : Fragment() {
             }
             .setNegativeButton(getString(R.string.btn_cancel), null)
             .show()
-    }
-
-    private fun toggleTheme() {
-        val newMode = !appPrefs.isDarkMode
-        appPrefs.isDarkMode = newMode
-        AppCompatDelegate.setDefaultNightMode(
-            if (newMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-        )
-        requireActivity().recreate()
     }
 
     private fun toggleRotation() {

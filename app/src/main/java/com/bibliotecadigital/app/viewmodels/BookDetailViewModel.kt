@@ -31,9 +31,28 @@ class BookDetailViewModel : ViewModel() {
     private val _reserveResult = MutableLiveData<Result<Unit>>()
     val reserveResult: LiveData<Result<Unit>> = _reserveResult
 
+    private val _returnResult = MutableLiveData<Result<Unit>>()
+    val returnResult: LiveData<Result<Unit>> = _returnResult
+
+    private val _isBorrowedByUser = MutableLiveData<Boolean>()
+    val isBorrowedByUser: LiveData<Boolean> = _isBorrowedByUser
+
     fun loadBook(bookId: String) {
+        val userId = auth.currentUser?.uid
         viewModelScope.launch {
             _isLoading.value = true
+            
+            // Verifica se o usuário logado tem este livro
+            if (userId != null) {
+                db.collection("loans")
+                    .whereEqualTo("userId", userId)
+                    .whereEqualTo("bookId", bookId)
+                    .whereEqualTo("status", "active")
+                    .addSnapshotListener { snapshot, _ ->
+                        _isBorrowedByUser.value = !(snapshot?.isEmpty ?: true)
+                    }
+            }
+
             bookRepository.getBookById(bookId).onSuccess {
                 _book.value = it
             }.onFailure {
@@ -57,6 +76,19 @@ class BookDetailViewModel : ViewModel() {
             _borrowResult.value = result
             if (result.isSuccess) {
                 loadBook(book.id)
+            }
+            _isLoading.value = false
+        }
+    }
+
+    fun returnBook(bookId: String) {
+        val userId = auth.currentUser?.uid ?: return
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = loanRepository.returnBook(userId, bookId)
+            _returnResult.value = result
+            if (result.isSuccess) {
+                loadBook(bookId)
             }
             _isLoading.value = false
         }

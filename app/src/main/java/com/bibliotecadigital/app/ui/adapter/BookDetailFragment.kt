@@ -74,6 +74,10 @@ class BookDetailFragment : Fragment() {
             displayBookDetails(book)
         }
 
+        viewModel.isBorrowedByUser.observe(viewLifecycleOwner) { isBorrowed ->
+            updateActionButtons(isBorrowed)
+        }
+
         viewModel.borrowResult.observe(viewLifecycleOwner) { result ->
             result.onSuccess { dueDate ->
                 val title = viewModel.book.value?.title ?: ""
@@ -90,6 +94,40 @@ class BookDetailFragment : Fragment() {
                 Snackbar.make(binding.root, it.message ?: "Erro ao reservar", Snackbar.LENGTH_LONG).show()
             }
         }
+
+        viewModel.returnResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess {
+                Snackbar.make(binding.root, "Livro devolvido com sucesso!", Snackbar.LENGTH_LONG).show()
+            }.onFailure {
+                Snackbar.make(binding.root, it.message ?: "Erro ao devolver livro", Snackbar.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun updateActionButtons(isBorrowed: Boolean) {
+        if (isBorrowed) {
+            binding.btnLoan.visibility = View.VISIBLE
+            binding.btnLoan.text = "Devolver"
+            binding.btnLoan.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.status_unavailable))
+            binding.btnLoan.setOnClickListener {
+                confirmReturnBook()
+            }
+            binding.btnReserve.visibility = View.GONE
+        } else {
+            // Reset to normal state based on book status
+            viewModel.book.value?.let { setupUserButtons(it) }
+        }
+    }
+
+    private fun confirmReturnBook() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Devolver Livro")
+            .setMessage("Deseja confirmar a devolução deste exemplar?")
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Devolver") { _, _ ->
+                viewModel.returnBook(bookId)
+            }
+            .show()
     }
 
     private fun displayBookDetails(book: Book) {
@@ -141,6 +179,8 @@ class BookDetailFragment : Fragment() {
     }
 
     private fun setupUserButtons(book: Book) {
+        if (viewModel.isBorrowedByUser.value == true) return // Devolver já está visível via updateActionButtons
+
         with(binding) {
             when (book.status) {
                 "available" -> {

@@ -113,6 +113,14 @@ class AcervoFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.navigationEvent
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .collectLatest { (title, dueDate) ->
+                    navigateToLoanSuccess(title, dueDate)
+                }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isLoading
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle)
                 .collectLatest { isLoading ->
@@ -141,8 +149,12 @@ class AcervoFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.categories
-                .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+            kotlinx.coroutines.flow.combine(
+                viewModel.categories,
+                viewModel.selectedCategory
+            ) { categories, selected ->
+                categories
+            }.flowWithLifecycle(viewLifecycleOwner.lifecycle)
                 .collectLatest { categories ->
                     setupCategoryChips(categories)
                 }
@@ -163,7 +175,15 @@ class AcervoFragment : Fragment() {
         }
     }
 
+    private fun navigateToLoanSuccess(title: String, dueDate: String) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, LoanSuccessFragment.newInstance(title, dueDate))
+            .addToBackStack(null)
+            .commit()
+    }
+
     private fun setupCategoryChips(categories: List<String>) {
+        val currentSelected = viewModel.selectedCategory.value
         binding.chipGroupCategories.removeAllViews()
 
         categories.forEach { category ->
@@ -171,23 +191,24 @@ class AcervoFragment : Fragment() {
                 id = View.generateViewId()
                 text = category
                 isCheckable = true
-                isChecked = (category == viewModel.selectedCategory.value)
+                isClickable = true
+                isChecked = (category == currentSelected)
 
+                // Cores do Chip
                 if (isChecked) {
-                    setChipBackgroundColorResource(R.color.blue_royal)
+                    setChipBackgroundColorResource(R.color.blue_deep)
                     setTextColor(resources.getColor(R.color.white, null))
+                    typeface = android.graphics.Typeface.DEFAULT_BOLD
+                    chipStrokeWidth = 0f
                 } else {
-                    setChipBackgroundColorResource(R.color.blue_ice)
+                    setChipBackgroundColorResource(R.color.white)
                     setTextColor(resources.getColor(R.color.blue_royal, null))
+                    chipStrokeWidth = 0f
+                    typeface = android.graphics.Typeface.DEFAULT
                 }
 
-                setChipStrokeColorResource(R.color.blue_royal)
-                setChipStrokeWidth(1f)
-
-                setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked) {
-                        viewModel.setSelectedCategory(category)
-                    }
+                setOnClickListener {
+                    viewModel.setSelectedCategory(category)
                 }
             }
             binding.chipGroupCategories.addView(chip)

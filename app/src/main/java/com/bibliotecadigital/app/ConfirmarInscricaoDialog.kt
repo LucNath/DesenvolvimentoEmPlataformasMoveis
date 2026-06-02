@@ -16,13 +16,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 
-// Paleta de Cores do Projeto (Dark Theme)
-private val BgDark = Color(0xFF0D1117)
-private val CardDark = Color(0xFF161B22)
-private val AccentOrange = Color(0xFFF4A023)
-private val TextPrimary = Color(0xFFE6EDF3)
-private val TextSecondary = Color(0xFF8B949E)
-private val BorderColor = Color(0xFF30363D)
+// Paleta de Cores do Projeto (Light Theme)
+private val BgLight = Color(0xFFF3F4F6)
+private val CardLight = Color(0xFFFFFFFF)
+private val AccentBlue = Color(0xFF1A56DB)
+private val TextPrimary = Color(0xFF111827)
+private val TextSecondary = Color(0xFF6B7280)
+private val BorderColor = Color(0xFFE5E7EB)
 
 @Composable
 fun ConfirmarInscricaoDialog(
@@ -38,7 +38,7 @@ fun ConfirmarInscricaoDialog(
                 .fillMaxWidth()
                 .padding(16.dp),
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = CardDark),
+            colors = CardDefaults.cardColors(containerColor = CardLight),
             border = BorderStroke(1.dp, BorderColor)
         ) {
             Column(
@@ -69,7 +69,7 @@ fun ConfirmarInscricaoDialog(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(BgDark, RoundedCornerShape(12.dp))
+                        .background(BgLight, RoundedCornerShape(12.dp))
                         .padding(16.dp)
                 ) {
                     Text(
@@ -100,12 +100,12 @@ fun ConfirmarInscricaoDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = AccentOrange),
+                        colors = ButtonDefaults.buttonColors(containerColor = AccentBlue),
                         shape = RoundedCornerShape(10.dp)
                     ) {
                         Text(
                             text = "Confirmar",
-                            color = BgDark,
+                            color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp
                         )
@@ -131,7 +131,7 @@ fun ConfirmarInscricaoDialog(
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF0D1117)
+@Preview(showBackground = true, backgroundColor = 0xFFF3F4F6)
 @Composable
 fun ConfirmarInscricaoDialogPreview() {
     ConfirmarInscricaoDialog(

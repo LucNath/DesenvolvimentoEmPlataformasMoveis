@@ -47,17 +47,25 @@ class EventAdapter(
             isRegistered -> {
                 binding.btnRegister.text = context.getString(R.string.event_registered)
                 binding.btnRegister.isEnabled = true
-                binding.btnRegister.setBackgroundColor(ContextCompat.getColor(context, R.color.green_text))
+                binding.btnRegister.backgroundTintList = android.content.res.ColorStateList.valueOf(ContextCompat.getColor(context, R.color.green_text))
+                binding.btnRegister.setTextColor(ContextCompat.getColor(context, R.color.white))
+                binding.btnRegister.setIconTintResource(R.color.white)
+                binding.btnRegister.setIconResource(R.drawable.ic_check_circle)
             }
             availableSpots <= 0 -> {
                 binding.btnRegister.text = context.getString(R.string.event_sold_out)
                 binding.btnRegister.isEnabled = false
-                binding.btnRegister.setBackgroundColor(ContextCompat.getColor(context, R.color.text_gray))
+                binding.btnRegister.backgroundTintList = android.content.res.ColorStateList.valueOf(ContextCompat.getColor(context, R.color.text_gray))
+                binding.btnRegister.setTextColor(ContextCompat.getColor(context, R.color.white))
+                binding.btnRegister.setIconResource(0)
             }
             else -> {
                 binding.btnRegister.text = context.getString(R.string.btn_register_event)
                 binding.btnRegister.isEnabled = true
-                binding.btnRegister.setBackgroundColor(ContextCompat.getColor(context, R.color.brand_orange))
+                binding.btnRegister.backgroundTintList = android.content.res.ColorStateList.valueOf(ContextCompat.getColor(context, R.color.blue_royal))
+                binding.btnRegister.setTextColor(ContextCompat.getColor(context, R.color.white))
+                binding.btnRegister.setIconTintResource(R.color.white)
+                binding.btnRegister.setIconResource(R.drawable.ic_add)
             }
         }
     }

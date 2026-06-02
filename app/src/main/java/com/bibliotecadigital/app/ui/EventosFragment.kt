@@ -75,12 +75,12 @@ class EventosFragment : Fragment() {
 
                 // Estado inicial
                 if (day == "Todas") {
-                    setBackgroundResource(R.drawable.bg_tag_orange)
+                    setBackgroundResource(R.drawable.bg_button_primary)
                     setTextColor(Color.WHITE)
                     viewModel.setSelectedDate("Todas")
                 } else {
                     setBackgroundResource(R.drawable.bg_card)
-                    setTextColor(Color.parseColor("#4A90E2")) // Azul para datas não selecionadas
+                    setTextColor(resources.getColor(R.color.blue_royal, null))
                 }
 
                 setOnClickListener {
@@ -88,10 +88,10 @@ class EventosFragment : Fragment() {
                     for (i in 0 until binding.llCalendar.childCount) {
                         val child = binding.llCalendar.getChildAt(i) as TextView
                         child.setBackgroundResource(R.drawable.bg_card)
-                        child.setTextColor(Color.parseColor("#4A90E2"))
+                        child.setTextColor(resources.getColor(R.color.blue_royal, null))
                     }
                     // Seleciona o atual
-                    setBackgroundResource(R.drawable.bg_tag_orange)
+                    setBackgroundResource(R.drawable.bg_button_primary)
                     setTextColor(Color.WHITE)
 
                     viewModel.setSelectedDate(day)

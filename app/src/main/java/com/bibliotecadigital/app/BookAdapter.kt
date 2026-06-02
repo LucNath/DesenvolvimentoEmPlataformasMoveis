@@ -38,18 +38,31 @@ class BookAdapter(
             }
 
             // Configuração de Status
-            when (book.status) {
-                "available" -> {
-                    tvStatus.text = "DISPONÍVEL"
-                    tvStatus.setBackgroundResource(R.drawable.bg_status_green)
-                    tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.green_text))
-                    btnReservar.text = "Reservar" // Alterado de "Emprestar" para "Reservar"
-                }
-                else -> {
-                    tvStatus.text = "INDISPONÍVEL"
-                    tvStatus.setBackgroundResource(R.drawable.bg_status_red)
-                    tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.text_red))
-                    btnReservar.text = "Reservar"
+            if (book.isBorrowedByUser) {
+                tvStatus.text = "EMPRESTADO"
+                tvStatus.setBackgroundResource(R.drawable.bg_status_yellow)
+                tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.status_warning_text))
+                btnReservar.text = "Emprestado"
+                btnReservar.isEnabled = false
+                btnReservar.setBackgroundColor(ContextCompat.getColor(root.context, R.color.green_text))
+                btnReservar.setTextColor(ContextCompat.getColor(root.context, R.color.white))
+            } else {
+                btnReservar.isEnabled = true
+                when (book.status) {
+                    "available" -> {
+                        tvStatus.text = "DISPONÍVEL"
+                        tvStatus.setBackgroundResource(R.drawable.bg_status_green)
+                        tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.green_text))
+                        btnReservar.text = "Empréstimo"
+                        btnReservar.setBackgroundColor(ContextCompat.getColor(root.context, R.color.blue_royal))
+                    }
+                    else -> {
+                        tvStatus.text = "INDISPONÍVEL"
+                        tvStatus.setBackgroundResource(R.drawable.bg_status_red)
+                        tvStatus.setTextColor(ContextCompat.getColor(root.context, R.color.text_red))
+                        btnReservar.text = "Reservar"
+                        btnReservar.setBackgroundColor(ContextCompat.getColor(root.context, R.color.blue_royal))
+                    }
                 }
             }
 

@@ -71,8 +71,8 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    binding.tvUserName.text = "Olá, ${state.userName}"
-                    
+                    binding.tvUserName.text = getString(R.string.home_welcome, state.userName)
+
                     // Se for Admin, podemos mostrar opções extras ou mudar o layout
                     if (state.isAdmin) {
                         setupAdminView(state)
