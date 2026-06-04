@@ -117,7 +117,6 @@
     <string name="settings_session">SESSÃO</string>
     <string name="settings_change_password">Alterar Senha</string>
     <string name="settings_font_size">Tamanho da Fonte</string>
-    <string name="settings_theme">Tema do Aplicativo</string>
     <string name="settings_rotation">Rotação Automática</string>
     <string name="settings_logout">Sair da Conta</string>
     <string name="settings_logout_confirm">Tem certeza que deseja sair da sua conta?</string>
@@ -184,6 +183,8 @@
     <string name="error_password_weak">A senha deve ter pelo menos 8 caracteres, incluindo um número e uma letra maiúscula</string>
     <string name="error_passwords_dont_match">As senhas não coincidem</string>
     <string name="success_password_reset">Senha redefinida com sucesso!</string>
+    <string name="error_insert_email">Insira o e-mail para recuperação</string>
+    <string name="success_reset_email_sent">E-mail de recuperação enviado! Verifique sua caixa de entrada e a pasta de spam.</string>
 
     <!-- Home Empty State -->
     <string name="empty_state_title">Nenhum empréstimo por aqui ainda</string>

@@ -15,10 +15,13 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.channels.awaitClose
 
 class AcervoViewModel : ViewModel() {
 
@@ -40,6 +43,9 @@ class AcervoViewModel : ViewModel() {
 
     private val _actionMessage = MutableSharedFlow<String>()
     val actionMessage: SharedFlow<String> = _actionMessage.asSharedFlow()
+
+    private val _navigationEvent = MutableSharedFlow<Pair<String, String>>()
+    val navigationEvent: SharedFlow<Pair<String, String>> = _navigationEvent.asSharedFlow()
 
     val categories: StateFlow<List<String>> = _allBooks.map { books ->
         val list = books.asSequence().map { it.category }.distinct().filter { it.isNotEmpty() }.sorted().toMutableList()
@@ -69,6 +75,42 @@ class AcervoViewModel : ViewModel() {
 
     init {
         observeBooks()
+        observeUserLoans()
+    }
+
+    private fun observeUserLoans() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        viewModelScope.launch {
+            // Monitora empréstimos E reservas para desabilitar o botão se o usuário já tiver ação no livro
+            val loansFlow = callbackFlow {
+                val sub = db.collection("loans")
+                    .whereEqualTo("userId", userId)
+                    .whereEqualTo("status", "active")
+                    .addSnapshotListener { snapshot, _ ->
+                        trySend(snapshot?.documents?.mapNotNull { it.getString("bookId") } ?: emptyList())
+                    }
+                awaitClose { sub.remove() }
+            }
+
+            val reservationsFlow = callbackFlow {
+                val sub = db.collection("reservations")
+                    .whereEqualTo("userId", userId)
+                    .whereEqualTo("status", "active")
+                    .addSnapshotListener { snapshot, _ ->
+                        trySend(snapshot?.documents?.mapNotNull { it.getString("bookId") } ?: emptyList())
+                    }
+                awaitClose { sub.remove() }
+            }
+
+            combine(loansFlow, reservationsFlow) { loans: List<String>, reservations: List<String> ->
+                loans + reservations
+            }.collect { activeIds ->
+                val updatedBooks = _allBooks.value.map { b ->
+                    b.copy(isBorrowedByUser = activeIds.contains(b.id))
+                }
+                _allBooks.value = updatedBooks
+            }
+        }
     }
 
     private fun observeBooks() {
@@ -76,7 +118,22 @@ class AcervoViewModel : ViewModel() {
             _isLoading.value = true
             try {
                 bookRepository.getBooks().collect { books ->
-                    _allBooks.value = books
+                    val userId = FirebaseAuth.getInstance().currentUser?.uid
+                    if (userId != null) {
+                        // Ao carregar os livros, já verifica o status de empréstimo
+                        val loansSnapshot = db.collection("loans")
+                            .whereEqualTo("userId", userId)
+                            .whereEqualTo("status", "active")
+                            .get().await()
+                        
+                        val borrowedIds = loansSnapshot.documents.mapNotNull { doc -> doc.getString("bookId") }
+                        val updatedBooks = books.map { b ->
+                            b.copy(isBorrowedByUser = borrowedIds.contains(b.id))
+                        }
+                        _allBooks.value = updatedBooks
+                    } else {
+                        _allBooks.value = books
+                    }
                     _isLoading.value = false
                 }
             } catch (e: Exception) {
@@ -110,7 +167,7 @@ class AcervoViewModel : ViewModel() {
                         author = book.author,
                         coverUrl = book.coverUrl
                     ).onSuccess { dueDate ->
-                        _actionMessage.emit("Reserva confirmada! Retire no balcão até $dueDate")
+                        _navigationEvent.emit(book.title to dueDate)
                     }.onFailure { e ->
                         _actionMessage.emit("Erro ao solicitar reserva: ${e.message}")
                     }

@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="@drawable/bg_card">
+    android:background="@color/white">
 
     <!-- Handle -->
     <View
@@ -13,25 +13,25 @@
         android:layout_height="4dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="20dp"
-        android:background="#3A4E6A" />
+        android:background="#E5E7EB" />
 
     <!-- Título -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/profile_edit_btn"
+        android:text="Editar Perfil"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@color/text_primary"
+        android:textColor="@color/text_primary_light"
         android:layout_marginBottom="24dp" />
 
     <!-- Label Nome -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/name_hint"
+        android:text="Nome completo"
         android:textSize="12sp"
-        android:textColor="@color/text_secondary"
+        android:textColor="@color/text_secondary_light"
         android:layout_marginBottom="6dp" />
 
     <!-- Campo Nome -->
@@ -51,10 +51,10 @@
             android:paddingStart="14dp"
             android:paddingEnd="14dp"
             android:textSize="14sp"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/text_primary_light"
             android:hint="Seu nome completo"
-            android:textColorHint="@color/text_secondary"
-            android:background="@drawable/input_background"
+            android:textColorHint="@color/text_secondary_light"
+            android:background="@drawable/bg_edit_profile_input"
             android:inputType="textPersonName"
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:text="Curso"
         android:textSize="12sp"
-        android:textColor="@color/text_secondary"
+        android:textColor="@color/text_secondary_light"
         android:layout_marginBottom="6dp" />
 
     <!-- Campo Curso -->
@@ -85,10 +85,10 @@
             android:paddingStart="14dp"
             android:paddingEnd="14dp"
             android:textSize="14sp"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/text_primary_light"
             android:hint="Ex: Aluno · Direito"
-            android:textColorHint="@color/text_secondary"
-            android:background="@drawable/input_background"
+            android:textColorHint="@color/text_secondary_light"
+            android:background="@drawable/bg_edit_profile_input"
             android:inputType="text"
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -100,8 +100,8 @@
         android:layout_height="50dp"
         android:text="@string/btn_save"
         android:textSize="15sp"
-        android:textColor="@color/white"
-        android:background="@drawable/bg_button_orange"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="@color/blue_royal"
         android:stateListAnimator="@null" />
 
     <!-- Botão Cancelar -->
@@ -111,7 +111,7 @@
         android:layout_height="50dp"
         android:text="@string/btn_cancel"
         android:textSize="15sp"
-        android:textColor="@color/text_secondary"
+        android:textColor="@color/text_secondary_light"
         android:background="@android:color/transparent"
         android:stateListAnimator="@null"
         android:layout_marginTop="4dp" />

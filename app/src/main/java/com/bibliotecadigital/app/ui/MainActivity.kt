@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import com.bibliotecadigital.app.NetworkMonitor
 import com.bibliotecadigital.app.ui.ProfileFragment
 import com.bibliotecadigital.app.R
 import com.bibliotecadigital.app.databinding.ActivityMainBinding
+import com.bibliotecadigital.app.viewmodels.NotificationsViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -23,14 +25,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var appPrefs: AppPrefs
     private lateinit var networkMonitor: NetworkMonitor
+    private val notificationsViewModel: NotificationsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         appPrefs = AppPrefs(this)
         networkMonitor = NetworkMonitor(this)
 
-        AppCompatDelegate.setDefaultNightMode(
-            if (appPrefs.isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-        )
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         super.onCreate(savedInstanceState)
 
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         setupNavigation()
         setupNetworkMonitor()
+        observeNotifications()
 
         if (savedInstanceState == null) {
             loadFragment(HomeFragment())
@@ -58,6 +60,21 @@ class MainActivity : AppCompatActivity() {
         networkMonitor.isConnected
             .onEach { isConnected ->
                 offlineLayout?.visibility = if (isConnected) View.GONE else View.VISIBLE
+            }
+            .launchIn(lifecycleScope)
+    }
+
+    private fun observeNotifications() {
+        notificationsViewModel.notifications
+            .onEach { notifications ->
+                val unreadCount = notifications.count { !it.isRead }
+                val badge = binding.bottomNavigation.getOrCreateBadge(R.id.nav_notificacoes)
+                if (unreadCount > 0) {
+                    badge.isVisible = true
+                    badge.number = unreadCount
+                } else {
+                    badge.isVisible = false
+                }
             }
             .launchIn(lifecycleScope)
     }
@@ -92,12 +109,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun applyPreferences() {
-        // 1. Tema
-        AppCompatDelegate.setDefaultNightMode(
-            if (appPrefs.isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-        )
-
-        // 2. Rotação
+        // 1. Rotação
         requestedOrientation = if (appPrefs.autoRotation) {
             ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         } else {

@@ -18,5 +18,6 @@ data class Book(
     val year: String = "",
     val isMostBorrowed: Boolean = false,
     val rating: Float = 0f,
-    val createdAt: Timestamp = Timestamp.Companion.now()
+    val createdAt: Timestamp = Timestamp.Companion.now(),
+    val isBorrowedByUser: Boolean = false
 )

@@ -71,9 +71,15 @@ class LoginViewModel : ViewModel() {
             result.onSuccess {
                 _loginResult.value = LoginResult.ResetEmailSent
             }.onFailure { exception ->
-                val errorMessage = when {
-                    exception.message?.contains("user-not-found") == true -> "E-mail não cadastrado"
-                    else -> "Erro ao enviar e-mail de recuperação"
+                val errorMessage = if (exception is FirebaseAuthException) {
+                    when (exception.errorCode) {
+                        "ERROR_USER_NOT_FOUND" -> "E-mail não cadastrado em nosso sistema"
+                        "ERROR_INVALID_EMAIL" -> "Formato de e-mail inválido"
+                        "ERROR_NETWORK_REQUEST_FAILED" -> "Sem conexão com a internet"
+                        else -> "Erro ao enviar e-mail: ${exception.message}"
+                    }
+                } else {
+                    exception.message ?: "Erro ao enviar e-mail de recuperação"
                 }
                 _loginResult.value = LoginResult.Error(errorMessage)
             }

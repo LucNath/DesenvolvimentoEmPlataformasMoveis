@@ -40,25 +40,44 @@ class HomeViewModel : ViewModel() {
     }
 
     fun loadData() {
-        val uid = auth.currentUser?.uid ?: return
+        val firebaseUser = auth.currentUser ?: return
+        val uid = firebaseUser.uid
 
-        _uiState.value = _uiState.value.copy(isLoading = true)
+        _uiState.value = _uiState.value.copy(
+            userName = firebaseUser.displayName ?: "Usuário",
+            isLoading = true
+        )
 
         // Observa dados do usuário (Nome e Role) em tempo real
         viewModelScope.launch {
             db.collection("users").document(uid).addSnapshotListener { snapshot, error ->
                 if (snapshot != null && snapshot.exists()) {
-                    val name = snapshot.getString("name") ?: "Usuário"
+                    val firestoreName = snapshot.getString("name")
+                    val authName = firebaseUser.displayName
+                    
+                    val name: String = when {
+                        !firestoreName.isNullOrBlank() -> firestoreName
+                        !authName.isNullOrBlank() -> authName
+                        else -> "Usuário"
+                    }
+
                     val role = snapshot.getString("role") ?: "student"
                     val isAdmin = role == "admin"
                     _uiState.value = _uiState.value.copy(
                         userName = name,
-                        isAdmin = isAdmin
+                        isAdmin = isAdmin,
+                        isLoading = false
                     )
                     
                     if (isAdmin) {
                         loadAdminStats()
                     }
+                } else {
+                    // Fallback se o documento não existir no Firestore
+                    _uiState.value = _uiState.value.copy(
+                        userName = firebaseUser.displayName ?: "Usuário",
+                        isLoading = false
+                    )
                 }
             }
         }

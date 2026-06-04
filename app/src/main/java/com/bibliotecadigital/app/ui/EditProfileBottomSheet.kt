@@ -5,23 +5,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.bibliotecadigital.app.R
 import com.bibliotecadigital.app.databinding.DialogEditProfileBinding
-import com.bibliotecadigital.app.viewmodels.ProfileViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.userProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
-class EditProfileBottomSheet(
-    private val currentName: String,
-    private val currentCourse: String
-) : BottomSheetDialogFragment() {
+class EditProfileBottomSheet : BottomSheetDialogFragment() {
 
     private var _binding: DialogEditProfileBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: ProfileViewModel by viewModels({ requireParentFragment() })
+    private val auth = FirebaseAuth.getInstance()
+    private val db = FirebaseFirestore.getInstance()
 
     override fun getTheme(): Int = R.style.AppBottomSheetDialogTheme
 
@@ -37,23 +40,70 @@ class EditProfileBottomSheet(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Preenche com dados atuais
-        binding.etName.setText(currentName)
-        binding.etCourse.setText(currentCourse)
+        loadUserData()
 
         binding.btnSave.setOnClickListener {
-            val name = binding.etName.text.toString().trim()
-            val course = binding.etCourse.text.toString().trim()
-
-            if (!validateFields(name, course)) return@setOnClickListener
-
-            viewModel.updateProfile(name, course)
-            dismiss()
+            saveUserData()
         }
 
         binding.btnCancel.setOnClickListener {
             dismiss()
         }
+    }
+
+    private fun loadUserData() {
+        val uid = auth.currentUser?.uid ?: return
+        
+        lifecycleScope.launch {
+            try {
+                val document = db.collection("users").document(uid).get().await()
+                if (document.exists()) {
+                    val name = document.getString("name") ?: document.getString("displayName") ?: ""
+                    val course = document.getString("course") ?: ""
+                    
+                    binding.etName.setText(name)
+                    binding.etCourse.setText(course)
+                }
+            } catch (e: Exception) {
+                // Silently fail or show small error if needed
+            }
+        }
+    }
+
+    private fun saveUserData() {
+        val uid = auth.currentUser?.uid ?: return
+        val newName = binding.etName.text.toString().trim()
+        val newCourse = binding.etCourse.text.toString().trim()
+
+        if (!validateFields(newName, newCourse)) return
+
+        lifecycleScope.launch {
+            try {
+                // 1. Atualizar Firestore
+                val updates = mapOf(
+                    "name" to newName,
+                    "course" to newCourse
+                )
+                db.collection("users").document(uid).update(updates).await()
+
+                // 2. Atualizar FirebaseAuth display name
+                val profileUpdates = userProfileChangeRequest {
+                    displayName = newName
+                }
+                auth.currentUser?.updateProfile(profileUpdates)?.await()
+
+                // Sucesso
+                showSnackbar("Perfil atualizado com sucesso")
+                dismiss()
+            } catch (e: Exception) {
+                showSnackbar("Erro ao atualizar perfil")
+            }
+        }
+    }
+
+    private fun showSnackbar(message: String) {
+        val parentView = requireParentFragment().view ?: return
+        Snackbar.make(parentView, message, Snackbar.LENGTH_LONG).show()
     }
 
     private fun validateFields(name: String, course: String): Boolean {

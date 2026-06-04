@@ -32,14 +32,26 @@ class ReservationRepository(
         author: String,
         coverUrl: String
     ): Result<Unit> = runCatching {
-        // Conta quantas reservas ativas existem para esse livro
-        val existingReservations = db.collection(reservationsCollection)
+        // RF02: Evita reservas duplicadas do mesmo livro para o mesmo usuário
+        val activeReservation = db.collection(reservationsCollection)
+            .whereEqualTo("userId", userId)
             .whereEqualTo("bookId", bookId)
             .whereEqualTo("status", "active")
             .get()
             .await()
 
-        val queuePosition = existingReservations.size() + 1
+        if (!activeReservation.isEmpty) {
+            throw Exception("Você já possui uma reserva ativa deste livro.")
+        }
+
+        // Conta quantas reservas ativas existem para esse livro para definir a posição na fila
+        val totalReservations = db.collection(reservationsCollection)
+            .whereEqualTo("bookId", bookId)
+            .whereEqualTo("status", "active")
+            .get()
+            .await()
+
+        val queuePosition = totalReservations.size() + 1
 
         val reservationId = db.collection(reservationsCollection).document().id
 

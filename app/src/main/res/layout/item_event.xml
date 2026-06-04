@@ -97,19 +97,18 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnRegister"
-                style="@style/Widget.Material3.Button.TonalButton"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:paddingHorizontal="16dp"
                 android:text="@string/btn_register_event"
-                android:textColor="@color/blue_royal"
-                android:backgroundTint="@color/blue_ice"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/blue_royal"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:cornerRadius="24dp"
-                app:icon="@drawable/ic_check_circle"
+                app:icon="@drawable/ic_add"
                 app:iconSize="16dp"
-                app:iconTint="@color/blue_royal" />
+                app:iconTint="@color/white" />
         </LinearLayout>
 
     </LinearLayout>

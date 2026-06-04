@@ -8,7 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bibliotecadigital.app.AppPrefs
-import com.bibliotecadigital.app.ui.MainActivity
+import com.bibliotecadigital.app.R
 import com.bibliotecadigital.app.databinding.ActivityLoginBinding
 import com.bibliotecadigital.app.viewmodels.LoginResult
 import com.bibliotecadigital.app.viewmodels.LoginViewModel
@@ -32,12 +32,12 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.tvForgotPassword.setOnClickListener {
-            val intent = Intent(this, ForgotPasswordActivity::class.java)
-            val currentEmail = binding.etEmail.text.toString()
-            if (currentEmail.isNotEmpty()) {
-                intent.putExtra("email", currentEmail)
+            val email = binding.etEmail.text.toString()
+            if (email.isNotEmpty()) {
+                viewModel.resetPassword(email)
+            } else {
+                binding.tilEmail.error = getString(R.string.error_insert_email)
             }
-            startActivity(intent)
         }
 
         binding.btnLogin.setOnClickListener {
@@ -103,7 +103,7 @@ class LoginActivity : AppCompatActivity() {
                     is LoginResult.ResetEmailSent -> {
                         binding.progressBar.visibility = View.GONE
                         binding.btnLogin.isEnabled = true
-                        Snackbar.make(binding.root, "E-mail de recuperação enviado!", Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(binding.root, R.string.success_reset_email_sent, Snackbar.LENGTH_LONG).show()
                     }
                     else -> {
                         binding.progressBar.visibility = View.GONE

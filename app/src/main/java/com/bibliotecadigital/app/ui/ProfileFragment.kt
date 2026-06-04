@@ -52,9 +52,25 @@ class ProfileFragment : Fragment() {
 
     private fun setupUserData(state: ProfileState.Success) {
         val user = state.user
-        binding.tvAvatar.text = user.name.take(2).uppercase()
+        
+        if (user.photoUrl.isNotEmpty()) {
+            binding.ivUserProfile.visibility = View.VISIBLE
+            binding.tvAvatar.visibility = View.GONE
+            // Glide.with(this).load(user.photoUrl).into(binding.ivUserProfile)
+        } else {
+            binding.ivUserProfile.visibility = View.GONE
+            binding.tvAvatar.visibility = View.VISIBLE
+            binding.tvAvatar.text = user.name.take(2).uppercase()
+        }
+
         binding.tvUserName.text = user.name
-        binding.tvUserCourse.text = user.course.ifEmpty { "Estudante" }
+        binding.tvUserName.visibility = View.VISIBLE // Make sure it's visible if we want it
+        
+        val displayRole = when(user.role) {
+            "admin" -> "Administrador"
+            else -> "Estudante"
+        }
+        binding.tvUserCourse.text = displayRole
         
         binding.tvBorrowed.text = state.borrowedCount.toString()
         binding.tvReturned.text = state.returnedCount.toString()
@@ -132,18 +148,8 @@ class ProfileFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.btnEditProfile.setOnClickListener {
-            val bottomSheet = EditProfileBottomSheet(
-                currentName = binding.tvUserName.text.toString(),
-                currentCourse = binding.tvUserCourse.text.toString()
-            )
+            val bottomSheet = EditProfileBottomSheet()
             bottomSheet.show(childFragmentManager, EditProfileBottomSheet.TAG)
-        }
-
-        binding.btnSettings.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, SettingsFragment())
-                .addToBackStack(null)
-                .commit()
         }
 
         binding.rowChangePassword.root.setOnClickListener {
@@ -163,19 +169,34 @@ class ProfileFragment : Fragment() {
         }
 
         binding.rowMyReservations.root.setOnClickListener {
-            Toast.makeText(requireContext(), "Abrindo Minhas Reservas...", Toast.LENGTH_SHORT).show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, MyReservationsFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.rowReadingHistory.root.setOnClickListener {
-            Toast.makeText(requireContext(), "Abrindo Histórico de Leituras...", Toast.LENGTH_SHORT).show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, ReadingHistoryFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.rowReadingGoals.root.setOnClickListener {
-            Toast.makeText(requireContext(), "Abrindo Metas de Leitura...", Toast.LENGTH_SHORT).show()
+            val bottomSheet = AddReadingGoalBottomSheet()
+            bottomSheet.show(childFragmentManager, AddReadingGoalBottomSheet.TAG)
         }
 
         binding.rowFees.root.setOnClickListener {
-            Toast.makeText(requireContext(), "Abrindo Multas e Pagamentos...", Toast.LENGTH_SHORT).show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, FinesFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        binding.btnAddGoal.setOnClickListener {
+            val bottomSheet = AddReadingGoalBottomSheet()
+            bottomSheet.show(childFragmentManager, AddReadingGoalBottomSheet.TAG)
         }
     }
 

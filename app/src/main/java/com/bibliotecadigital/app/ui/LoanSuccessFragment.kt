@@ -44,18 +44,20 @@ class LoanSuccessFragment : Fragment() {
         binding.tvDueDate.text = dueDate
 
         binding.btnViewDetails.setOnClickListener {
-            // Navegar para "Meus Empréstimos" (Geralmente na Home ou Perfil)
-            // Para seguir o padrão do projeto, voltamos para a Home onde estão os empréstimos ativos
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, HomeFragment())
-                .commit()
+            // Navegar para a Home (onde estão os empréstimos ativos)
+            // Atualiza o ID selecionado no BottomNavigation para refletir a mudança
+            (activity as? MainActivity)?.let { main ->
+                val bottomNav = main.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavigation)
+                bottomNav.selectedItemId = R.id.nav_home
+            }
         }
 
         binding.btnBackToCatalog.setOnClickListener {
             // Volta para o Acervo
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, AcervoFragment())
-                .commit()
+            (activity as? MainActivity)?.let { main ->
+                val bottomNav = main.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNavigation)
+                bottomNav.selectedItemId = R.id.nav_acervo
+            }
         }
     }
 
