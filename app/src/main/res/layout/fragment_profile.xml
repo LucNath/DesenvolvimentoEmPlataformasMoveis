@@ -157,6 +157,8 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <include layout="@layout/item_menu_row" android:id="@+id/rowUserManagement" android:visibility="gone" />
+                    <View android:id="@+id/dividerUserManagement" android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:background="#F3F4F6" android:visibility="gone" />
                     <include layout="@layout/item_menu_row" android:id="@+id/rowMyReservations" />
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginStart="56dp" android:background="#F3F4F6" />
                     <include layout="@layout/item_menu_row" android:id="@+id/rowReadingHistory" />

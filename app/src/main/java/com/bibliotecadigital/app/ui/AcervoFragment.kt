@@ -59,6 +59,15 @@ class AcervoFragment : Fragment() {
         val appPrefs = com.bibliotecadigital.app.AppPrefs(requireContext())
         val isAdmin = appPrefs.userRole == "admin"
 
+        // Configura o FAB para Admin
+        binding.fabAddBook.visibility = if (isAdmin) View.VISIBLE else View.GONE
+        binding.fabAddBook.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, com.bibliotecadigital.app.ui.admin.AddBookFragment.newInstance())
+                .addToBackStack(null)
+                .commit()
+        }
+
         bookAdapter = BookAdapter(
             isAdmin = isAdmin,
             onBookClick = { book ->
@@ -74,10 +83,13 @@ class AcervoFragment : Fragment() {
                 viewModel.handleBookAction(book)
             },
             onEditClick = { book ->
-                Snackbar.make(binding.root, "Editar: ${book.title}", Snackbar.LENGTH_SHORT).show()
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, com.bibliotecadigital.app.ui.admin.AddBookFragment.newInstance(book.id))
+                    .addToBackStack(null)
+                    .commit()
             },
             onDeleteClick = { book ->
-                Snackbar.make(binding.root, "Excluir: ${book.title}", Snackbar.LENGTH_SHORT).show()
+                showDeleteConfirmation(book)
             }
         )
         binding.rvBooks.layoutManager = LinearLayoutManager(requireContext())
@@ -192,6 +204,28 @@ class AcervoFragment : Fragment() {
             }
             binding.chipGroupCategories.addView(chip)
         }
+    }
+
+    private fun showDeleteConfirmation(book: com.bibliotecadigital.app.entity.Book) {
+        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Excluir Obra")
+            .setMessage("Tem certeza que deseja excluir '${book.title}'? Esta ação não pode ser desfeita.")
+            .setPositiveButton("Excluir") { _, _ ->
+                deleteBook(book)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun deleteBook(book: com.bibliotecadigital.app.entity.Book) {
+        val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+        db.collection("books").document(book.id).delete()
+            .addOnSuccessListener {
+                Snackbar.make(binding.root, "Obra excluída com sucesso", Snackbar.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Snackbar.make(binding.root, "Erro ao excluir: ${e.message}", Snackbar.LENGTH_SHORT).show()
+            }
     }
 
     override fun onDestroyView() {

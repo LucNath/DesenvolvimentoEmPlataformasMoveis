@@ -101,6 +101,23 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupMenuRows() {
+        val isAdmin = AppPrefs(requireContext()).userRole == "admin"
+
+        if (isAdmin) {
+            binding.rowUserManagement.root.visibility = View.VISIBLE
+            binding.dividerUserManagement.visibility = View.VISIBLE
+            configRow(binding.rowUserManagement.root, R.drawable.ic_perfil, "Gestão de Usuários")
+            binding.rowUserManagement.root.setOnClickListener {
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, com.bibliotecadigital.app.ui.admin.UserManagementFragment())
+                    .addToBackStack(null)
+                    .commit()
+            }
+        } else {
+            binding.rowUserManagement.root.visibility = View.GONE
+            binding.dividerUserManagement.visibility = View.GONE
+        }
+
         // Atividades Literárias
         configRow(binding.rowMyReservations.root, R.drawable.ic_bookmark, getString(R.string.my_reservations_title))
         configRow(binding.rowReadingHistory.root, R.drawable.ic_history, getString(R.string.profile_menu_history))

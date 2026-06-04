@@ -63,6 +63,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupNavigation() {
+        val appPrefs = AppPrefs(this)
+        val isAdmin = appPrefs.userRole == "admin"
+
+        if (isAdmin) {
+            binding.bottomNavigation.menu.findItem(R.id.nav_notificacoes).isVisible = false
+            // Opcionalmente podemos esconder mais coisas ou mudar a ordem
+        }
+
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             val fragment = when (item.itemId) {
                 R.id.nav_home -> HomeFragment()
