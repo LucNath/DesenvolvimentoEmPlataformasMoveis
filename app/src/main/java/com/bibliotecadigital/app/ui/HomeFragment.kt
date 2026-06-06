@@ -53,13 +53,17 @@ class HomeFragment : Fragment() {
         }
 
         binding.tvVerTodosEmprestimos.setOnClickListener {
-            // Em nosso app, os empréstimos ativos já estão na Home,
-            // mas podemos redirecionar para uma visão mais detalhada ou perfil
-            navigateToProfile()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, AllLoansFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.tvVerTodasReservas.setOnClickListener {
-            navigateToAcervo()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, MyReservationsFragment())
+                .addToBackStack(null)
+                .commit()
         }
     }
 

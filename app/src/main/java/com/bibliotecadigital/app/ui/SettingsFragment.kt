@@ -82,7 +82,7 @@ class SettingsFragment : Fragment() {
 
         binding.itemNotifications.root.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, NotificacoesFragment())
+                .replace(R.id.fragmentContainer, NotificationSettingsFragment())
                 .addToBackStack(null)
                 .commit()
         }

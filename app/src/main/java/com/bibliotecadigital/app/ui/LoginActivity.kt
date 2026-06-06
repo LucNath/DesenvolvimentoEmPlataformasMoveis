@@ -32,12 +32,8 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.tvForgotPassword.setOnClickListener {
-            val email = binding.etEmail.text.toString()
-            if (email.isNotEmpty()) {
-                viewModel.resetPassword(email)
-            } else {
-                binding.tilEmail.error = getString(R.string.error_insert_email)
-            }
+            val bottomSheet = ForgotPasswordBottomSheet()
+            bottomSheet.show(supportFragmentManager, ForgotPasswordBottomSheet.TAG)
         }
 
         binding.btnLogin.setOnClickListener {

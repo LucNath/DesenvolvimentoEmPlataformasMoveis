@@ -34,13 +34,14 @@ class LoanAdapter(
                 tvDueDate.text = "⚠ ${item.dueDate}"
                 tvDueDate.setBackgroundResource(R.drawable.bg_status_warning_pill)
                 tvDueDate.setTextColor(ContextCompat.getColor(root.context, R.color.status_warning_text))
-                btnRenovar.visibility = View.VISIBLE
             } else {
                 tvDueDate.text = "✓ ${item.dueDate}"
                 tvDueDate.setBackgroundResource(R.drawable.bg_status_available_pill)
                 tvDueDate.setTextColor(ContextCompat.getColor(root.context, R.color.status_available_text))
-                btnRenovar.visibility = View.GONE
             }
+
+            // RF-H08: O botão de renovar está sempre visível na Home se houver lógica para tal
+            btnRenovar.visibility = View.VISIBLE
 
             ivCover.load(item.coverUrl) {
                 placeholder(R.drawable.bg_cover_placeholder)

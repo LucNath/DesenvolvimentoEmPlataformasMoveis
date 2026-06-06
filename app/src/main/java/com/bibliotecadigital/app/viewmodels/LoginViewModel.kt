@@ -73,7 +73,7 @@ class LoginViewModel : ViewModel() {
             }.onFailure { exception ->
                 val errorMessage = if (exception is FirebaseAuthException) {
                     when (exception.errorCode) {
-                        "ERROR_USER_NOT_FOUND" -> "E-mail não cadastrado em nosso sistema"
+                        "ERROR_USER_NOT_FOUND" -> "Email não cadastrado"
                         "ERROR_INVALID_EMAIL" -> "Formato de e-mail inválido"
                         "ERROR_NETWORK_REQUEST_FAILED" -> "Sem conexão com a internet"
                         else -> "Erro ao enviar e-mail: ${exception.message}"
