@@ -54,12 +54,12 @@ class BookRepository(private val db: FirebaseFirestore) : FirestoreRepository(db
             val ref = db.collection(booksCollection).document(bookId)
             val snapshot = transaction.get(ref)
 
-            val currentAvailable = snapshot.getLong("available") ?: 0
+            val currentAvailable = snapshot.getLong("availableQuantity") ?: 0
             val newAvailable = currentAvailable + delta
 
             if (newAvailable < 0) throw Exception("Quantidade indisponível")
 
-            transaction.update(ref, "available", newAvailable)
+            transaction.update(ref, "availableQuantity", newAvailable)
 
             // Opcional: Atualizar status automaticamente
             val newStatus = if (newAvailable > 0) "available" else "unavailable"

@@ -28,7 +28,7 @@ class CadastroViewModel : ViewModel() {
 
     fun cadastrar(nome: String, email: String, senha: String) {
         if (senha.length < 8 || !senha.any { it.isDigit() } || !senha.any { it.isUpperCase() }) {
-            _cadastroResult.value = CadastroResult.Error("A senha deve ter pelo menos 8 caracteres, incluindo um número e uma letra maiúscula (RF02.3)")
+            _cadastroResult.value = CadastroResult.Error("A senha precisa ser um pouquinho mais forte: 8 caracteres, com um número e uma letra maiúscula! 💪")
             return
         }
 
@@ -56,13 +56,13 @@ class CadastroViewModel : ViewModel() {
                             _cadastroResult.value = CadastroResult.EmailDuplicado
                             return@onFailure
                         }
-                        "ERROR_WEAK_PASSWORD" -> "A senha deve ter pelo menos 6 caracteres (RF02.2)"
-                        "ERROR_INVALID_EMAIL" -> "E-mail inválido (RF02.3)"
-                        "ERROR_NETWORK_REQUEST_FAILED" -> "Sem conexão com a internet"
-                        else -> "Erro na autenticação: ${exception.message}"
+                        "ERROR_WEAK_PASSWORD" -> "Essa senha está muito fraquinha. Que tal algo mais seguro? 🛡️"
+                        "ERROR_INVALID_EMAIL" -> "Hum, esse e-mail não parece certo. Pode conferir o formato? 📧"
+                        "ERROR_NETWORK_REQUEST_FAILED" -> "Parece que o sinal fugiu... Verifique sua internet! 📶"
+                        else -> "Opa! Algo não deu certo no cadastro: ${exception.message} 😵"
                     }
                 } else {
-                    exception.message ?: "Erro ao realizar cadastro. Tente novamente."
+                    exception.message ?: "Tivemos um probleminha técnico. Tente de novo em instantes! 🛠️"
                 }
                 _cadastroResult.value = CadastroResult.Error(errorMessage)
             }

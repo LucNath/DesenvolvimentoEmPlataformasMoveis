@@ -28,7 +28,7 @@ O **Biblioteca Digital** digitaliza e moderniza a experiência dos usuários da 
 - 📋 **Gerenciamento de empréstimos** com renovação e lembretes automáticos
 - 🔖 **Sistema de reservas** com fila de espera em tempo real
 - 📅 **Eventos e clubes de leitura** com inscrições integradas
-- 🔔 **Notificações push** para prazos, reservas disponíveis e multas
+- 🔔 **Notificações push** para prazos e reservas disponíveis
 - 👤 **Perfil personalizado** com histórico, metas de leitura e conquistas
 - 🔐 **Painel administrativo** para gestão do acervo e usuários
 
@@ -68,7 +68,6 @@ app/src/main/java/com/bibliotecadigital/app/
 │   │   ├── Loan.kt
 │   │   ├── Reservation.kt
 │   │   ├── Event.kt
-│   │   ├── Fine.kt
 │   │   └── Review.kt
 │   │
 │   └── repository/               # Camada de dados (Firebase)
@@ -78,7 +77,6 @@ app/src/main/java/com/bibliotecadigital/app/
 │       ├── LoanRepository.kt
 │       ├── ReservationRepository.kt
 │       ├── EventRepository.kt
-│       ├── FineRepository.kt
 │       └── ReviewRepository.kt
 │
 ├── ui/
@@ -87,7 +85,7 @@ app/src/main/java/com/bibliotecadigital/app/
 │   ├── collection/               # Acervo e Detalhes do Livro
 │   ├── events/                   # Eventos e Clubes
 │   ├── notifications/            # Notificações
-│   └── profile/                  # Perfil, Histórico, Metas, Multas
+│   └── profile/                  # Perfil, Histórico, Metas
 │
 ├── viewmodel/                    # Lógica de apresentação
 └── utils/                        # Extensions, helpers, validators
@@ -105,7 +103,6 @@ app/src/main/java/com/bibliotecadigital/app/
 | `books/` | title, author, isbn, category, totalCopies, available, coverUrl |
 | `loans/` | userId, bookId, loanDate, dueDate, status, renewalCount |
 | `reservations/` | userId, bookId, queuePosition, status |
-| `fines/` | userId, loanId, amount, daysLate, status |
 | `events/` | title, date, facilitator, totalSlots, usedSlots, participants[] |
 | `reviews/` | userId, bookId, rating, comment |
 | `notifications/` | userId, title, body, type, read |
@@ -163,8 +160,6 @@ Gerenciado via **GitHub Projects**: `Ready → In Progress → In Review → Don
 | TASK-14 | Popup — Editar Perfil | 🟡 Média | 🔲 |
 | TASK-15 | Histórico de Leituras | 🟡 Média | 🔲 |
 | TASK-16 | Metas de Leitura | 🟡 Média | 🔲 |
-| TASK-17 | Multas e Pagamentos | 🟡 Média | 🔲 |
-| TASK-27 | Multas — Tela Detalhada | 🟡 Média | 🔲 |
 
 ### ⚙️ Configurações
 
@@ -387,9 +382,9 @@ docs(readme): atualiza backlog com tasks de backend
 - [ ] CRUD: users, books, loans (TASK-BE04, BE05, BE06)
 
 ### Sprint 3 — Perfil + Notificações
-- [ ] Perfil completo: Histórico, Metas, Multas (TASK-14–17)
+- [ ] Perfil completo: Histórico, Metas (TASK-14–16)
 - [ ] Notificações push FCM (TASK-10, 28, TASK-BE10)
-- [ ] Cloud Functions: multas e lembretes (TASK-BE08, BE09)
+- [ ] Cloud Functions: lembretes de vencimento (TASK-BE09)
 
 ### Sprint 4 — Polimento + Admin
 - [ ] Estados, pop-ups e fluxos de sucesso (TASK-29–40)

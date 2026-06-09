@@ -58,11 +58,11 @@ class ForgotPasswordBottomSheet : BottomSheetDialogFragment() {
     private fun validateEmail(email: String): Boolean {
         return when {
             email.isEmpty() -> {
-                binding.tilEmailReset.error = "Insira seu e-mail"
+                binding.tilEmailReset.error = "Não esqueça de colocar seu e-mail para recuperarmos sua conta! 📧"
                 false
             }
             !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                binding.tilEmailReset.error = "E-mail inválido"
+                binding.tilEmailReset.error = "Hum, esse e-mail não parece estar certinho. Pode conferir? 🧐"
                 false
             }
             else -> {

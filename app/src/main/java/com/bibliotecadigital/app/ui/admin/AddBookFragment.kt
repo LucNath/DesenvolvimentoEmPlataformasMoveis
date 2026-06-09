@@ -6,19 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.bibliotecadigital.app.databinding.FragmentAddBookBinding
+import com.bibliotecadigital.app.viewmodels.AddBookViewModel
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
 
 class AddBookFragment : Fragment() {
 
     private var _binding: FragmentAddBookBinding? = null
     private val binding get() = _binding!!
-    private val db = FirebaseFirestore.getInstance()
+    private val viewModel: AddBookViewModel by viewModels()
     private var bookId: String? = null
 
     companion object {
-        fun newInstance(bookId: String? = null) = AddBookFragment().apply {
+        fun newInstance(bookId: String? = null): Fragment = AddBookFragment().apply {
             arguments = Bundle().apply {
                 putString("bookId", bookId)
             }
@@ -39,11 +44,16 @@ class AddBookFragment : Fragment() {
 
         bookId = arguments?.getString("bookId")
         
+        setupUI()
+        observeViewModel()
+        
         if (bookId != null) {
             binding.toolbar.title = "Editar Obra"
             loadBookData(bookId!!)
         }
+    }
 
+    private fun setupUI() {
         binding.toolbar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
@@ -53,10 +63,42 @@ class AddBookFragment : Fragment() {
         }
     }
 
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isLoading.collect { isLoading ->
+                    binding.btnSave.isEnabled = !isLoading
+                    // Se você tiver um progress bar no layout, controle aqui
+                    // binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.saveSuccess.collect { message ->
+                    Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                    parentFragmentManager.popBackStack()
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.error.collect { message ->
+                    Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
     private fun loadBookData(id: String) {
+        // Para carregar dados, ainda podemos usar o Firestore direto ou mover para o VM
+        // Como é apenas leitura para preencher campos, manter aqui é aceitável, mas VM é melhor.
+        val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
         db.collection("books").document(id).get()
             .addOnSuccessListener { doc ->
-                if (doc.exists()) {
+                if (doc.exists() && _binding != null) {
                     binding.etTitle.setText(doc.getString("title"))
                     binding.etAuthor.setText(doc.getString("author"))
                     binding.etCategory.setText(doc.getString("category"))
@@ -82,38 +124,16 @@ class AddBookFragment : Fragment() {
             return
         }
 
-        val quantity = quantityStr.toIntOrNull() ?: 0
-        val year = yearStr.toIntOrNull() ?: 0
-
-        val book = hashMapOf(
-            "title" to title,
-            "author" to author,
-            "category" to category,
-            "isbn" to isbn,
-            "quantity" to quantity,
-            "availableQuantity" to quantity,
-            "year" to year,
-            "coverUrl" to coverUrl,
-            "searchKeywords" to listOf(title.lowercase(), author.lowercase(), category.lowercase())
+        viewModel.saveBook(
+            bookId = bookId,
+            title = title,
+            author = author,
+            category = category,
+            isbn = isbn,
+            quantity = quantityStr.toIntOrNull() ?: 0,
+            year = yearStr.toIntOrNull() ?: 0,
+            coverUrl = coverUrl
         )
-
-        binding.btnSave.isEnabled = false
-        
-        val task = if (bookId == null) {
-            db.collection("books").add(book)
-        } else {
-            db.collection("books").document(bookId!!).set(book)
-        }
-
-        task.addOnSuccessListener {
-                val msg = if (bookId == null) "Obra cadastrada!" else "Obra atualizada!"
-                Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG).show()
-                parentFragmentManager.popBackStack()
-            }
-            .addOnFailureListener { e ->
-                binding.btnSave.isEnabled = true
-                Snackbar.make(binding.root, "Erro: ${e.message}", Snackbar.LENGTH_LONG).show()
-            }
     }
 
     override fun onDestroyView() {

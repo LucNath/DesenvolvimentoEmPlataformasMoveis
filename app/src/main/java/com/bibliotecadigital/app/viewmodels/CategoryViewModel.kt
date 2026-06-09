@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.bibliotecadigital.app.entity.Book
 import com.bibliotecadigital.app.repository.BookRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -22,6 +24,9 @@ class CategoryViewModel : ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
+
+    private val _actionMessage = MutableSharedFlow<String>()
+    val actionMessage: SharedFlow<String> = _actionMessage
 
     val filteredBooks = combine(_books, _searchQuery) { books, query ->
         if (query.isEmpty()) {
@@ -48,11 +53,28 @@ class CategoryViewModel : ViewModel() {
         _searchQuery.value = query
     }
 
-    fun deleteBook(bookId: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun handleBookAction(book: Book) {
         viewModelScope.launch {
+            if (book.availableQuantity > 0) {
+                // Aqui no futuro chamaremos o repositório de empréstimos
+                _actionMessage.emit("Reserva realizada com sucesso para: ${book.title}")
+            } else {
+                _actionMessage.emit("Obra indisponível para reserva no momento.")
+            }
+        }
+    }
+
+    fun deleteBook(bookId: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
             bookRepository.deleteBook(bookId)
-                .onSuccess { onSuccess() }
-                .onFailure { onError(it.message ?: "Erro desconhecido") }
+                .onSuccess {
+                    _actionMessage.emit("Obra excluída com sucesso")
+                }
+                .onFailure {
+                    _actionMessage.emit("Erro ao excluir: ${it.message ?: "Erro desconhecido"}")
+                }
+            _isLoading.value = false
         }
     }
 }

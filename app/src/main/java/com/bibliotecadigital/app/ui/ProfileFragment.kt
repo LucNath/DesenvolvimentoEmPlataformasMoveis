@@ -138,7 +138,6 @@ class ProfileFragment : Fragment() {
         configRow(binding.rowMyReservations.root, R.drawable.ic_bookmark, getString(R.string.my_reservations_title))
         configRow(binding.rowReadingHistory.root, R.drawable.ic_history, getString(R.string.profile_menu_history))
         configRow(binding.rowReadingGoals.root, R.drawable.ic_check_circle, getString(R.string.profile_menu_goals))
-        configRow(binding.rowFees.root, R.drawable.ic_payments, getString(R.string.profile_menu_fines))
 
         // Configurações e Acessibilidade
         configRow(binding.rowSettingsApp.root, R.drawable.ic_palette, getString(R.string.settings_title))
@@ -185,13 +184,6 @@ class ProfileFragment : Fragment() {
         binding.rowReadingGoals.root.setOnClickListener {
             val bottomSheet = AddReadingGoalBottomSheet()
             bottomSheet.show(childFragmentManager, AddReadingGoalBottomSheet.TAG)
-        }
-
-        binding.rowFees.root.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, FinesFragment())
-                .addToBackStack(null)
-                .commit()
         }
 
         binding.btnAddGoal.setOnClickListener {

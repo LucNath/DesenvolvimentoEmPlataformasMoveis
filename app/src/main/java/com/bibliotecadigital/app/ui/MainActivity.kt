@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         setupNavigation()
         setupNetworkMonitor()
         observeNotifications()
+        observeUserRole()
 
         if (savedInstanceState == null) {
             loadFragment(HomeFragment())
@@ -79,14 +80,32 @@ class MainActivity : AppCompatActivity() {
             .launchIn(lifecycleScope)
     }
 
-    private fun setupNavigation() {
-        val appPrefs = AppPrefs(this)
-        val isAdmin = appPrefs.userRole == "admin"
+    private fun observeUserRole() {
+        val uid = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid ?: return
+        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(uid)
+            .addSnapshotListener { snapshot, _ ->
+                val newRole = snapshot?.getString("role") ?: "student"
+                if (newRole != appPrefs.userRole) {
+                    appPrefs.userRole = newRole
+                    // Atualiza a UI da navegação
+                    updateNavigationVisibility(newRole == "admin")
+                }
+            }
+    }
 
-        if (isAdmin) {
-            binding.bottomNavigation.menu.findItem(R.id.nav_notificacoes).isVisible = false
-            // Opcionalmente podemos esconder mais coisas ou mudar a ordem
+    private fun updateNavigationVisibility(isAdmin: Boolean) {
+        binding.bottomNavigation.menu.findItem(R.id.nav_notificacoes).isVisible = !isAdmin
+        // Se o usuário estiver na aba de notificações e for promovido, move ele para a Home
+        if (isAdmin && binding.bottomNavigation.selectedItemId == R.id.nav_notificacoes) {
+            binding.bottomNavigation.selectedItemId = R.id.nav_home
         }
+    }
+
+    private fun setupNavigation() {
+        val isAdmin = appPrefs.userRole == "admin"
+        updateNavigationVisibility(isAdmin)
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             val fragment = when (item.itemId) {

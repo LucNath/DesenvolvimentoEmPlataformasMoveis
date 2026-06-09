@@ -63,17 +63,23 @@ class CategoryFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.filteredBooks.collect { books ->
-                    bookAdapter.submitList(books)
-                    updateEmptyState(books.isEmpty())
+                launch {
+                    viewModel.filteredBooks.collect { books ->
+                        bookAdapter.submitList(books)
+                        updateEmptyState(books.isEmpty())
+                    }
                 }
-            }
-        }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isLoading.collect { isLoading ->
-                    binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+                launch {
+                    viewModel.isLoading.collect { isLoading ->
+                        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+                    }
+                }
+
+                launch {
+                    viewModel.actionMessage.collect { message ->
+                        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                    }
                 }
             }
         }
@@ -93,11 +99,9 @@ class CategoryFragment : Fragment() {
         // Exibir FAB apenas para Admin
         binding.fabAddBook.visibility = if (isAdmin) View.VISIBLE else View.GONE
         binding.fabAddBook.setOnClickListener {
+            val fragment = com.bibliotecadigital.app.ui.admin.AddBookFragment.newInstance()
             parentFragmentManager.beginTransaction()
-                .replace(
-                    com.bibliotecadigital.app.R.id.fragmentContainer,
-                    com.bibliotecadigital.app.ui.admin.AddBookFragment.newInstance()
-                )
+                .replace(com.bibliotecadigital.app.R.id.fragmentContainer, fragment)
                 .addToBackStack(null)
                 .commit()
         }
@@ -114,16 +118,13 @@ class CategoryFragment : Fragment() {
                     .commit()
             },
             onReserveClick = { book ->
-                // Nota: Idealmente este fragmento deve ser migrado para usar AcervoViewModel ou um SharedViewModel para ações de reserva
-                Snackbar.make(binding.root, "Ação de reserva: ${book.title}", Snackbar.LENGTH_SHORT).show()
+                viewModel.handleBookAction(book)
             },
             onEditClick = { book ->
                 // Ação para Administrador: Editar obra
+                val fragment = com.bibliotecadigital.app.ui.admin.AddBookFragment.newInstance(book.id)
                 parentFragmentManager.beginTransaction()
-                    .replace(
-                        com.bibliotecadigital.app.R.id.fragmentContainer,
-                        com.bibliotecadigital.app.ui.admin.AddBookFragment.newInstance(book.id)
-                    )
+                    .replace(com.bibliotecadigital.app.R.id.fragmentContainer, fragment)
                     .addToBackStack(null)
                     .commit()
             },
@@ -155,14 +156,7 @@ class CategoryFragment : Fragment() {
             .setTitle("Excluir Obra")
             .setMessage("Tem certeza que deseja excluir '${book.title}'? Esta ação não pode ser desfeita.")
             .setPositiveButton("Excluir") { _, _ ->
-                viewModel.deleteBook(book.id, 
-                    onSuccess = {
-                        Snackbar.make(binding.root, "Obra excluída com sucesso", Snackbar.LENGTH_SHORT).show()
-                    },
-                    onError = { message ->
-                        Snackbar.make(binding.root, "Erro ao excluir: $message", Snackbar.LENGTH_SHORT).show()
-                    }
-                )
+                viewModel.deleteBook(book.id)
             }
             .setNegativeButton("Cancelar", null)
             .show()

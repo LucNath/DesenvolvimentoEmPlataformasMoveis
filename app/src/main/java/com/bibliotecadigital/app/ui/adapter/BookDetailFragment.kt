@@ -187,7 +187,7 @@ class BookDetailFragment : Fragment() {
                     tvStatusLabel.text = "DISPONÍVEL"
                     tvStatusLabel.setBackgroundResource(R.drawable.bg_status_green)
                     tvStatusLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.green_text))
-                    tvAvailability.text = "${book.available} exemplares disponíveis"
+                    tvAvailability.text = "${book.availableQuantity} exemplares disponíveis"
                     btnLoan.text = "Emprestar"
                     btnLoan.visibility = View.VISIBLE
                     btnReserve.visibility = View.GONE
@@ -210,7 +210,7 @@ class BookDetailFragment : Fragment() {
                     tvStatusLabel.text = book.status.uppercase()
                     tvStatusLabel.setBackgroundResource(R.drawable.bg_status_yellow)
                     tvStatusLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.blue_royal))
-                    tvAvailability.text = "${book.available} exemplares"
+                    tvAvailability.text = "${book.availableQuantity} exemplares"
                 }
             }
 

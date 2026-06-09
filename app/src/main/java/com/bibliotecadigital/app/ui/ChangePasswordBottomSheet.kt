@@ -78,7 +78,7 @@ class ChangePasswordBottomSheet : BottomSheetDialogFragment() {
                 .onSuccess {
                     Snackbar.make(
                         requireActivity().findViewById(android.R.id.content),
-                        "Senha alterada com sucesso!",
+                        "Oba! Sua senha foi atualizada com sucesso ✨",
                         Snackbar.LENGTH_SHORT
                     ).show()
                     dismiss()
@@ -86,7 +86,7 @@ class ChangePasswordBottomSheet : BottomSheetDialogFragment() {
                 .onFailure { e ->
                     binding.btnChangePassword.isEnabled = true
                     binding.btnCancel.isEnabled = true
-                    binding.tilCurrentPassword.error = "Erro ao alterar: ${e.message}"
+                    binding.tilCurrentPassword.error = "Opa! Não conseguimos alterar sua senha: ${e.message} 😵"
                 }
         }
     }
@@ -112,13 +112,13 @@ class ChangePasswordBottomSheet : BottomSheetDialogFragment() {
 
         // Validação tamanho nova senha
         if (new.length < 6) {
-            binding.tilNewPassword.error = "Senha muito curta (mínimo 6)"
+            binding.tilNewPassword.error = "Essa senha está muito curtinha. Que tal pelo menos 6 caracteres? 🔒"
             isValid = false
         }
 
         // Validação coincidência
         if (new != confirm) {
-            binding.tilConfirmPassword.error = "As senhas não coincidem"
+            binding.tilConfirmPassword.error = "As senhas novas não ficaram iguais. Pode conferir? 🧐"
             isValid = false
         }
 

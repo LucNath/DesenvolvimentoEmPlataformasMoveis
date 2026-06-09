@@ -12,12 +12,12 @@
     <string name="total_books">Total de Obras</string>
     <string name="active_loans">Empréstimos Ativos</string>
     <string name="reservations">Reservas</string>
-    <string name="pending_fines">Multas Pendentes</string>
+
     <string name="access_denied">Acesso Negado</string>
     <string name="total_books_count">1.240</string>
     <string name="active_loans_count">85</string>
     <string name="reservations_count">42</string>
-    <string name="pending_fines_amount">R$ 156,00</string>
+
     <string name="nav_acervo">Acervo</string>
     <string name="nav_eventos">Eventos</string>
     <string name="nav_notificacoes">Notificações</string>
@@ -26,7 +26,7 @@
     <string name="most_borrowed">Obras Mais Procuradas</string>
     <string name="btn_new_book">Nova Obra</string>
     <string name="btn_users">Usuários</string>
-    <string name="btn_fines">Multas</string>
+
     <string name="switch_to_user_view">Alternar para Visão de Usuário</string>
     <string name="confirm_logout">Sair da conta</string>
     <string name="confirm_logout_msg">Tem certeza que deseja sair?</string>
@@ -37,20 +37,15 @@
     <string name="manage_loans">Gestão de Empréstimos</string>
     <string name="search_hint_loans">Buscar por usuário ou obra...</string>
     <string name="tab_loans">Empréstimos</string>
-    <string name="tab_fines">Multas</string>
+
     <string name="chip_all">Todos</string>
     <string name="chip_active">Ativos</string>
     <string name="chip_overdue">Atrasados</string>
     <string name="chip_returned">Devolvidos</string>
     <string name="due_date_label">Prazo: %1$s</string>
-    <string name="fine_amount_label">Multa: R$ %1$.2f</string>
+
     <string name="btn_return">Devolver</string>
-    <string name="btn_pay">Pagar</string>
-    <string name="btn_paid">Pago</string>
-    <string name="btn_pay_fine">Pagar Multa</string>
-    <string name="fines_title">Multas e Pagamentos</string>
-    <string name="total_pending_label">Saldo Devedor</string>
-    <string name="empty_fines_msg">Nenhuma multa registrada</string>
+
 
     <!-- Notifications -->
     <string name="notifications_title">Notificações</string>
@@ -75,12 +70,12 @@
     <string name="profile_returned">Devolvidos</string>
     <string name="profile_reservations">Reservas</string>
     <string name="profile_section_reservations">MINHAS RESERVAS</string>
-    <string name="profile_section_fines">MULTAS E PAGAMENTOS</string>
+
     <string name="profile_section_account">MINHA CONTA</string>
     <string name="profile_section_settings">CONFIGURAÇÕES</string>
     <string name="profile_menu_history">Histórico de Leituras</string>
     <string name="profile_menu_goals">Metas de Leitura</string>
-    <string name="profile_menu_fines">Multas e Pagamentos</string>
+
     <string name="profile_menu_password">Alterar Senha</string>
     <string name="profile_menu_logout">Sair da conta</string>
     <string name="profile_logout_confirm_title">Sair da conta</string>
@@ -160,7 +155,7 @@
     <string name="confirm_password_hint">Confirmar senha</string>
     <string name="btn_create_account">Criar conta</string>
     <string name="btn_already_have_account">Já tem uma conta? Login</string>
-    <string name="error_email_exists">O email informado já está cadastrado</string>
+    <string name="error_email_exists">Ops! Esse e-mail já está em uso por aqui. Que tal fazer login? ✨</string>
     <string name="home_greeting">Olá, bem-vindo de volta</string>
     <string name="loans_active_title">Empréstimos Ativos</string>
     <string name="notifications_btn_desc">Abrir notificações</string>
@@ -180,10 +175,10 @@
     <string name="reset_password_subtitle">Insira seu e-mail institucional para receber um link de redefinição.</string>
     <string name="new_password_hint">Nova senha</string>
     <string name="btn_reset_password">Enviar link</string>
-    <string name="error_password_weak">A senha deve ter pelo menos 8 caracteres, incluindo um número e uma letra maiúscula</string>
-    <string name="error_passwords_dont_match">As senhas não coincidem</string>
+    <string name="error_password_weak">A senha precisa de pelo menos 8 caracteres, um número e uma letra maiúscula! 💪</string>
+    <string name="error_passwords_dont_match">As senhas não ficaram iguais. Pode conferir? 🧐</string>
     <string name="success_password_reset">Senha redefinida com sucesso!</string>
-    <string name="error_insert_email">Insira o e-mail para recuperação</string>
+    <string name="error_insert_email">Não esqueça de colocar seu e-mail para recuperarmos sua conta! 📧</string>
     <string name="success_reset_email_sent">E-mail de recuperação enviado! Verifique sua caixa de entrada e a pasta de spam.</string>
 
     <!-- Home Empty State -->

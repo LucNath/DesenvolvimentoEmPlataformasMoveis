@@ -55,23 +55,23 @@ class CadastroActivity : AppCompatActivity() {
         var isValid = true
 
         if (nome.isEmpty()) {
-            binding.tilNome.error = "Informe seu nome completo"
+            binding.tilNome.error = "Como podemos te chamar? Informe seu nome ✨"
             isValid = false
         }
 
         if (email.isEmpty()) {
-            binding.tilEmail.error = "Informe seu e-mail institucional"
+            binding.tilEmail.error = "Precisamos do seu e-mail institucional para o cadastro 📧"
             isValid = false
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.tilEmail.error = "E-mail inválido"
+            binding.tilEmail.error = "Ops! Esse e-mail não parece estar certinho. Pode conferir? 🧐"
             isValid = false
         }
 
         if (senha.isEmpty()) {
-            binding.tilSenha.error = "Informe uma senha"
+            binding.tilSenha.error = "Não esqueça de criar uma senha segura! 🔒"
             isValid = false
         } else if (senha.length < 8) {
-            binding.tilSenha.error = "Mínimo de 8 caracteres"
+            binding.tilSenha.error = "A senha precisa ter pelo menos 8 caracteres para sua segurança 🛡️"
             isValid = false
         }
 
@@ -102,9 +102,10 @@ class CadastroActivity : AppCompatActivity() {
                     is CadastroResult.Error -> {
                         binding.progressBar.visibility = View.GONE
                         binding.btnCriarConta.isEnabled = true
-                        if (result.message.contains("senha") || result.message.contains("RF02.2")) {
+                        val msg = result.message.lowercase()
+                        if (msg.contains("senha") || msg.contains("rf02.2")) {
                             binding.tilSenha.error = result.message
-                        } else if (result.message.contains("E-mail") || result.message.contains("RF02.3")) {
+                        } else if (msg.contains("e-mail") || msg.contains("email") || msg.contains("rf02.3")) {
                             binding.tilEmail.error = result.message
                         } else {
                             Toast.makeText(this@CadastroActivity, result.message, Toast.LENGTH_LONG).show()
